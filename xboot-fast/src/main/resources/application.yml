@@ -163,6 +163,10 @@ ignored:
     - /**/*.png
     - /**/*.ico
     - /xboot/test/**
+    - /xboot/type/**
+    - /xboot/task/**
+    - /xboot/taskType/**
+
 
 # Actuator
 management:

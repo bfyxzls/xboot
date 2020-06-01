@@ -156,14 +156,14 @@ public class UserController {
 
     /**
      * @param u
-     * @param roles
+     * @param roleIds
      * @return
      */
     @RequestMapping(value = "/admin/edit",method = RequestMethod.POST)
     @ApiOperation(value = "管理员修改资料",notes = "需要通过id获取原用户信息 需要username更新缓存")
     @CacheEvict(key = "#u.username")
     public Result<Object> edit(User u,
-                               @RequestParam(required = false) String[] roles){
+                               @RequestParam(required = false) String[] roleIds){
 
         User old = userService.get(u.getId());
         //若修改了用户名
@@ -191,9 +191,9 @@ public class UserController {
         }
         //删除该用户角色
         userRoleService.deleteByUserId(u.getId());
-        if(roles!=null&&roles.length>0){
+        if(roleIds!=null&&roleIds.length>0){
             //新角色
-            for(String roleId : roles){
+            for(String roleId : roleIds){
                 UserRole ur = new UserRole();
                 ur.setRoleId(roleId);
                 ur.setUserId(u.getId());
@@ -355,9 +355,9 @@ public class UserController {
         return ResultUtil.data(null);
     }
 
-    @RequestMapping(value = "/delByIds/{ids}",method = RequestMethod.DELETE)
+    @RequestMapping(value = "/delByIds",method = RequestMethod.POST)
     @ApiOperation(value = "批量通过ids删除")
-    public Result<Object> delAllByIds(@PathVariable String[] ids){
+    public Result<Object> delAllByIds(@RequestParam String[] ids){
 
         for(String id:ids){
             User u = userService.get(id);
