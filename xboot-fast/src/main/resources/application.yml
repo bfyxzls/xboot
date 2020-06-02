@@ -65,15 +65,7 @@ spring:
       # 未使用到ES 关闭其持久化存储
       repositories:
         enabled: false
-  # 定时任务
-  quartz:
-    # 任务信息存储至数据库
-    job-store-type: jdbc
-    properties:
-      org:
-        quartz:
-          jobStore:
-            misfireThreshold: 100
+
   # 文件大小上传配置
   servlet:
     multipart:
@@ -165,28 +157,6 @@ ignored:
     - /xboot/type/**
     - /xboot/task/**
     - /xboot/taskType/**
-
-
-# Actuator
-management:
-  health:
-    # 暂未用到ES 关闭其健康检查
-    elasticsearch:
-      enabled: false
-  endpoint:
-    health:
-      show-details: always
-      status:
-        http-mapping:
-          DOWN: 200
-          OUT_OF_SERVICE: 200
-          FATAL: 200
-          UNKNOWN: 200
-  endpoints:
-    web:
-      base-path: /xboot/actuator/
-      exposure:
-        include: '*'
 
 # Swagger界面内容配置
 swagger:

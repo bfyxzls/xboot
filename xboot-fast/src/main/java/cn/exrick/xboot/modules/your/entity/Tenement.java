@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiModel;
 import lombok.Data;
+
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
@@ -19,5 +20,7 @@ import javax.persistence.Table;
 public class Tenement extends XbootBaseEntity {
 
     private static final long serialVersionUID = 1L;
+    private String title;
+    private String description;
 
 }

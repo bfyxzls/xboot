@@ -24,13 +24,13 @@ public class XbootGenerator {
      * 实体类名
      * 建议仅需修改
      */
-    private static final String className = "Report";
+    private static final String className = "Template";
 
     /**
      * 类说明描述
      * 建议仅需修改
      */
-    private static final String description = "评价报告";
+    private static final String description = "评价模板";
 
     /**
      * 作者名
@@ -42,7 +42,7 @@ public class XbootGenerator {
      * 是否生成树形结构相关接口
      * 建议仅需修改
      */
-    private static final Boolean isTree = false;
+    private static final Boolean isTree = true;
 
     /**
      * 数据库表名前缀

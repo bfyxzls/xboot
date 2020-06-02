@@ -21,4 +21,6 @@ public class Type extends XbootBaseEntity {
 
     private static final long serialVersionUID = 1L;
     private String title;
+    private String description;
+
 }

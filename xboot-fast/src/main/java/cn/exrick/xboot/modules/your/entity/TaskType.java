@@ -24,4 +24,6 @@ public class TaskType extends XbootBaseEntity {
     private Long typeId;
     private Integer limit;
     private Integer percent;
+    private String description;
+
 }

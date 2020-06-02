@@ -22,4 +22,6 @@ public class Task extends XbootBaseEntity {
     private static final long serialVersionUID = 1L;
     private String title;
     private Integer status;
+    private String description;
+
 }

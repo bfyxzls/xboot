@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiModel;
 import lombok.Data;
+
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
@@ -19,5 +20,10 @@ import javax.persistence.Table;
 public class Record extends XbootBaseEntity {
 
     private static final long serialVersionUID = 1L;
-
+    private Long createDepartmentId;
+    private Long tenementId;
+    private Long courtId;
+    private Long typeId;
+    private Long taskId;
+    private Integer score;
 }

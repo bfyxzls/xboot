@@ -14,14 +14,19 @@ import javax.persistence.Table;
  */
 @Data
 @Entity
-@Table(name = "evaluation_court")
-@TableName("evaluation_court")
-@ApiModel(value = "小区")
-public class Court extends XbootBaseEntity {
+@Table(name = "evaluation_template")
+@TableName("evaluation_template")
+@ApiModel(value = "评价模板")
+public class Template extends XbootBaseEntity {
 
     private static final long serialVersionUID = 1L;
     private String title;
-    private Long createDepartmentId;
-    private Long tenementId;
     private String description;
+    private Long typeId;
+    private String parentId;
+    private String content;
+    private Integer score;
+    private Boolean isParent;
+    private String parentTitle;
+    private Integer sortOrder;
 }
