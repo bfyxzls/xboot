@@ -55,16 +55,6 @@ spring:
     port: 6379
     # 超时时间 Duration类型 3秒
     timeout: 3S
-  # Elasticsearch
-  data:
-    elasticsearch:
-      client:
-        reactive:
-          # 要连接的ES客户端 多个逗号分隔
-          endpoints: 127.0.0.1:9300
-      # 未使用到ES 关闭其持久化存储
-      repositories:
-        enabled: false
 
   # 文件大小上传配置
   servlet:
@@ -157,6 +147,12 @@ ignored:
     - /xboot/type/**
     - /xboot/task/**
     - /xboot/taskType/**
+    - /xboot/template/**
+    - /xboot/court/**
+    - /xboot/tenement/**
+    - /xboot/report/**
+    - /xboot/record/**
+
 
 # Swagger界面内容配置
 swagger:
@@ -185,3 +181,7 @@ logging:
     max-history: 7
     # 每个文件最大大小
     max-size: 5MB
+management:
+  health:
+    defaults:
+      enabled: false

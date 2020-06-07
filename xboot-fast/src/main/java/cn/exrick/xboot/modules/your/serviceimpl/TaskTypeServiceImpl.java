@@ -5,6 +5,7 @@ import cn.exrick.xboot.modules.your.entity.TaskType;
 import cn.exrick.xboot.modules.your.service.TaskTypeService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import cn.exrick.xboot.common.vo.SearchVo;
@@ -15,11 +16,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.lang.Nullable;
 
-import java.util.List;
+import java.util.*;
 import javax.persistence.criteria.*;
-import java.util.ArrayList;
-import java.util.Date;
 import java.lang.reflect.Field;
+import java.util.stream.Collectors;
 
 /**
  * 任务与类型关系接口实现
@@ -40,7 +40,6 @@ public class TaskTypeServiceImpl implements TaskTypeService {
 
     @Override
     public Page<TaskType> findByCondition(TaskType taskType, SearchVo searchVo, Pageable pageable) {
-
         return taskTypeDao.findAll(new Specification<TaskType>() {
             @Nullable
             @Override

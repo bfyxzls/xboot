@@ -20,7 +20,9 @@ import javax.persistence.Table;
 public class Type extends XbootBaseEntity {
 
     private static final long serialVersionUID = 1L;
+    @ApiModelProperty("名称")
     private String title;
+    @ApiModelProperty("备注")
     private String description;
 
 }

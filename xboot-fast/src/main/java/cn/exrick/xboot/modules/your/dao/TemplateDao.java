@@ -1,6 +1,7 @@
  package cn.exrick.xboot.modules.your.dao;
 
 import cn.exrick.xboot.base.XbootBaseDao;
+import cn.exrick.xboot.modules.base.entity.Permission;
 import cn.exrick.xboot.modules.your.entity.Template;
 
 import java.util.List;
@@ -24,4 +25,12 @@ public interface TemplateDao extends XbootBaseDao<Template, String> {
      * @return
      */
     List<Template> findByTitleLikeOrderBySortOrder(String title);
+
+    /**
+     * 通过层级查找
+     * 默认升序
+     * @param level
+     * @return
+     */
+    List<Template> findByLevelOrderBySortOrder(Integer level);
 }

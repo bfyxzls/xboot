@@ -21,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Slf4j
 @RestController
-@Api(description = "运行中的任务管理接口")
+@Api(description = "评价-运行中的任务")
 @RequestMapping("/xboot/runTask")
 @Transactional
 public class RunTaskController extends XbootBaseController<RunTask, String> {

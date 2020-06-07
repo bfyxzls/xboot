@@ -21,7 +21,7 @@ public class Court extends XbootBaseEntity {
 
     private static final long serialVersionUID = 1L;
     private String title;
-    private Long createDepartmentId;
-    private Long tenementId;
+    private String createDepartmentId;
+    private String tenementId;
     private String description;
 }

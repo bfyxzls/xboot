@@ -22,7 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Slf4j
 @RestController
-@Api(description = "物业管理接口")
+@Api(description = "评价-物业管理")
 @RequestMapping("/xboot/tenement")
 @Transactional
 public class TenementController extends XbootBaseController<Tenement, String> {
@@ -38,8 +38,8 @@ public class TenementController extends XbootBaseController<Tenement, String> {
     @RequestMapping(value = "/getByCondition", method = RequestMethod.GET)
     @ApiOperation(value = "多条件分页获取")
     public Result<Page<Tenement>> getByCondition(Tenement tenement,
-                                                            SearchVo searchVo,
-                                                            PageVo pageVo){
+                                                 SearchVo searchVo,
+                                                 PageVo pageVo) {
 
         Page<Tenement> page = tenementService.findByCondition(tenement, searchVo, PageUtil.initPage(pageVo));
         return new ResultUtil<Page<Tenement>>().setData(page);
@@ -47,9 +47,27 @@ public class TenementController extends XbootBaseController<Tenement, String> {
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     @ApiOperation(value = "添加物业")
-    public Result<Object> add(Tenement tenement)
-    {
+    public Result<Object> add(Tenement tenement) {
         tenementService.save(tenement);
         return ResultUtil.success("添加成功");
+    }
+
+    @RequestMapping(value = "/edit", method = RequestMethod.POST)
+    @ApiOperation(value = "添加物业")
+    public Result<Object> edit(Tenement tenement, @RequestParam String id) {
+        Tenement old = tenementService.get(id);
+        old.setTitle(tenement.getTitle());
+        old.setDescription(tenement.getDescription());
+        tenementService.save(tenement);
+        return ResultUtil.success("保存成功");
+    }
+
+    @RequestMapping(value = "/delByIds", method = RequestMethod.POST)
+    @ApiOperation(value = "删除物业")
+    public Result<Object> delByIds(@RequestParam String[] ids) {
+        for (String id : ids) {
+            tenementService.delete(id);
+        }
+        return ResultUtil.success("删除成功");
     }
 }

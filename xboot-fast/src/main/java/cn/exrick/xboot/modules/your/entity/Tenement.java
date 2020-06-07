@@ -20,7 +20,9 @@ import javax.persistence.Table;
 public class Tenement extends XbootBaseEntity {
 
     private static final long serialVersionUID = 1L;
+    @ApiModelProperty(value = "名称")
     private String title;
+    @ApiModelProperty(value = "描述")
     private String description;
 
 }

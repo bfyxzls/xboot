@@ -21,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Slf4j
 @RestController
-@Api(description = "评价报告管理接口")
+@Api(description = "评价-评价报告")
 @RequestMapping("/xboot/report")
 @Transactional
 public class ReportController extends XbootBaseController<Report, String> {

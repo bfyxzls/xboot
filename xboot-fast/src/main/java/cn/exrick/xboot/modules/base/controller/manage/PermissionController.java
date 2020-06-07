@@ -215,7 +215,7 @@ public class PermissionController {
         return new ResultUtil<Permission>().setData(u);
     }
 
-    @RequestMapping(value = "/delByIds/{ids}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/delByIds/{ids}", method = RequestMethod.POST)
     @ApiOperation(value = "批量通过id删除")
     @CacheEvict(key = "'menuList'")
     public Result<Object> delByIds(@PathVariable String[] ids){

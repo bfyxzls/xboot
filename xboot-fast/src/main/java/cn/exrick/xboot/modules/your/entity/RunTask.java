@@ -20,6 +20,6 @@ import javax.persistence.Table;
 public class RunTask extends XbootBaseEntity {
 
     private static final long serialVersionUID = 1L;
-    private Long taskId;
-    private Long taskTypeId;
+    private String taskId;
+    private String taskTypeId;
 }

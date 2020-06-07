@@ -16,12 +16,15 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "evaluation_task")
 @TableName("evaluation_task")
-@ApiModel(value = "测试")
+@ApiModel(value = "任务")
 public class Task extends XbootBaseEntity {
 
     private static final long serialVersionUID = 1L;
+    @ApiModelProperty(value = "名称")
     private String title;
+    @ApiModelProperty(value = "状态")
     private Integer status;
+    @ApiModelProperty(value = "备注")
     private String description;
 
 }
