@@ -12,6 +12,7 @@ import cn.exrick.xboot.modules.base.service.RoleService;
 import cn.exrick.xboot.modules.your.entity.TaskType;
 import cn.exrick.xboot.modules.your.service.TaskService;
 import cn.exrick.xboot.modules.your.service.TaskTypeService;
+import cn.exrick.xboot.modules.your.service.TemplateService;
 import cn.exrick.xboot.modules.your.service.TypeService;
 import io.micrometer.core.instrument.util.StringUtils;
 import io.swagger.annotations.Api;
@@ -84,8 +85,11 @@ public class TaskTypeController extends XbootBaseController<TaskType, String> {
         return new ResultUtil<Page<TaskType>>().setData(page);
     }
 
+    @Autowired
+    TemplateService templateService;
+
     @RequestMapping(value = "/getByRoles", method = RequestMethod.GET)
-    @ApiOperation(value = "按着当前登陆人的角色返回列表")
+    @ApiOperation(value = "按着当前登陆人的角色返回列表,包括了评价模版")
     public Result<List<TaskType>> getListByRoles() {
 
         Specification<TaskType> s1 = new Specification<TaskType>() {
@@ -102,6 +106,7 @@ public class TaskTypeController extends XbootBaseController<TaskType, String> {
         for (TaskType taskType1 : page) {
             taskType1.setTaskTitle(taskService.get(taskType1.getTaskId()).getTitle());
             taskType1.setTypeTitle(typeService.get(taskType1.getTypeId()).getTitle());
+            taskType1.setTemplates(templateService.findByTypeIdOrderBySortOrder(taskType1.getTypeId()));
         }
         return new ResultUtil<List<TaskType>>().setData(page);
     }

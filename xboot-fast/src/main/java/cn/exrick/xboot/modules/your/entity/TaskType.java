@@ -57,4 +57,8 @@ public class TaskType extends XbootBaseEntity {
     @Transient
     @TableField(exist=false)
     private List<Role> roles;
+    @ApiModelProperty(value = "分类下面的评价模板列表")
+    @Transient
+    @TableField(exist=false)
+    private List<Template> templates;
 }

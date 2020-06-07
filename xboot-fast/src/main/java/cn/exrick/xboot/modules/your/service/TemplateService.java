@@ -34,4 +34,12 @@ public interface TemplateService extends XbootBaseService<Template, String> {
      * @return
      */
     List<Template> findByLevelOrderBySortOrder(Integer level);
+
+    /**
+     * 通过分类查找
+     * 默认升序
+     * @param typeId
+     * @return
+     */
+    List<Template> findByTypeIdOrderBySortOrder(String typeId);
 }
