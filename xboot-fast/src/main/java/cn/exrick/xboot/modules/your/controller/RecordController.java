@@ -63,14 +63,14 @@ public class RecordController extends XbootBaseController<Record, String> {
     }
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
-    @ApiOperation(value = "添加任务")
+    @ApiOperation(value = "添加记录")
     public Result<Object> add(Record entity) {
         recordService.save(entity);
         return ResultUtil.success("添加成功");
     }
 
     @RequestMapping(value = "/edit", method = RequestMethod.POST)
-    @ApiOperation(value = "管理任务")
+    @ApiOperation(value = "编辑记录")
     public Result<Object> edit(Record entity, @RequestParam String id) {
         Record old = recordService.get(id);
         old.setTaskId(entity.getTaskId());
@@ -84,7 +84,7 @@ public class RecordController extends XbootBaseController<Record, String> {
     }
 
     @RequestMapping(value = "/delByIds", method = RequestMethod.POST)
-    @ApiOperation(value = "删除任务")
+    @ApiOperation(value = "删除记录")
     public Result<Object> delByIds(@RequestParam String[] ids) {
         for (String id : ids) {
             recordService.delete(id);

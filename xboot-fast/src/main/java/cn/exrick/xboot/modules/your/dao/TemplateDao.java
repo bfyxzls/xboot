@@ -33,4 +33,6 @@ public interface TemplateDao extends XbootBaseDao<Template, String> {
      * @return
      */
     List<Template> findByLevelOrderBySortOrder(Integer level);
+
+    List<Template> findByTypeIdOrderBySortOrder(String typeId);
 }

@@ -6,16 +6,21 @@ import cn.exrick.xboot.common.utils.ResultUtil;
 import cn.exrick.xboot.common.vo.PageVo;
 import cn.exrick.xboot.common.vo.Result;
 import cn.exrick.xboot.common.vo.SearchVo;
+import cn.exrick.xboot.modules.your.dao.CourtDao;
 import cn.exrick.xboot.modules.your.entity.Court;
-import cn.exrick.xboot.modules.your.entity.Tenement;
 import cn.exrick.xboot.modules.your.service.CourtService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.web.bind.annotation.*;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 /**
  * @author lind
@@ -29,11 +34,22 @@ public class CourtController extends XbootBaseController<Court, String> {
 
     @Autowired
     private CourtService courtService;
+    @Autowired
+    private CourtDao courtDao;
 
     @Override
     public CourtService getService() {
         return courtService;
     }
+
+    @RequestMapping(value = "/getAllList", method = RequestMethod.GET)
+    @ApiOperation(value = "所有小区")
+    public Result<List<Court>> getAllList() {
+
+        List<Court> list = courtDao.findAll();
+        return new ResultUtil<List<Court>>().setData(list);
+    }
+
 
     @RequestMapping(value = "/getByCondition", method = RequestMethod.GET)
     @ApiOperation(value = "多条件分页获取")

@@ -55,13 +55,6 @@ public class User extends XbootBaseEntity {
     @Column(length = 2)
     private String passStrength;
 
-    @ApiModelProperty(value = "用户头像")
-    @Column(length = 1000)
-    private String avatar = CommonConstant.USER_DEFAULT_AVATAR;
-
-    @ApiModelProperty(value = "用户类型 0普通用户 1管理员")
-    private Integer type = CommonConstant.USER_TYPE_NORMAL;
-
     @ApiModelProperty(value = "状态 默认0正常 -1拉黑")
     private Integer status = CommonConstant.USER_STATUS_NORMAL;
 
@@ -70,6 +63,25 @@ public class User extends XbootBaseEntity {
 
     @ApiModelProperty(value = "所属部门id")
     private String departmentId;
+
+    @ApiModelProperty(value = "用户头像")
+    @Column(length = 1000)
+    private String avatar = CommonConstant.USER_DEFAULT_AVATAR;
+
+    @ApiModelProperty(value = "用户类型 0普通用户 1管理员 2行业专家 3区政府 4街道 5社区 6物业公司")
+    private Integer type = CommonConstant.USER_TYPE_NORMAL;
+
+    @ApiModelProperty(value = "学历")
+    private String eduCertification;
+
+    @ApiModelProperty(value = "所属行业")
+    private String trade;
+
+    @ApiModelProperty(value = "从业年限")
+    private Integer workYear;
+
+    @ApiModelProperty(value = "资质资历")
+    private String intelligence;
 
     @Transient
     @TableField(exist=false)

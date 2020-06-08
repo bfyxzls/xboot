@@ -1,6 +1,5 @@
 package cn.exrick.xboot.modules.your.serviceimpl;
 
-import cn.exrick.xboot.modules.base.entity.Permission;
 import cn.exrick.xboot.modules.your.dao.TemplateDao;
 import cn.exrick.xboot.modules.your.entity.Template;
 import cn.exrick.xboot.modules.your.service.TemplateService;
@@ -45,5 +44,10 @@ public class TemplateServiceImpl implements TemplateService {
     public List<Template> findByLevelOrderBySortOrder(Integer level) {
         return templateDao.findByLevelOrderBySortOrder(level);
 
+    }
+
+    @Override
+    public List<Template> findByTypeIdOrderBySortOrder(String typeId) {
+        return templateDao.findByTypeIdOrderBySortOrder(typeId);
     }
 }

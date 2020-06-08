@@ -22,4 +22,6 @@ public class RunTask extends XbootBaseEntity {
     private static final long serialVersionUID = 1L;
     private String taskId;
     private String taskTypeId;
+    @ApiModelProperty("流程 1业务评价 2专家评价 3审核评价 4完成生成报告")
+    private Integer flow;
 }

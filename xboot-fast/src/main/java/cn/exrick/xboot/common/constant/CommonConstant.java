@@ -33,6 +33,30 @@ public interface CommonConstant {
     Integer USER_TYPE_ADMIN = 1;
 
     /**
+     * 行业专家
+     */
+    Integer USER_TYPE_EXPERT=2;
+
+    /**
+     * 区政府
+     */
+    Integer USER_TYPE_GOVERNMENT=3;
+
+    /**
+     * 街道
+     */
+    Integer USER_TYPE_STREET=4;
+
+    /**
+     * 社区
+     */
+    Integer USER_TYPE_COMMUNITY=5;
+
+    /**
+     * 物业公司
+     */
+    Integer USER_TYPE_TENEMENT=6;
+    /**
      * 全部数据权限
      */
     Integer DATA_TYPE_ALL = 0;
