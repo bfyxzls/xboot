@@ -116,7 +116,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 // 添加自定义权限过滤器
                 .addFilterBefore(myFilterSecurityInterceptor, FilterSecurityInterceptor.class)
                 // 图形验证码过滤器
-                .addFilterBefore(imageValidateFilter, UsernamePasswordAuthenticationFilter.class)
+              //  .addFilterBefore(imageValidateFilter, UsernamePasswordAuthenticationFilter.class)
                 // 添加JWT过滤器 除已配置的其它请求都需经过此过滤器
                 .addFilter(new JWTAuthenticationFilter(authenticationManager(), tokenProperties, redisTemplate, securityUtil));
     }

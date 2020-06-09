@@ -52,4 +52,16 @@ public class SecurityController {
         String result = HttpUtil.post(loginUrl, params);
         return ResultUtil.data(result);
     }
+
+    @RequestMapping(value = "/login", method = RequestMethod.GET)
+    @ApiOperation(value = "登录接口")
+    public Result<Object> login(@RequestParam String username, @RequestParam String password){
+
+        Map<String, Object> params = new HashMap<>(16);
+        params.put("username", username);
+        params.put("password", password);
+        params.put("saveLogin", true);
+        String result = HttpUtil.post("http://127.0.0.1:8888/xboot/login", params);
+        return ResultUtil.data(result);
+    }
 }
