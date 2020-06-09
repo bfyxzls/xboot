@@ -7,17 +7,27 @@ import cn.exrick.xboot.common.vo.PageVo;
 import cn.exrick.xboot.common.vo.Result;
 import cn.exrick.xboot.common.vo.SearchVo;
 import cn.exrick.xboot.modules.your.entity.Record;
-import cn.exrick.xboot.modules.your.entity.TaskType;
+import cn.exrick.xboot.modules.your.entity.Task;
 import cn.exrick.xboot.modules.your.service.*;
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.StrUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.sql.Types;
+import javax.persistence.criteria.Path;
+import javax.persistence.criteria.Predicate;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * @author lind
@@ -52,6 +62,7 @@ public class RecordController extends XbootBaseController<Record, String> {
                                                PageVo pageVo) {
 
         Page<Record> page = recordService.findByCondition(record, searchVo, PageUtil.initPage(pageVo));
+
         for (Record record1 : page) {
             record1.setTaskTitle(taskService.get(record1.getTaskId()).getTitle());
             record1.setTypeTitle(typeService.get(record1.getTypeId()).getTitle());
@@ -59,6 +70,7 @@ public class RecordController extends XbootBaseController<Record, String> {
             record1.setTenementTitle(tenementService.get(record1.getTenementId()).getTitle());
 
         }
+
         return new ResultUtil<Page<Record>>().setData(page);
     }
 
