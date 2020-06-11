@@ -1,10 +1,11 @@
 package cn.exrick.xboot.modules.your.entity;
 
 import cn.exrick.xboot.base.XbootBaseEntity;
+import cn.hutool.core.date.DateTime;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
-import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import javax.persistence.Entity;
@@ -33,14 +34,24 @@ public class Record extends XbootBaseEntity {
     @ApiModelProperty(value = "任务ID")
     private String taskId;
     @ApiModelProperty(value = "分值")
-    private Integer score;
+    private float score;
     @ApiModelProperty(value = "名称")
     private String title;
+    @ApiModelProperty(value = "照片地址")
+    private String pictureUrl;
+    @ApiModelProperty(value = "提交时间")
+    private DateTime submitTime;
+    @ApiModelProperty(value = "居住楼号")
+    private String addressCode;
+    @ApiModelProperty(value = "入住小区时间")
+    private String joinTime;
+    @ApiModelProperty(value = "身份")
+    private String identity;
+
     @Transient
     @TableField(exist = false)
     @ApiModelProperty(value = "物业名称")
     private String tenementTitle;
-
     @Transient
     @TableField(exist = false)
     @ApiModelProperty(value = "小区名称")

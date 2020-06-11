@@ -49,7 +49,8 @@ public class SecurityUtil {
      */
     public User getCurrUser(){
 
-        UserDetails user = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Object obj=SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UserDetails user = (UserDetails)obj;
         return userService.findByUsername(user.getUsername());
     }
 

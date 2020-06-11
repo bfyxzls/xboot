@@ -37,4 +37,6 @@ public class Report extends XbootBaseEntity {
     private String fileUrl;
     @ApiModelProperty(value = "统计数量")
     private Integer totalCount;
+    @ApiModelProperty(value = "访问员名称")
+    private String visitName;
 }

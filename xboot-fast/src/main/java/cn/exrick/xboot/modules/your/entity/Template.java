@@ -40,6 +40,9 @@ public class Template extends XbootBaseEntity {
     private Integer sortOrder;
     @ApiModelProperty(value = "级别")
     private Integer level;
+    @ApiModelProperty(value = "层级类型0标题，1内容")
+    private  Integer levelType;
+
     @Transient
     @TableField(exist=false)
     @ApiModelProperty(value = "是否为上级")

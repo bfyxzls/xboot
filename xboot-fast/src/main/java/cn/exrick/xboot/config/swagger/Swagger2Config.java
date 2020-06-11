@@ -1,5 +1,6 @@
 package cn.exrick.xboot.config.swagger;
 
+import com.github.xiaoymin.knife4j.spring.annotations.EnableKnife4j;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,6 +24,7 @@ import java.util.List;
 @Slf4j
 @Configuration
 @EnableSwagger2
+@EnableKnife4j
 public class Swagger2Config {
 
     @Value("${swagger.title}")

@@ -73,7 +73,7 @@ public class UserController {
 
     @RequestMapping(value = "/regist",method = RequestMethod.POST)
     @ApiOperation(value = "注册用户")
-    public Result<Object> regist(User u){
+    public Result<Object> regist(@RequestBody User u){
 
         if(StrUtil.isBlank(u.getUsername()) || StrUtil.isBlank(u.getPassword())){
             return ResultUtil.error("缺少必需表单字段");

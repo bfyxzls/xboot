@@ -144,6 +144,7 @@ ignored:
     - /**/*.png
     - /**/*.ico
     - /xboot/test/**
+    - /xboot/user/regist
     - /xboot/type/**
     - /xboot/task/**
     - /xboot/taskType/**
@@ -154,6 +155,7 @@ ignored:
     - /xboot/record/**
     - /xboot/sys/**
     - /xboot/user/**
+    - /doc.html
 
 
 # Swagger界面内容配置
