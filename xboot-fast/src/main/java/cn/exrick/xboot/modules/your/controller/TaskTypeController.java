@@ -127,7 +127,7 @@ public class TaskTypeController extends XbootBaseController<TaskType, String> {
         old.setLimitCount(entity.getLimitCount());
         old.setPercent(entity.getPercent());
         old.setDescription(entity.getDescription());
-        taskTypeService.save(entity);
+        taskTypeService.save(old);
         return ResultUtil.success("保存成功");
     }
 

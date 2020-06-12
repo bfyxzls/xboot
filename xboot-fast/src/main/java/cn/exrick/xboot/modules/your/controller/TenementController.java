@@ -58,7 +58,7 @@ public class TenementController extends XbootBaseController<Tenement, String> {
         Tenement old = tenementService.get(id);
         old.setTitle(tenement.getTitle());
         old.setDescription(tenement.getDescription());
-        tenementService.save(tenement);
+        tenementService.save(old);
         return ResultUtil.success("保存成功");
     }
 

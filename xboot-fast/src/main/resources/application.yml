@@ -189,3 +189,4 @@ management:
   health:
     defaults:
       enabled: false
+upload.path: c:\upload

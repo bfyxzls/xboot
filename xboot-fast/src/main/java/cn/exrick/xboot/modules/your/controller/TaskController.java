@@ -83,7 +83,7 @@ public class TaskController extends XbootBaseController<Task, String> {
         old.setTitle(entity.getTitle());
         old.setDescription(entity.getDescription());
         old.setStatus(entity.getStatus());
-        taskService.save(entity);
+        taskService.save(old);
         return ResultUtil.success("保存成功");
     }
 

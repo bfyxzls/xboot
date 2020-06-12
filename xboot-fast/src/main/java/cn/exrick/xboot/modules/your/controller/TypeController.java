@@ -66,7 +66,7 @@ public class TypeController extends XbootBaseController<Type, String> {
         Type old = typeService.get(id);
         old.setTitle(entity.getTitle());
         old.setDescription(entity.getDescription());
-        typeService.save(entity);
+        typeService.save(old);
         return ResultUtil.success("保存成功");
     }
 
