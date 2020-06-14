@@ -137,7 +137,7 @@ public class DepartmentController {
         return ResultUtil.success("编辑成功");
     }
 
-    @RequestMapping(value = "/delByIds/{ids}",method = RequestMethod.DELETE)
+    @RequestMapping(value = "/delByIds/{ids}",method = RequestMethod.POST)
     @ApiOperation(value = "批量通过id删除")
     public Result<Object> delByIds(@PathVariable String[] ids){
 

@@ -4,9 +4,11 @@ import cn.exrick.xboot.common.vo.SearchVo;
 import cn.exrick.xboot.modules.your.dao.CourtDao;
 import cn.exrick.xboot.modules.your.dao.RecordDetailDao;
 import cn.exrick.xboot.modules.your.entity.Court;
+import cn.exrick.xboot.modules.your.entity.Record;
 import cn.exrick.xboot.modules.your.entity.RecordDetail;
 import cn.exrick.xboot.modules.your.service.CourtService;
 import cn.exrick.xboot.modules.your.service.RecordDetailService;
+import cn.exrick.xboot.modules.your.service.RecordService;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import io.micrometer.core.instrument.util.StringUtils;
@@ -62,13 +64,57 @@ public class RecordDetailServiceImpl implements RecordDetailService {
                     list.add(cb.between(createTimeField, start, DateUtil.endOfDay(end)));
                 }
                 if (StringUtils.isNotBlank(court.getTemplateTitle())) {
-                    list.add(cb.like(titleField, court.getTemplateTitle().trim()+"%"));
+                    list.add(cb.like(titleField, court.getTemplateTitle().trim() + "%"));
                 }
                 Predicate[] arr = new Predicate[list.size()];
                 cq.where(list.toArray(arr));
                 return null;
             }
         }, pageable);
+    }
+
+    @Override
+    public List<RecordDetail> findByRecordId(String recordId) {
+
+        return recordDetailDao.findAll(new Specification<RecordDetail>() {
+            @Nullable
+            @Override
+            public Predicate toPredicate(Root<RecordDetail> root, CriteriaQuery<?> cq, CriteriaBuilder cb) {
+
+                // TODO 可添加你的其他搜索过滤条件 默认已有创建时间过滤
+                Path<String> titleField = root.get("recordId");
+                List<Predicate> list = new ArrayList<Predicate>();
+                list.add(cb.equal(titleField, recordId.trim()));
+                Predicate[] arr = new Predicate[list.size()];
+                cq.where(list.toArray(arr));
+                return null;
+            }
+        });
+    }
+
+    @Autowired
+    RecordService recordService;
+
+    @Override
+    public void addRecordDetails(List<RecordDetail> list) {
+        String recordId = list.stream().findFirst().get().getRecordId();
+        list.forEach(o -> {
+            save(o);
+        });
+        Double sum = list.stream().mapToDouble(RecordDetail::getScore).sum();
+        Record record = recordService.get(recordId);
+        record.setScore(sum);
+        recordService.update(record);
+    }
+
+    @Override
+    public void updateRecordDetail(RecordDetail entity) {
+        save(entity);
+        List<RecordDetail> recordDetails = findByRecordId(entity.getRecordId());
+        Double sum = recordDetails.stream().mapToDouble(RecordDetail::getScore).sum();
+        Record record = recordService.get(entity.getRecordId());
+        record.setScore(sum);
+        recordService.update(record);
     }
 
 }

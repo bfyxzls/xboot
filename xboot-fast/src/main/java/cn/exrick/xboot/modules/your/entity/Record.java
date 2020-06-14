@@ -34,7 +34,7 @@ public class Record extends XbootBaseEntity {
     @ApiModelProperty(value = "任务ID")
     private String taskId;
     @ApiModelProperty(value = "分值")
-    private float score;
+    private Double score;
     @ApiModelProperty(value = "名称")
     private String title;
     @ApiModelProperty(value = "照片地址")
