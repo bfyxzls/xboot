@@ -16,6 +16,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableCaching
 //启用异步
 @EnableAsync
+@EnableAdminServer
 public class XbootApplication {
 
     public static void main(String[] args) {

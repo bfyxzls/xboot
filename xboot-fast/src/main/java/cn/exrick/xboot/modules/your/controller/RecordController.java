@@ -71,10 +71,11 @@ public class RecordController extends XbootBaseController<Record, String> {
     @ApiOperation(value = "上传照片")
     public Result<Object> upload(@PathVariable String id, @RequestParam("file") MultipartFile file) {
         String fileName = FileUtil.renamePic(file.getOriginalFilename());
+        String result = fileUtil.localUpload(file, fileName);
         Record old = recordService.get(id);
         old.setPictureUrl(fileName);
         recordService.save(old);
-        return ResultUtil.data(fileUtil.localUpload(file, fileName));
+        return ResultUtil.data(result);
     }
 
     @RequestMapping(value = "/pic/{id}", method = RequestMethod.POST)

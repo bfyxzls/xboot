@@ -60,4 +60,6 @@ public class Template extends XbootBaseEntity {
     @ApiModelProperty(value = "分类名称")
     private String typeTitle;
 
+    @ApiModelProperty(value = "试题类型")
+    private Integer questionType;
 }

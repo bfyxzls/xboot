@@ -68,7 +68,7 @@ public class User extends XbootBaseEntity {
     @Column(length = 1000)
     private String avatar = CommonConstant.USER_DEFAULT_AVATAR;
 
-    @ApiModelProperty(value = "用户类型 0普通用户 1管理员 2行业专家 3区政府 4街道 5社区 6物业公司")
+    @ApiModelProperty(value = "数据字典")
     private Integer type = CommonConstant.USER_TYPE_NORMAL;
 
     @ApiModelProperty(value = "学历")
@@ -97,4 +97,9 @@ public class User extends XbootBaseEntity {
     @TableField(exist=false)
     @ApiModelProperty(value = "用户拥有的权限")
     private List<Permission> permissions;
+
+    @Transient
+    @TableField(exist=false)
+    @ApiModelProperty(value = "用户类型")
+    private String typeTitle;
 }

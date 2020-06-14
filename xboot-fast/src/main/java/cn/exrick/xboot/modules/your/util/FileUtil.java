@@ -32,8 +32,10 @@ public class FileUtil {
     @Autowired
     private StringRedisTemplate redisTemplate;
 
-    @Value("${upload.path:upload}")
+    @Value("${file.uploadFolder}")
     private String uploadPath;
+    @Value("${file.imageUrl}")
+    private String imageUrl;
 
     /**
      * 以UUID重命名
@@ -77,7 +79,7 @@ public class FileUtil {
      * @param key
      * @return
      */
-    public  String localUpload(MultipartFile file, String key) {
+    public String localUpload(MultipartFile file, String key) {
 
         String day = DateUtil.format(DateUtil.date(), "yyyyMMdd");
         String path = uploadPath + "/" + day;
@@ -91,7 +93,7 @@ public class FileUtil {
         }
         try {
             file.transferTo(f);
-            return path + "/" + key;
+            return imageUrl + day + "/" + key;
         } catch (IOException e) {
             log.error(e.toString());
             throw new XbootException("上传文件出错");

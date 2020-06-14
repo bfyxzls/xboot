@@ -1,52 +1,54 @@
 package cn.exrick.xboot.modules.your.serviceimpl;
 
-import cn.exrick.xboot.modules.your.dao.TaskDao;
+import cn.exrick.xboot.common.vo.SearchVo;
+import cn.exrick.xboot.modules.your.dao.CourtDao;
+import cn.exrick.xboot.modules.your.dao.RecordDetailDao;
 import cn.exrick.xboot.modules.your.entity.Court;
-import cn.exrick.xboot.modules.your.entity.Task;
-import cn.exrick.xboot.modules.your.service.TaskService;
+import cn.exrick.xboot.modules.your.entity.RecordDetail;
+import cn.exrick.xboot.modules.your.service.CourtService;
+import cn.exrick.xboot.modules.your.service.RecordDetailService;
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.StrUtil;
 import io.micrometer.core.instrument.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import cn.exrick.xboot.common.vo.SearchVo;
-import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.util.StrUtil;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.lang.Nullable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import javax.persistence.criteria.*;
 import java.util.ArrayList;
 import java.util.Date;
-import java.lang.reflect.Field;
+import java.util.List;
 
 /**
- * 测试接口实现
+ * 小区接口实现
+ *
  * @author lind
  */
 @Slf4j
 @Service
 @Transactional
-public class TaskServiceImpl implements TaskService {
+public class RecordDetailServiceImpl implements RecordDetailService {
 
     @Autowired
-    private TaskDao taskDao;
+    private RecordDetailDao recordDetailDao;
 
     @Override
-    public TaskDao getRepository() {
-        return taskDao;
+    public RecordDetailDao getRepository() {
+        return recordDetailDao;
     }
 
     @Override
-    public Page<Task> findByCondition(Task task, SearchVo searchVo, Pageable pageable) {
+    public Page<RecordDetail> findByCondition(RecordDetail court, SearchVo searchVo, Pageable pageable) {
 
-        Specification<Task> specification=   new Specification<Task>() {
+        return recordDetailDao.findAll(new Specification<RecordDetail>() {
             @Nullable
             @Override
-            public Predicate toPredicate(Root<Task> root, CriteriaQuery<?> cq, CriteriaBuilder cb) {
+            public Predicate toPredicate(Root<RecordDetail> root, CriteriaQuery<?> cq, CriteriaBuilder cb) {
 
                 // TODO 可添加你的其他搜索过滤条件 默认已有创建时间过滤
                 Path<Date> createTimeField = root.get("createTime");
@@ -59,15 +61,14 @@ public class TaskServiceImpl implements TaskService {
                     Date end = DateUtil.parse(searchVo.getEndDate());
                     list.add(cb.between(createTimeField, start, DateUtil.endOfDay(end)));
                 }
-                if (StringUtils.isNotBlank(task.getTitle())) {
-                    list.add(cb.like(titleField, task.getTitle().trim()+"%"));
+                if (StringUtils.isNotBlank(court.getTemplateTitle())) {
+                    list.add(cb.like(titleField, court.getTemplateTitle().trim()+"%"));
                 }
                 Predicate[] arr = new Predicate[list.size()];
                 cq.where(list.toArray(arr));
                 return null;
             }
-        };
-        return taskDao.findAll(specification,pageable);
+        }, pageable);
     }
 
 }

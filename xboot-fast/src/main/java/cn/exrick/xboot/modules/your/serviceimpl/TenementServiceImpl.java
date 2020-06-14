@@ -1,8 +1,10 @@
 package cn.exrick.xboot.modules.your.serviceimpl;
 
 import cn.exrick.xboot.modules.your.dao.TenementDao;
+import cn.exrick.xboot.modules.your.entity.TaskType;
 import cn.exrick.xboot.modules.your.entity.Tenement;
 import cn.exrick.xboot.modules.your.service.TenementService;
+import io.micrometer.core.instrument.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -41,6 +43,7 @@ public class TenementServiceImpl implements TenementService {
     @Override
     public Page<Tenement> findByCondition(Tenement tenement, SearchVo searchVo, Pageable pageable) {
 
+
         return tenementDao.findAll(new Specification<Tenement>() {
             @Nullable
             @Override
@@ -48,7 +51,7 @@ public class TenementServiceImpl implements TenementService {
 
                 // TODO 可添加你的其他搜索过滤条件 默认已有创建时间过滤
                 Path<Date> createTimeField = root.get("createTime");
-
+                Path<String> titleField = root.get("title");
                 List<Predicate> list = new ArrayList<Predicate>();
 
                 //创建时间
@@ -57,7 +60,9 @@ public class TenementServiceImpl implements TenementService {
                     Date end = DateUtil.parse(searchVo.getEndDate());
                     list.add(cb.between(createTimeField, start, DateUtil.endOfDay(end)));
                 }
-
+                if (StringUtils.isNotBlank(tenement.getTitle())) {
+                    list.add(cb.like(titleField, tenement.getTitle().trim()+"%"));
+                }
                 Predicate[] arr = new Predicate[list.size()];
                 cq.where(list.toArray(arr));
                 return null;
