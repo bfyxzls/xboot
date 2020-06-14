@@ -161,6 +161,9 @@ ignored:
     - /xboot/record/upload
     - /xboot/upload/**
     - /api/file/**
+    - /xboot/user/sendmail
+    - /xboot/user/verifyCode
+    - /xboot/user/resetMePass
 
 
 # Swagger界面内容配置
@@ -199,8 +202,11 @@ file.staticAccessPath: /api/file/**
 
 spring.mail:
   host: smtp.163.com
-  username: bjjbdpg
+  username: bjjbdpg@163.com
   password: 123456ab
   default-encoding: UTF-8
-  properties.mail.smtp.port: 465
+  properties.mail.smtp.port: 25
+  smtp:
+      ssl.enable: true
+      auth: true
   from: bjjbdpg@163.com

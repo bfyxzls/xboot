@@ -1,12 +1,9 @@
 package cn.exrick.xboot.modules.your.serviceimpl;
 
 import cn.exrick.xboot.common.vo.SearchVo;
-import cn.exrick.xboot.modules.your.dao.CourtDao;
 import cn.exrick.xboot.modules.your.dao.RecordDetailDao;
-import cn.exrick.xboot.modules.your.entity.Court;
 import cn.exrick.xboot.modules.your.entity.Record;
 import cn.exrick.xboot.modules.your.entity.RecordDetail;
-import cn.exrick.xboot.modules.your.service.CourtService;
 import cn.exrick.xboot.modules.your.service.RecordDetailService;
 import cn.exrick.xboot.modules.your.service.RecordService;
 import cn.hutool.core.date.DateUtil;
@@ -36,6 +33,8 @@ import java.util.List;
 @Transactional
 public class RecordDetailServiceImpl implements RecordDetailService {
 
+    @Autowired
+    RecordService recordService;
     @Autowired
     private RecordDetailDao recordDetailDao;
 
@@ -92,9 +91,6 @@ public class RecordDetailServiceImpl implements RecordDetailService {
         });
     }
 
-    @Autowired
-    RecordService recordService;
-
     @Override
     public void addRecordDetails(List<RecordDetail> list) {
         String recordId = list.stream().findFirst().get().getRecordId();
@@ -108,11 +104,17 @@ public class RecordDetailServiceImpl implements RecordDetailService {
     }
 
     @Override
-    public void updateRecordDetail(RecordDetail entity) {
-        save(entity);
-        List<RecordDetail> recordDetails = findByRecordId(entity.getRecordId());
+    public void updateRecordDetail(List<RecordDetail> list) {
+        String recordId = null;
+        for (RecordDetail o : list) {
+            RecordDetail recordDetail = recordDetailDao.getOne(o.getId());
+            recordId = recordDetail.getRecordId();
+            recordDetail.setScore(o.getScore());
+            save(recordDetail);
+        }
+        List<RecordDetail> recordDetails = findByRecordId(recordId);
         Double sum = recordDetails.stream().mapToDouble(RecordDetail::getScore).sum();
-        Record record = recordService.get(entity.getRecordId());
+        Record record = recordService.get(recordId);
         record.setScore(sum);
         recordService.update(record);
     }

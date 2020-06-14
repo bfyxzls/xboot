@@ -41,9 +41,9 @@ public interface RecordDetailService extends XbootBaseService<RecordDetail, Stri
     void addRecordDetails(List<RecordDetail> list);
 
     /**
-     * 更新单条.
-     * @param entity
+     * 更新.
+     * @param list
      */
-    void updateRecordDetail(RecordDetail entity);
+    void updateRecordDetail(List<RecordDetail> list);
 
 }

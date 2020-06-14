@@ -1,26 +1,20 @@
 package cn.exrick.xboot.modules.your.controller;
 
 import cn.exrick.xboot.base.XbootBaseController;
-import cn.exrick.xboot.common.utils.PageUtil;
 import cn.exrick.xboot.common.utils.ResultUtil;
-import cn.exrick.xboot.common.vo.PageVo;
 import cn.exrick.xboot.common.vo.Result;
-import cn.exrick.xboot.common.vo.SearchVo;
-import cn.exrick.xboot.modules.your.dao.CourtDao;
-import cn.exrick.xboot.modules.your.entity.Court;
-import cn.exrick.xboot.modules.your.entity.Record;
 import cn.exrick.xboot.modules.your.entity.RecordDetail;
-import cn.exrick.xboot.modules.your.service.CourtService;
 import cn.exrick.xboot.modules.your.service.RecordDetailService;
 import cn.exrick.xboot.modules.your.service.RecordService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -34,13 +28,14 @@ import java.util.List;
 public class RecordDetailController extends XbootBaseController<RecordDetail, String> {
 
     @Autowired
+    RecordService recordService;
+    @Autowired
     private RecordDetailService recordDetailService;
 
     @Override
     public RecordDetailService getService() {
         return recordDetailService;
     }
-
 
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     @ApiOperation(value = "按recordid获取表单列表")
@@ -57,15 +52,22 @@ public class RecordDetailController extends XbootBaseController<RecordDetail, St
         return ResultUtil.success("添加成功");
     }
 
-    @Autowired
-    RecordService recordService;
-
     @RequestMapping(value = "/edit", method = RequestMethod.POST)
     @ApiOperation(value = "单条编辑表单的分类")
-    public Result<Object> edit(RecordDetail entity, @RequestParam String id) {
-        RecordDetail old = recordDetailService.get(id);
-        old.setScore(entity.getScore());
-        recordDetailService.save(old);
+    public Result<Object> edit(@RequestParam String recordDetails) {
+        recordDetails = recordDetails.substring(0, recordDetails.length() - 1);
+        List<RecordDetail> recordDetailList = new ArrayList<>();
+        String[] one = recordDetails.split("\\|");
+        for (String detail : one) {
+            String[] id = detail.split("_");
+            if (id.length > 1) {
+                RecordDetail recordDetail = new RecordDetail();
+                recordDetail.setId(id[0]);
+                recordDetail.setScore(Double.parseDouble(id[1]));
+                recordDetailList.add(recordDetail);
+            }
+        }
+        recordDetailService.updateRecordDetail(recordDetailList);
         return ResultUtil.success("保存成功");
     }
 

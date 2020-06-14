@@ -34,7 +34,7 @@ public class FileUtil {
 
     @Value("${file.uploadFolder}")
     private String uploadPath;
-    @Value("${file.imageUrl}")
+    @Value("${file.uploadFolder}")
     private String imageUrl;
 
     /**
