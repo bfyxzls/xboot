@@ -3,6 +3,7 @@ package cn.exrick.xboot.modules.your.controller;
 import cn.exrick.xboot.base.XbootBaseController;
 import cn.exrick.xboot.common.utils.ResultUtil;
 import cn.exrick.xboot.common.vo.Result;
+import cn.exrick.xboot.modules.your.dto.RecordFormDTO;
 import cn.exrick.xboot.modules.your.entity.RecordDetail;
 import cn.exrick.xboot.modules.your.service.RecordDetailService;
 import cn.exrick.xboot.modules.your.service.RecordService;
@@ -11,7 +12,6 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -46,9 +46,8 @@ public class RecordDetailController extends XbootBaseController<RecordDetail, St
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     @ApiOperation(value = "前台批量添加表单")
-    public Result<Object> add(@RequestBody List<RecordDetail> list) {
-
-        recordDetailService.addRecordDetails(list);
+    public Result<Object> add(@RequestBody RecordFormDTO recordFormDTO) {
+        recordDetailService.addRecordDetails(recordFormDTO);
         return ResultUtil.success("添加成功");
     }
 

@@ -2,7 +2,7 @@ package cn.exrick.xboot.modules.your.service;
 
 import cn.exrick.xboot.base.XbootBaseService;
 import cn.exrick.xboot.common.vo.SearchVo;
-import cn.exrick.xboot.modules.your.entity.Court;
+import cn.exrick.xboot.modules.your.dto.RecordFormDTO;
 import cn.exrick.xboot.modules.your.entity.RecordDetail;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -36,12 +36,13 @@ public interface RecordDetailService extends XbootBaseService<RecordDetail, Stri
     /**
      * 添加记录.
      *
-     * @param list
+     * @param recordFormDTO
      */
-    void addRecordDetails(List<RecordDetail> list);
+    void addRecordDetails(RecordFormDTO recordFormDTO);
 
     /**
      * 更新.
+     *
      * @param list
      */
     void updateRecordDetail(List<RecordDetail> list);

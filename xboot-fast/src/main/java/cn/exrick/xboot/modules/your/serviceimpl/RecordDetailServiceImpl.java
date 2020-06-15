@@ -1,15 +1,23 @@
 package cn.exrick.xboot.modules.your.serviceimpl;
 
+import cn.exrick.xboot.common.utils.SecurityUtil;
 import cn.exrick.xboot.common.vo.SearchVo;
+import cn.exrick.xboot.modules.base.utils.EntityUtil;
 import cn.exrick.xboot.modules.your.dao.RecordDetailDao;
+import cn.exrick.xboot.modules.your.dto.RecordFormDTO;
 import cn.exrick.xboot.modules.your.entity.Record;
 import cn.exrick.xboot.modules.your.entity.RecordDetail;
+import cn.exrick.xboot.modules.your.entity.Template;
 import cn.exrick.xboot.modules.your.service.RecordDetailService;
 import cn.exrick.xboot.modules.your.service.RecordService;
+import cn.exrick.xboot.modules.your.service.TemplateService;
+import cn.exrick.xboot.modules.your.service.TypeService;
+import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import io.micrometer.core.instrument.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -35,6 +43,14 @@ public class RecordDetailServiceImpl implements RecordDetailService {
 
     @Autowired
     RecordService recordService;
+    @Autowired
+    TemplateService templateService;
+    @Autowired
+    TypeService typeService;
+    @Autowired
+    EntityUtil entityUtil;
+    @Autowired
+    SecurityUtil securityUtil;
     @Autowired
     private RecordDetailDao recordDetailDao;
 
@@ -92,15 +108,43 @@ public class RecordDetailServiceImpl implements RecordDetailService {
     }
 
     @Override
-    public void addRecordDetails(List<RecordDetail> list) {
-        String recordId = list.stream().findFirst().get().getRecordId();
-        list.forEach(o -> {
+    public void addRecordDetails(RecordFormDTO recordFormDTO) {
+        String recordDetails = recordFormDTO.getRecordDetails();
+        String taskId = recordFormDTO.getTaskId();
+        recordDetails = recordDetails.substring(0, recordDetails.length() - 1);
+        List<RecordDetail> recordDetailList = new ArrayList<>();
+        String[] one = recordDetails.split("\\|");
+        for (String detail : one) {
+            String[] id = detail.split("_");
+            if (id.length > 1) {
+                RecordDetail recordDetail = new RecordDetail();
+                recordDetail.setTemplateId(id[0]);
+                recordDetail.setTaskId(taskId);
+                recordDetail.setScore(Double.parseDouble(id[1]));
+                recordDetailList.add(recordDetail);
+            }
+        }
+        //写入表单明细
+        recordDetailList.forEach(o -> {
+            entityUtil.initEntity(o);
+            Template template = templateService.get(o.getTemplateId());
+            o.setTaskId(taskId);
+            o.setTemplateId(template.getId());
+            o.setTemplateTitle(template.getTitle());
+            o.setTypeId(template.getTypeId());
+            o.setTypeTitle(typeService.get(template.getTypeId()).getTitle());
+            o.setCreateDepartmentId(securityUtil.getCurrUser().getDepartmentId());
             save(o);
         });
-        Double sum = list.stream().mapToDouble(RecordDetail::getScore).sum();
-        Record record = recordService.get(recordId);
+        //写入统计
+        Double sum = recordDetailList.stream().mapToDouble(RecordDetail::getScore).sum();
+        Record record =new Record();
+        BeanUtils.copyProperties(recordFormDTO,record);
+        entityUtil.initEntity(record);
+        record.setCreateDepartmentId(securityUtil.getCurrUser().getDepartmentId());
         record.setScore(sum);
-        recordService.update(record);
+        record.setJoinTime(DateTime.now().toString());
+        recordService.save(record);
     }
 
     @Override
