@@ -12,7 +12,6 @@ import cn.exrick.xboot.modules.your.service.RecordDetailService;
 import cn.exrick.xboot.modules.your.service.RecordService;
 import cn.exrick.xboot.modules.your.service.TemplateService;
 import cn.exrick.xboot.modules.your.service.TypeService;
-import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import io.micrometer.core.instrument.util.StringUtils;
@@ -117,10 +116,18 @@ public class RecordDetailServiceImpl implements RecordDetailService {
         for (String detail : one) {
             String[] id = detail.split("_");
             if (id.length > 1) {
+                Template template = templateService.get(id[0]);
                 RecordDetail recordDetail = new RecordDetail();
                 recordDetail.setTemplateId(id[0]);
                 recordDetail.setTaskId(taskId);
-                recordDetail.setScore(Double.parseDouble(id[1]));
+                recordDetail.setTypeId(recordFormDTO.getTypeId());
+                if (template.getQuestionType() <= 1) {
+                    //单选和多选
+                    recordDetail.setScore(Double.parseDouble(id[1]));
+                } else {
+                    //其它
+                    recordDetail.setContent(id[1]);
+                }
                 recordDetailList.add(recordDetail);
             }
         }
@@ -138,12 +145,11 @@ public class RecordDetailServiceImpl implements RecordDetailService {
         });
         //写入统计
         Double sum = recordDetailList.stream().mapToDouble(RecordDetail::getScore).sum();
-        Record record =new Record();
-        BeanUtils.copyProperties(recordFormDTO,record);
+        Record record = new Record();
+        BeanUtils.copyProperties(recordFormDTO, record);
         entityUtil.initEntity(record);
         record.setCreateDepartmentId(securityUtil.getCurrUser().getDepartmentId());
         record.setScore(sum);
-        record.setJoinTime(DateTime.now().toString());
         recordService.save(record);
     }
 
@@ -153,7 +159,12 @@ public class RecordDetailServiceImpl implements RecordDetailService {
         for (RecordDetail o : list) {
             RecordDetail recordDetail = recordDetailDao.getOne(o.getId());
             recordId = recordDetail.getRecordId();
-            recordDetail.setScore(o.getScore());
+            Template template = templateService.get(o.getTemplateId());
+            if (template.getQuestionType() <= 1) {
+                recordDetail.setScore(o.getScore());
+            } else {
+                recordDetail.setContent(o.getContent());
+            }
             save(recordDetail);
         }
         List<RecordDetail> recordDetails = findByRecordId(recordId);

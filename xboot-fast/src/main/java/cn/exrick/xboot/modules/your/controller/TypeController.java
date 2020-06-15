@@ -6,7 +6,7 @@ import cn.exrick.xboot.common.utils.ResultUtil;
 import cn.exrick.xboot.common.vo.PageVo;
 import cn.exrick.xboot.common.vo.Result;
 import cn.exrick.xboot.common.vo.SearchVo;
-import cn.exrick.xboot.modules.your.entity.Court;
+import cn.exrick.xboot.modules.base.utils.EntityUtil;
 import cn.exrick.xboot.modules.your.entity.Type;
 import cn.exrick.xboot.modules.your.service.TypeService;
 import io.swagger.annotations.Api;
@@ -14,8 +14,11 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.web.bind.annotation.*;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -30,6 +33,8 @@ import java.util.List;
 public class TypeController extends XbootBaseController<Type, String> {
 
     @Autowired
+    EntityUtil entityUtil;
+    @Autowired
     private TypeService typeService;
 
     @Override
@@ -40,8 +45,8 @@ public class TypeController extends XbootBaseController<Type, String> {
     @RequestMapping(value = "/getByCondition", method = RequestMethod.GET)
     @ApiOperation(value = "多条件分页获取")
     public Result<Page<Type>> getByCondition(Type type,
-                                                            SearchVo searchVo,
-                                                            PageVo pageVo){
+                                             SearchVo searchVo,
+                                             PageVo pageVo) {
 
         Page<Type> page = typeService.findByCondition(type, searchVo, PageUtil.initPage(pageVo));
         return new ResultUtil<Page<Type>>().setData(page);
@@ -49,13 +54,14 @@ public class TypeController extends XbootBaseController<Type, String> {
 
     @RequestMapping(value = "/getAllTypeList", method = RequestMethod.GET)
     @ApiOperation(value = "多条件分页获取")
-    public Result<List<Type>> getAllTypeList(){
+    public Result<List<Type>> getAllTypeList() {
         return new ResultUtil<List<Type>>().setData(typeService.getRepository().findAll());
     }
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     @ApiOperation(value = "添加类型")
     public Result<Object> add(Type entity) {
+        entityUtil.initEntity(entity);
         typeService.save(entity);
         return ResultUtil.success("添加成功");
     }

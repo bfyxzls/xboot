@@ -11,23 +11,10 @@ import lombok.ToString;
 public class RecordFormDTO {
     @ApiModelProperty("任务ID")
     private String taskId;
-    @ApiModelProperty("选中的评价，格式：模板ID1_得分1|模板ID2_得分2|模板ID3_得分3")
+    @ApiModelProperty("选中的评价，格式：模板ID1_内容1|模板ID2_内容2|模板ID3_内容3")
     private String recordDetails;
-    @ApiModelProperty(value = "物业ID")
-    private String tenementId;
     @ApiModelProperty(value = "小区ID")
     private String courtId;
     @ApiModelProperty(value = "分类ID")
     private String typeId;
-
-    @ApiModelProperty(value = "名称")
-    private String title;
-    @ApiModelProperty(value = "照片地址")
-    private String pictureUrl;
-    @ApiModelProperty(value = "居住楼号")
-    private String addressCode;
-    @ApiModelProperty(value = "入住小区时间")
-    private String joinTime;
-    @ApiModelProperty(value = "身份")
-    private String identity;
 }

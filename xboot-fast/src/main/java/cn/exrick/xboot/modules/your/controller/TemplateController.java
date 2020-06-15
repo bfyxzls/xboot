@@ -4,7 +4,7 @@ import cn.exrick.xboot.common.constant.CommonConstant;
 import cn.exrick.xboot.common.utils.CommonUtil;
 import cn.exrick.xboot.common.utils.ResultUtil;
 import cn.exrick.xboot.common.vo.Result;
-import cn.exrick.xboot.modules.base.entity.Permission;
+import cn.exrick.xboot.modules.base.utils.EntityUtil;
 import cn.exrick.xboot.modules.your.entity.Template;
 import cn.exrick.xboot.modules.your.service.TemplateService;
 import cn.exrick.xboot.modules.your.service.TypeService;
@@ -16,9 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.web.bind.annotation.*;
 import org.springframework.transaction.annotation.Transactional;
-
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Set;
@@ -35,8 +34,11 @@ import java.util.Set;
 public class TemplateController {
 
     @Autowired
+    EntityUtil entityUtil;
+    @Autowired
+    TypeService typeService;
+    @Autowired
     private TemplateService templateService;
-
     @Autowired
     private StringRedisTemplate redisTemplate;
 
@@ -61,6 +63,7 @@ public class TemplateController {
             }
             template.setTypeId(parent.getTypeId());
         }
+        entityUtil.initEntity(template);
         templateService.save(template);
 
         // 更新缓存
@@ -166,9 +169,6 @@ public class TemplateController {
         }
         return new ResultUtil<List<Template>>().setData(list0);
     }
-
-    @Autowired
-    TypeService typeService;
 
     @RequestMapping(value = "/get/{id}", method = RequestMethod.GET)
     @ApiOperation(value = "通过id获取")

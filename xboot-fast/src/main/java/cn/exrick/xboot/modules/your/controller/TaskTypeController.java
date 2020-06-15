@@ -9,6 +9,7 @@ import cn.exrick.xboot.common.vo.Result;
 import cn.exrick.xboot.common.vo.SearchVo;
 import cn.exrick.xboot.modules.base.entity.Role;
 import cn.exrick.xboot.modules.base.service.RoleService;
+import cn.exrick.xboot.modules.base.utils.EntityUtil;
 import cn.exrick.xboot.modules.your.entity.TaskType;
 import cn.exrick.xboot.modules.your.service.TaskService;
 import cn.exrick.xboot.modules.your.service.TaskTypeService;
@@ -110,10 +111,12 @@ public class TaskTypeController extends XbootBaseController<TaskType, String> {
         }
         return new ResultUtil<List<TaskType>>().setData(page);
     }
-
+    @Autowired
+    EntityUtil entityUtil;
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     @ApiOperation(value = "添加任务配置")
     public Result<Object> add(TaskType entity) {
+        entityUtil.initEntity(entity);
         taskTypeService.save(entity);
         return ResultUtil.success("添加成功");
     }

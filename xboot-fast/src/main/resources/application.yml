@@ -199,7 +199,6 @@ management:
       enabled: false
 #静态资源对外暴露的访问路径
 file.staticAccessPath: /api/file/**
-
 spring.mail:
   host: smtp.163.com
   username: bjjbdpg@163.com

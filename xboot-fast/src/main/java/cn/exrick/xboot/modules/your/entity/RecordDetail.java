@@ -40,4 +40,6 @@ public class RecordDetail extends XbootBaseEntity {
     private String typeTitle;
     @ApiModelProperty(value = "任务ID")
     private String taskId;
+    @ApiModelProperty(value = "文本内容")
+    private String content;
 }

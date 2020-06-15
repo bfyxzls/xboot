@@ -6,6 +6,7 @@ import cn.exrick.xboot.common.utils.ResultUtil;
 import cn.exrick.xboot.common.vo.PageVo;
 import cn.exrick.xboot.common.vo.Result;
 import cn.exrick.xboot.common.vo.SearchVo;
+import cn.exrick.xboot.modules.base.utils.EntityUtil;
 import cn.exrick.xboot.modules.your.entity.Task;
 import cn.exrick.xboot.modules.your.service.TaskService;
 import io.swagger.annotations.Api;
@@ -68,10 +69,12 @@ public class TaskController extends XbootBaseController<Task, String> {
         List<Task> page = taskService.findAll(specification);
         return new ResultUtil<List<Task>>().setData(page);
     }
-
+    @Autowired
+    EntityUtil entityUtil;
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     @ApiOperation(value = "添加任务")
     public Result<Object> add(Task entity) {
+        entityUtil.initEntity(entity);
         taskService.save(entity);
         return ResultUtil.success("添加成功");
     }

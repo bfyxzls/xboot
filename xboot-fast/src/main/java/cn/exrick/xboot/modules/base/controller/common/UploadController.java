@@ -26,25 +26,27 @@ import java.io.InputStream;
 public class UploadController {
 
     @Autowired
-    private FileUtil qiniuUtil;
+    private FileUtil fileUtil;
 
     @RequestMapping(value = "/file", method = RequestMethod.POST)
     @ApiOperation(value = "文件上传")
-    public Result<Object> upload(@RequestParam(required = false) MultipartFile file,
-                                 HttpServletRequest request) {
+    public Result<Object> upload(@RequestParam(required = false) MultipartFile file) {
 
         String result = null;
-        String fileName = qiniuUtil.renamePic(file.getOriginalFilename());
+        String fileName = fileUtil.renamePic(file.getOriginalFilename());
         try {
-            InputStream inputStream = file.getInputStream();
-            //上传七牛云服务器
-            result = qiniuUtil.localUpload(file, fileName);
+            result = fileUtil.localUpload(file, fileName);
         } catch (Exception e) {
             log.error(e.toString());
             return ResultUtil.error(e.toString());
         }
-
         return ResultUtil.data(result);
+    }
+
+    @RequestMapping(value = "/pic/{path}", method = RequestMethod.GET)
+    @ApiOperation(value = "显示照片")
+    public void pic(@PathVariable String path, HttpServletResponse response) {
+        fileUtil.view(path, response);
     }
 
 }

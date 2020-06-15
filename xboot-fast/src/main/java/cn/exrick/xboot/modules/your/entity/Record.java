@@ -25,8 +25,6 @@ public class Record extends XbootBaseEntity {
     private static final long serialVersionUID = 1L;
     @ApiModelProperty(value = "建立人部门")
     private String createDepartmentId;
-    @ApiModelProperty(value = "物业ID")
-    private String tenementId;
     @ApiModelProperty(value = "小区ID")
     private String courtId;
     @ApiModelProperty(value = "分类ID")
@@ -35,23 +33,7 @@ public class Record extends XbootBaseEntity {
     private String taskId;
     @ApiModelProperty(value = "分值")
     private Double score;
-    @ApiModelProperty(value = "名称")
-    private String title;
-    @ApiModelProperty(value = "照片地址")
-    private String pictureUrl;
-    @ApiModelProperty(value = "提交时间")
-    private DateTime submitTime;
-    @ApiModelProperty(value = "居住楼号")
-    private String addressCode;
-    @ApiModelProperty(value = "入住小区时间")
-    private String joinTime;
-    @ApiModelProperty(value = "身份")
-    private String identity;
 
-    @Transient
-    @TableField(exist = false)
-    @ApiModelProperty(value = "物业名称")
-    private String tenementTitle;
     @Transient
     @TableField(exist = false)
     @ApiModelProperty(value = "小区名称")
