@@ -30,7 +30,7 @@ public class Report extends XbootBaseEntity {
     @ApiModelProperty(value = "任务ID")
     private String taskId;
     @ApiModelProperty(value = "分值")
-    private Integer score;
+    private Double score;
     @ApiModelProperty(value = "统计日期")
     private LocalDate totalDate;
     @ApiModelProperty(value = "附件报告文件地址")
