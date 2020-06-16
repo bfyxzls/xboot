@@ -102,6 +102,8 @@ public class CourtController extends XbootBaseController<Court, String> {
         Court old = courtService.get(id);
         old.setTitle(entity.getTitle());
         old.setDescription(entity.getDescription());
+        old.setDepartmentId(entity.getDepartmentId());
+        old.setTenementId(entity.getTenementId());
         courtService.save(old);
         return ResultUtil.success("保存成功");
     }

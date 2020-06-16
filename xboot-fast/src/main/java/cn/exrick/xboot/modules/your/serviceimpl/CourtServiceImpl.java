@@ -1,8 +1,12 @@
 package cn.exrick.xboot.modules.your.serviceimpl;
 
 import cn.exrick.xboot.common.vo.SearchVo;
+import cn.exrick.xboot.modules.base.dao.DepartmentDao;
+import cn.exrick.xboot.modules.base.entity.Department;
 import cn.exrick.xboot.modules.your.dao.CourtDao;
+import cn.exrick.xboot.modules.your.dao.TenementDao;
 import cn.exrick.xboot.modules.your.entity.Court;
+import cn.exrick.xboot.modules.your.entity.Tenement;
 import cn.exrick.xboot.modules.your.service.CourtService;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
@@ -32,6 +36,10 @@ import java.util.List;
 public class CourtServiceImpl implements CourtService {
 
     @Autowired
+    DepartmentDao departmentDao;
+    @Autowired
+    TenementDao tenementDao;
+    @Autowired
     private CourtDao courtDao;
 
     @Override
@@ -42,12 +50,11 @@ public class CourtServiceImpl implements CourtService {
     @Override
     public Page<Court> findByCondition(Court court, SearchVo searchVo, Pageable pageable) {
 
-        return courtDao.findAll(new Specification<Court>() {
+        Page<Court> page = courtDao.findAll(new Specification<Court>() {
             @Nullable
             @Override
             public Predicate toPredicate(Root<Court> root, CriteriaQuery<?> cq, CriteriaBuilder cb) {
 
-                // TODO 可添加你的其他搜索过滤条件 默认已有创建时间过滤
                 Path<Date> createTimeField = root.get("createTime");
                 Path<String> titleField = root.get("title");
                 List<Predicate> list = new ArrayList<Predicate>();
@@ -59,13 +66,28 @@ public class CourtServiceImpl implements CourtService {
                     list.add(cb.between(createTimeField, start, DateUtil.endOfDay(end)));
                 }
                 if (StringUtils.isNotBlank(court.getTitle())) {
-                    list.add(cb.like(titleField, court.getTitle().trim()+"%"));
+                    list.add(cb.like(titleField, court.getTitle().trim() + "%"));
                 }
                 Predicate[] arr = new Predicate[list.size()];
                 cq.where(list.toArray(arr));
                 return null;
             }
         }, pageable);
+        for (Court court1 : page) {
+            if (court1.getDepartmentId() != null) {
+                Department department = departmentDao.findById(court1.getDepartmentId()).orElse(null);
+                if (department != null) {
+                    court1.setDepartmentTitle(department.getTitle());
+                }
+            }
+            if (court1.getTenementId() != null) {
+                Tenement tenement = tenementDao.findById(court1.getTenementId()).orElse(null);
+                if (tenement != null) {
+                    court1.setTenementTitle(tenement.getTitle());
+                }
+            }
+        }
+        return page;
     }
 
 }

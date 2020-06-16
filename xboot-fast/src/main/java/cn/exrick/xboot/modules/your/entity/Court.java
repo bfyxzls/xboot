@@ -1,6 +1,7 @@
 package cn.exrick.xboot.modules.your.entity;
 
 import cn.exrick.xboot.base.XbootBaseEntity;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -8,6 +9,7 @@ import lombok.Data;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 /**
  * @author lind
@@ -30,4 +32,15 @@ public class Court extends XbootBaseEntity {
     private String tenementId;
     @ApiModelProperty("组织机构ID")
     private String departmentId;
+
+    @Transient
+    @TableField(exist = false)
+    @ApiModelProperty(value = "组织机构")
+    private String departmentTitle;
+
+    @Transient
+    @TableField(exist = false)
+    @ApiModelProperty(value = "物业")
+    private String tenementTitle;
+
 }
