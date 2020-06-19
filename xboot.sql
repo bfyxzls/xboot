@@ -3,23 +3,390 @@
 
  Source Server         : localhost
  Source Server Type    : MySQL
- Source Server Version : 50728
+ Source Server Version : 80019
  Source Host           : localhost:3306
  Source Schema         : xboot
 
  Target Server Type    : MySQL
- Target Server Version : 50728
+ Target Server Version : 80019
  File Encoding         : 65001
 
- Date: 30/04/2020 21:53:59
+ Date: 01/06/2020 19:59:41
 */
+
+SET NAMES utf8mb4;
+SET FOREIGN_KEY_CHECKS = 0;
+
+-- ----------------------------
+-- Table structure for QRTZ_BLOB_TRIGGERS
+-- ----------------------------
+DROP TABLE IF EXISTS `QRTZ_BLOB_TRIGGERS`;
+CREATE TABLE `QRTZ_BLOB_TRIGGERS` (
+  `SCHED_NAME` varchar(120) NOT NULL,
+  `TRIGGER_NAME` varchar(200) NOT NULL,
+  `TRIGGER_GROUP` varchar(200) NOT NULL,
+  `BLOB_DATA` blob,
+  PRIMARY KEY (`SCHED_NAME`,`TRIGGER_NAME`,`TRIGGER_GROUP`),
+  CONSTRAINT `QRTZ_BLOB_TRIGGERS_ibfk_1` FOREIGN KEY (`SCHED_NAME`, `TRIGGER_NAME`, `TRIGGER_GROUP`) REFERENCES `QRTZ_TRIGGERS` (`SCHED_NAME`, `TRIGGER_NAME`, `TRIGGER_GROUP`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Table structure for QRTZ_CALENDARS
+-- ----------------------------
+DROP TABLE IF EXISTS `QRTZ_CALENDARS`;
+CREATE TABLE `QRTZ_CALENDARS` (
+  `SCHED_NAME` varchar(120) NOT NULL,
+  `CALENDAR_NAME` varchar(200) NOT NULL,
+  `CALENDAR` blob NOT NULL,
+  PRIMARY KEY (`SCHED_NAME`,`CALENDAR_NAME`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Table structure for QRTZ_CRON_TRIGGERS
+-- ----------------------------
+DROP TABLE IF EXISTS `QRTZ_CRON_TRIGGERS`;
+CREATE TABLE `QRTZ_CRON_TRIGGERS` (
+  `SCHED_NAME` varchar(120) NOT NULL,
+  `TRIGGER_NAME` varchar(200) NOT NULL,
+  `TRIGGER_GROUP` varchar(200) NOT NULL,
+  `CRON_EXPRESSION` varchar(200) NOT NULL,
+  `TIME_ZONE_ID` varchar(80) DEFAULT NULL,
+  PRIMARY KEY (`SCHED_NAME`,`TRIGGER_NAME`,`TRIGGER_GROUP`),
+  CONSTRAINT `QRTZ_CRON_TRIGGERS_ibfk_1` FOREIGN KEY (`SCHED_NAME`, `TRIGGER_NAME`, `TRIGGER_GROUP`) REFERENCES `QRTZ_TRIGGERS` (`SCHED_NAME`, `TRIGGER_NAME`, `TRIGGER_GROUP`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Table structure for QRTZ_FIRED_TRIGGERS
+-- ----------------------------
+DROP TABLE IF EXISTS `QRTZ_FIRED_TRIGGERS`;
+CREATE TABLE `QRTZ_FIRED_TRIGGERS` (
+  `SCHED_NAME` varchar(120) NOT NULL,
+  `ENTRY_ID` varchar(95) NOT NULL,
+  `TRIGGER_NAME` varchar(200) NOT NULL,
+  `TRIGGER_GROUP` varchar(200) NOT NULL,
+  `INSTANCE_NAME` varchar(200) NOT NULL,
+  `FIRED_TIME` bigint NOT NULL,
+  `SCHED_TIME` bigint NOT NULL,
+  `PRIORITY` int NOT NULL,
+  `STATE` varchar(16) NOT NULL,
+  `JOB_NAME` varchar(200) DEFAULT NULL,
+  `JOB_GROUP` varchar(200) DEFAULT NULL,
+  `IS_NONCONCURRENT` varchar(1) DEFAULT NULL,
+  `REQUESTS_RECOVERY` varchar(1) DEFAULT NULL,
+  PRIMARY KEY (`SCHED_NAME`,`ENTRY_ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Table structure for QRTZ_JOB_DETAILS
+-- ----------------------------
+DROP TABLE IF EXISTS `QRTZ_JOB_DETAILS`;
+CREATE TABLE `QRTZ_JOB_DETAILS` (
+  `SCHED_NAME` varchar(120) NOT NULL,
+  `JOB_NAME` varchar(200) NOT NULL,
+  `JOB_GROUP` varchar(200) NOT NULL,
+  `DESCRIPTION` varchar(250) DEFAULT NULL,
+  `JOB_CLASS_NAME` varchar(250) NOT NULL,
+  `IS_DURABLE` varchar(1) NOT NULL,
+  `IS_NONCONCURRENT` varchar(1) NOT NULL,
+  `IS_UPDATE_DATA` varchar(1) NOT NULL,
+  `REQUESTS_RECOVERY` varchar(1) NOT NULL,
+  `JOB_DATA` blob,
+  PRIMARY KEY (`SCHED_NAME`,`JOB_NAME`,`JOB_GROUP`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Table structure for QRTZ_LOCKS
+-- ----------------------------
+DROP TABLE IF EXISTS `QRTZ_LOCKS`;
+CREATE TABLE `QRTZ_LOCKS` (
+  `SCHED_NAME` varchar(120) NOT NULL,
+  `LOCK_NAME` varchar(40) NOT NULL,
+  PRIMARY KEY (`SCHED_NAME`,`LOCK_NAME`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of QRTZ_LOCKS
+-- ----------------------------
+BEGIN;
+INSERT INTO `QRTZ_LOCKS` VALUES ('quartzScheduler', 'TRIGGER_ACCESS');
+COMMIT;
+
+-- ----------------------------
+-- Table structure for QRTZ_PAUSED_TRIGGER_GRPS
+-- ----------------------------
+DROP TABLE IF EXISTS `QRTZ_PAUSED_TRIGGER_GRPS`;
+CREATE TABLE `QRTZ_PAUSED_TRIGGER_GRPS` (
+  `SCHED_NAME` varchar(120) NOT NULL,
+  `TRIGGER_GROUP` varchar(200) NOT NULL,
+  PRIMARY KEY (`SCHED_NAME`,`TRIGGER_GROUP`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Table structure for QRTZ_SCHEDULER_STATE
+-- ----------------------------
+DROP TABLE IF EXISTS `QRTZ_SCHEDULER_STATE`;
+CREATE TABLE `QRTZ_SCHEDULER_STATE` (
+  `SCHED_NAME` varchar(120) NOT NULL,
+  `INSTANCE_NAME` varchar(200) NOT NULL,
+  `LAST_CHECKIN_TIME` bigint NOT NULL,
+  `CHECKIN_INTERVAL` bigint NOT NULL,
+  PRIMARY KEY (`SCHED_NAME`,`INSTANCE_NAME`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Table structure for QRTZ_SIMPLE_TRIGGERS
+-- ----------------------------
+DROP TABLE IF EXISTS `QRTZ_SIMPLE_TRIGGERS`;
+CREATE TABLE `QRTZ_SIMPLE_TRIGGERS` (
+  `SCHED_NAME` varchar(120) NOT NULL,
+  `TRIGGER_NAME` varchar(200) NOT NULL,
+  `TRIGGER_GROUP` varchar(200) NOT NULL,
+  `REPEAT_COUNT` bigint NOT NULL,
+  `REPEAT_INTERVAL` bigint NOT NULL,
+  `TIMES_TRIGGERED` bigint NOT NULL,
+  PRIMARY KEY (`SCHED_NAME`,`TRIGGER_NAME`,`TRIGGER_GROUP`),
+  CONSTRAINT `QRTZ_SIMPLE_TRIGGERS_ibfk_1` FOREIGN KEY (`SCHED_NAME`, `TRIGGER_NAME`, `TRIGGER_GROUP`) REFERENCES `QRTZ_TRIGGERS` (`SCHED_NAME`, `TRIGGER_NAME`, `TRIGGER_GROUP`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Table structure for QRTZ_SIMPROP_TRIGGERS
+-- ----------------------------
+DROP TABLE IF EXISTS `QRTZ_SIMPROP_TRIGGERS`;
+CREATE TABLE `QRTZ_SIMPROP_TRIGGERS` (
+  `SCHED_NAME` varchar(120) NOT NULL,
+  `TRIGGER_NAME` varchar(200) NOT NULL,
+  `TRIGGER_GROUP` varchar(200) NOT NULL,
+  `STR_PROP_1` varchar(512) DEFAULT NULL,
+  `STR_PROP_2` varchar(512) DEFAULT NULL,
+  `STR_PROP_3` varchar(512) DEFAULT NULL,
+  `INT_PROP_1` int DEFAULT NULL,
+  `INT_PROP_2` int DEFAULT NULL,
+  `LONG_PROP_1` bigint DEFAULT NULL,
+  `LONG_PROP_2` bigint DEFAULT NULL,
+  `DEC_PROP_1` decimal(13,4) DEFAULT NULL,
+  `DEC_PROP_2` decimal(13,4) DEFAULT NULL,
+  `BOOL_PROP_1` varchar(1) DEFAULT NULL,
+  `BOOL_PROP_2` varchar(1) DEFAULT NULL,
+  PRIMARY KEY (`SCHED_NAME`,`TRIGGER_NAME`,`TRIGGER_GROUP`),
+  CONSTRAINT `QRTZ_SIMPROP_TRIGGERS_ibfk_1` FOREIGN KEY (`SCHED_NAME`, `TRIGGER_NAME`, `TRIGGER_GROUP`) REFERENCES `QRTZ_TRIGGERS` (`SCHED_NAME`, `TRIGGER_NAME`, `TRIGGER_GROUP`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Table structure for QRTZ_TRIGGERS
+-- ----------------------------
+DROP TABLE IF EXISTS `QRTZ_TRIGGERS`;
+CREATE TABLE `QRTZ_TRIGGERS` (
+  `SCHED_NAME` varchar(120) NOT NULL,
+  `TRIGGER_NAME` varchar(200) NOT NULL,
+  `TRIGGER_GROUP` varchar(200) NOT NULL,
+  `JOB_NAME` varchar(200) NOT NULL,
+  `JOB_GROUP` varchar(200) NOT NULL,
+  `DESCRIPTION` varchar(250) DEFAULT NULL,
+  `NEXT_FIRE_TIME` bigint DEFAULT NULL,
+  `PREV_FIRE_TIME` bigint DEFAULT NULL,
+  `PRIORITY` int DEFAULT NULL,
+  `TRIGGER_STATE` varchar(16) NOT NULL,
+  `TRIGGER_TYPE` varchar(8) NOT NULL,
+  `START_TIME` bigint NOT NULL,
+  `END_TIME` bigint DEFAULT NULL,
+  `CALENDAR_NAME` varchar(200) DEFAULT NULL,
+  `MISFIRE_INSTR` smallint DEFAULT NULL,
+  `JOB_DATA` blob,
+  PRIMARY KEY (`SCHED_NAME`,`TRIGGER_NAME`,`TRIGGER_GROUP`),
+  KEY `SCHED_NAME` (`SCHED_NAME`,`JOB_NAME`,`JOB_GROUP`),
+  CONSTRAINT `QRTZ_TRIGGERS_ibfk_1` FOREIGN KEY (`SCHED_NAME`, `JOB_NAME`, `JOB_GROUP`) REFERENCES `QRTZ_JOB_DETAILS` (`SCHED_NAME`, `JOB_NAME`, `JOB_GROUP`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Table structure for evaluation_court
+-- ----------------------------
+DROP TABLE IF EXISTS `evaluation_court`;
+CREATE TABLE `evaluation_court` (
+  `id` bigint unsigned NOT NULL,
+  `title` varchar(512) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '内容',
+  `create_by` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL,
+  `create_time` datetime DEFAULT NULL,
+  `update_by` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL,
+  `update_time` datetime DEFAULT NULL,
+  `del_flag` tinyint(1) DEFAULT NULL,
+  `department_id` bigint DEFAULT NULL COMMENT '组织机构ID',
+  `tenement_id` bigint DEFAULT NULL COMMENT '物业公司ID',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='小区';
+
+-- ----------------------------
+-- Table structure for evaluation_record
+-- ----------------------------
+DROP TABLE IF EXISTS `evaluation_record`;
+CREATE TABLE `evaluation_record` (
+  `id` bigint NOT NULL,
+  `title` varchar(512) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '内容',
+  `create_by` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL,
+  `create_time` datetime DEFAULT NULL,
+  `update_by` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL,
+  `update_time` datetime DEFAULT NULL,
+  `del_flag` tinyint(1) DEFAULT NULL,
+  `create_department_id` bigint DEFAULT NULL,
+  `court_id` bigint DEFAULT NULL,
+  `tenement_id` bigint DEFAULT NULL,
+  `type_id` bigint DEFAULT NULL,
+  `task_id` bigint DEFAULT NULL,
+  `score` float(10,2) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Table structure for evaluation_report
+-- ----------------------------
+DROP TABLE IF EXISTS `evaluation_report`;
+CREATE TABLE `evaluation_report` (
+  `id` bigint unsigned NOT NULL,
+  `create_by` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL,
+  `create_time` datetime DEFAULT NULL,
+  `update_by` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL,
+  `update_time` datetime DEFAULT NULL,
+  `del_flag` tinyint(1) DEFAULT NULL,
+  `tenement_id` bigint DEFAULT NULL COMMENT '物业公司ID',
+  `court_id` bigint DEFAULT NULL COMMENT '小区ID',
+  `type_id` bigint DEFAULT NULL,
+  `task_id` bigint DEFAULT NULL,
+  `score` int DEFAULT NULL COMMENT '最终得分',
+  `total_date` datetime DEFAULT NULL COMMENT '报告产生日期',
+  `file_url` varchar(255) DEFAULT NULL COMMENT '报告URL',
+  `total_count` int DEFAULT NULL COMMENT '提交次数',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Table structure for evaluation_run_task
+-- ----------------------------
+DROP TABLE IF EXISTS `evaluation_run_task`;
+CREATE TABLE `evaluation_run_task` (
+  `id` bigint unsigned NOT NULL,
+  `create_by` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL,
+  `create_time` datetime DEFAULT NULL,
+  `update_by` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL,
+  `update_time` datetime DEFAULT NULL,
+  `del_flag` tinyint(1) DEFAULT NULL,
+  `task_id` bigint DEFAULT NULL COMMENT '任务ID',
+  `task_type_id` bigint DEFAULT NULL COMMENT '任务当前的节点（关系表ID）',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='正在运行中的任务';
+
+-- ----------------------------
+-- Table structure for evaluation_task
+-- ----------------------------
+DROP TABLE IF EXISTS `evaluation_task`;
+CREATE TABLE `evaluation_task` (
+  `id` bigint unsigned NOT NULL,
+  `title` varchar(512) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '名称',
+  `create_by` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL,
+  `create_time` datetime DEFAULT NULL,
+  `update_by` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL,
+  `update_time` datetime DEFAULT NULL,
+  `del_flag` tinyint(1) DEFAULT NULL,
+  `status` int DEFAULT NULL COMMENT '状态',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='任务表';
+
+-- ----------------------------
+-- Records of evaluation_task
+-- ----------------------------
+BEGIN;
+INSERT INTO `evaluation_task` VALUES (1, '第一季度1号文件', NULL, NULL, NULL, NULL, NULL, 1);
+COMMIT;
+
+-- ----------------------------
+-- Table structure for evaluation_task_type
+-- ----------------------------
+DROP TABLE IF EXISTS `evaluation_task_type`;
+CREATE TABLE `evaluation_task_type` (
+  `id` bigint unsigned NOT NULL,
+  `create_by` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL,
+  `create_time` datetime DEFAULT NULL,
+  `update_by` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL,
+  `update_time` datetime DEFAULT NULL,
+  `del_flag` tinyint(1) DEFAULT NULL,
+  `task_id` bigint NOT NULL COMMENT '任务ID',
+  `type_id` bigint NOT NULL COMMENT '评价类型ID',
+  `limit` int NOT NULL COMMENT '提交次数上限',
+  `percent` int NOT NULL COMMENT '百分比',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of evaluation_task_type
+-- ----------------------------
+BEGIN;
+INSERT INTO `evaluation_task_type` VALUES (1, NULL, NULL, NULL, NULL, NULL, 1, 1, 50, 40);
+INSERT INTO `evaluation_task_type` VALUES (2, NULL, NULL, NULL, NULL, NULL, 1, 2, 1, 30);
+INSERT INTO `evaluation_task_type` VALUES (3, NULL, NULL, NULL, NULL, NULL, 1, 3, 1, 30);
+COMMIT;
+
+-- ----------------------------
+-- Table structure for evaluation_template
+-- ----------------------------
+DROP TABLE IF EXISTS `evaluation_template`;
+CREATE TABLE `evaluation_template` (
+  `id` bigint unsigned NOT NULL,
+  `title` varchar(512) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '名称',
+  `create_by` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL,
+  `create_time` datetime DEFAULT NULL,
+  `update_by` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL,
+  `update_time` datetime DEFAULT NULL,
+  `del_flag` tinyint(1) DEFAULT NULL,
+  `type_id` bigint DEFAULT NULL,
+  `parent_id` bigint DEFAULT NULL,
+  `content` varchar(255) DEFAULT NULL COMMENT '显示的内容',
+  `score` int DEFAULT NULL COMMENT '分值',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Table structure for evaluation_tenement
+-- ----------------------------
+DROP TABLE IF EXISTS `evaluation_tenement`;
+CREATE TABLE `evaluation_tenement` (
+  `id` bigint unsigned NOT NULL,
+  `title` varchar(512) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '内容',
+  `create_by` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL,
+  `create_time` datetime DEFAULT NULL,
+  `update_by` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL,
+  `update_time` datetime DEFAULT NULL,
+  `del_flag` tinyint(1) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='物业公司';
+
+-- ----------------------------
+-- Table structure for evaluation_type
+-- ----------------------------
+DROP TABLE IF EXISTS `evaluation_type`;
+CREATE TABLE `evaluation_type` (
+  `id` bigint unsigned NOT NULL,
+  `title` varchar(512) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '内容',
+  `create_by` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL,
+  `create_time` datetime DEFAULT NULL,
+  `update_by` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL,
+  `update_time` datetime DEFAULT NULL,
+  `del_flag` tinyint(1) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='评价类型';
+
+-- ----------------------------
+-- Records of evaluation_type
+-- ----------------------------
+BEGIN;
+INSERT INTO `evaluation_type` VALUES (1, '业主评价表', 'test', '2020-05-30 13:26:00', 'test', '2020-05-30 13:26:06', 0);
+INSERT INTO `evaluation_type` VALUES (2, '专家评价表', NULL, NULL, NULL, NULL, 0);
+INSERT INTO `evaluation_type` VALUES (3, '管理评价表', NULL, NULL, NULL, NULL, 0);
+COMMIT;
 
 -- ----------------------------
 -- Table structure for t_client
 -- ----------------------------
 DROP TABLE IF EXISTS `t_client`;
 CREATE TABLE `t_client` (
-  `id` bigint(20) unsigned NOT NULL,
+  `id` bigint unsigned NOT NULL,
   `create_by` varchar(255) DEFAULT NULL,
   `create_time` datetime(6) DEFAULT NULL,
   `del_flag` tinyint(1) DEFAULT NULL,
@@ -38,13 +405,13 @@ CREATE TABLE `t_client` (
 -- ----------------------------
 DROP TABLE IF EXISTS `t_department`;
 CREATE TABLE `t_department` (
-  `id` bigint(20) unsigned NOT NULL,
+  `id` bigint unsigned NOT NULL,
   `create_by` varchar(255) DEFAULT NULL,
   `create_time` datetime DEFAULT NULL,
-  `del_flag` int(11) DEFAULT NULL,
+  `del_flag` int DEFAULT NULL,
   `update_by` varchar(255) DEFAULT NULL,
   `update_time` datetime DEFAULT NULL,
-  `parent_id` bigint(20) unsigned DEFAULT NULL,
+  `parent_id` bigint unsigned DEFAULT NULL,
   `sort_order` decimal(10,2) DEFAULT NULL,
   `status` tinyint(1) DEFAULT NULL,
   `title` varchar(255) DEFAULT NULL,
@@ -67,6 +434,11 @@ INSERT INTO `t_department` VALUES (40389030113710080, '', '2018-08-11 01:03:56',
 INSERT INTO `t_department` VALUES (40652270295060480, '', '2018-08-11 18:29:57', 0, '', '2018-08-12 18:45:01', 0, 3.00, 0, '人事部', b'1');
 INSERT INTO `t_department` VALUES (40652338142121984, NULL, '2018-08-11 18:30:13', 0, NULL, '2018-08-11 18:30:13', 40652270295060480, 1.00, 0, '游客', b'0');
 INSERT INTO `t_department` VALUES (40681289119961088, '', '2018-08-11 20:25:16', 0, '', '2018-08-11 22:47:48', 40652270295060480, 2.00, 0, 'VIP', b'0');
+INSERT INTO `t_department` VALUES (279091577329029120, 'admin', '2020-05-30 09:42:39', 0, 'admin', '2020-05-30 09:43:13', 0, 0.00, 0, '北京', b'1');
+INSERT INTO `t_department` VALUES (279091722783297536, 'admin', '2020-05-30 09:43:13', 0, 'admin', '2020-05-30 09:44:59', 279091577329029120, 0.00, 0, '西城', b'1');
+INSERT INTO `t_department` VALUES (279092167815729152, 'admin', '2020-05-30 09:44:59', 0, 'admin', '2020-05-30 09:46:12', 279091722783297536, 0.00, 0, '月坛', b'1');
+INSERT INTO `t_department` VALUES (279092472854876160, 'admin', '2020-05-30 09:46:12', 0, 'admin', '2020-05-30 09:46:38', 279092167815729152, 0.00, 0, '月坛街道办事处社区', b'1');
+INSERT INTO `t_department` VALUES (279092582775001088, 'admin', '2020-05-30 09:46:38', 0, 'admin', '2020-05-30 09:46:38', 279092472854876160, 0.00, 0, '新华一里', b'0');
 COMMIT;
 
 -- ----------------------------
@@ -74,15 +446,15 @@ COMMIT;
 -- ----------------------------
 DROP TABLE IF EXISTS `t_department_header`;
 CREATE TABLE `t_department_header` (
-  `id` bigint(20) unsigned NOT NULL,
+  `id` bigint unsigned NOT NULL,
   `create_by` varchar(255) DEFAULT NULL,
   `create_time` datetime DEFAULT NULL,
   `del_flag` tinyint(1) DEFAULT NULL,
   `update_by` varchar(255) DEFAULT NULL,
   `update_time` datetime DEFAULT NULL,
-  `department_id` bigint(20) unsigned DEFAULT NULL,
+  `department_id` bigint unsigned DEFAULT NULL,
   `type` tinyint(1) DEFAULT NULL,
-  `user_id` bigint(20) unsigned DEFAULT NULL,
+  `user_id` bigint unsigned DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -91,8 +463,6 @@ CREATE TABLE `t_department_header` (
 -- ----------------------------
 BEGIN;
 INSERT INTO `t_department_header` VALUES (1254427833757995008, 'admin', '2020-04-26 23:11:16', 0, 'admin', '2020-04-26 23:11:16', 40322777781112832, 0, 682265633886208);
-INSERT INTO `t_department_header` VALUES (1254427833757995009, 'admin', '2020-04-26 23:11:16', 0, 'admin', '2020-04-26 23:11:16', 40322777781112832, 0, 16739222421508096);
-INSERT INTO `t_department_header` VALUES (1254427833757995010, 'admin', '2020-04-26 23:11:16', 0, 'admin', '2020-04-26 23:11:16', 40322777781112832, 1, 16739222421508096);
 COMMIT;
 
 -- ----------------------------
@@ -100,7 +470,7 @@ COMMIT;
 -- ----------------------------
 DROP TABLE IF EXISTS `t_dict`;
 CREATE TABLE `t_dict` (
-  `id` bigint(20) unsigned NOT NULL,
+  `id` bigint unsigned NOT NULL,
   `create_by` varchar(255) DEFAULT NULL,
   `create_time` datetime DEFAULT NULL,
   `del_flag` tinyint(1) DEFAULT NULL,
@@ -133,14 +503,14 @@ COMMIT;
 -- ----------------------------
 DROP TABLE IF EXISTS `t_dict_data`;
 CREATE TABLE `t_dict_data` (
-  `id` bigint(20) unsigned NOT NULL,
+  `id` bigint unsigned NOT NULL,
   `create_by` varchar(255) DEFAULT NULL,
   `create_time` datetime DEFAULT NULL,
   `del_flag` tinyint(1) DEFAULT NULL,
   `update_by` varchar(255) DEFAULT NULL,
   `update_time` datetime DEFAULT NULL,
   `description` varchar(255) DEFAULT NULL,
-  `dict_id` bigint(20) unsigned DEFAULT NULL,
+  `dict_id` bigint unsigned DEFAULT NULL,
   `sort_order` decimal(10,2) DEFAULT NULL,
   `status` tinyint(1) DEFAULT NULL,
   `title` varchar(255) DEFAULT NULL,
@@ -215,14 +585,14 @@ COMMIT;
 -- ----------------------------
 DROP TABLE IF EXISTS `t_file`;
 CREATE TABLE `t_file` (
-  `id` bigint(20) unsigned NOT NULL,
+  `id` bigint unsigned NOT NULL,
   `create_by` varchar(255) DEFAULT NULL,
   `create_time` datetime DEFAULT NULL,
   `del_flag` tinyint(1) DEFAULT NULL,
   `update_by` varchar(255) DEFAULT NULL,
   `update_time` datetime DEFAULT NULL,
   `name` varchar(255) DEFAULT NULL,
-  `size` bigint(20) unsigned DEFAULT NULL,
+  `size` bigint unsigned DEFAULT NULL,
   `type` varchar(255) DEFAULT NULL,
   `url` varchar(255) DEFAULT NULL,
   `f_key` varchar(255) DEFAULT NULL,
@@ -236,13 +606,13 @@ CREATE TABLE `t_file` (
 -- ----------------------------
 DROP TABLE IF EXISTS `t_log`;
 CREATE TABLE `t_log` (
-  `id` bigint(20) unsigned NOT NULL,
+  `id` bigint unsigned NOT NULL,
   `create_by` varchar(255) DEFAULT NULL,
   `create_time` datetime DEFAULT NULL,
   `del_flag` tinyint(1) DEFAULT NULL,
   `update_by` varchar(255) DEFAULT NULL,
   `update_time` datetime DEFAULT NULL,
-  `cost_time` int(11) unsigned DEFAULT NULL,
+  `cost_time` int unsigned DEFAULT NULL,
   `ip` varchar(255) DEFAULT NULL,
   `ip_info` varchar(255) DEFAULT NULL,
   `name` varchar(255) DEFAULT NULL,
@@ -256,11 +626,41 @@ CREATE TABLE `t_log` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
+-- Records of t_log
+-- ----------------------------
+BEGIN;
+INSERT INTO `t_log` VALUES (278407754605924352, NULL, '2020-05-28 12:25:23', 0, NULL, '2020-05-28 12:25:23', 546, '127.0.0.1', '未知', '登录系统', '{\"password\":\"你是看不见我的\",\"code\":\"7UK3\",\"saveLogin\":\"true\",\"captchaId\":\"c636c837748742858f41f19b97ca8498\",\"username\":\"admin\"}', 'POST', '/xboot/login', 'admin', 1);
+INSERT INTO `t_log` VALUES (278779807947296768, NULL, '2020-05-29 13:03:47', 0, NULL, '2020-05-29 13:03:47', 234, '127.0.0.1', '未知', '登录系统', '{\"password\":\"你是看不见我的\",\"code\":\"4erB\",\"saveLogin\":\"true\",\"captchaId\":\"6c0bf98316704d908f987b8d73d8d7c4\",\"username\":\"admin\"}', 'POST', '/xboot/login', 'admin', 1);
+INSERT INTO `t_log` VALUES (278780378846597120, NULL, '2020-05-29 13:06:03', 0, NULL, '2020-05-29 13:06:03', 221, '127.0.0.1', '未知', '登录系统', '{\"password\":\"你是看不见我的\",\"code\":\"tyvT\",\"saveLogin\":\"true\",\"captchaId\":\"3b034d6a4fe645b08bb8d3f8b4c14645\",\"username\":\"Exrick\"}', 'POST', '/xboot/login', 'Exrick', 1);
+INSERT INTO `t_log` VALUES (278780484425617408, NULL, '2020-05-29 13:06:28', 0, NULL, '2020-05-29 13:06:28', 191, '127.0.0.1', '未知', '登录系统', '{\"password\":\"你是看不见我的\",\"code\":\"nfgY\",\"saveLogin\":\"true\",\"captchaId\":\"408584b457e5457ca0b0b2b6021d79aa\",\"username\":\"admin\"}', 'POST', '/xboot/login', 'admin', 1);
+INSERT INTO `t_log` VALUES (278780794606981120, NULL, '2020-05-29 13:07:42', 0, NULL, '2020-05-29 13:07:42', 163, '127.0.0.1', '未知', '登录系统', '{\"password\":\"你是看不见我的\",\"code\":\"iwbs\",\"saveLogin\":\"true\",\"captchaId\":\"1fb40466db4748f59e225c46e43b436b\",\"username\":\"Exrick\"}', 'POST', '/xboot/login', 'Exrick', 1);
+INSERT INTO `t_log` VALUES (278780942519111680, NULL, '2020-05-29 13:08:17', 0, NULL, '2020-05-29 13:08:17', 165, '127.0.0.1', '未知', '登录系统', '{\"password\":\"你是看不见我的\",\"code\":\"GmV2\",\"saveLogin\":\"true\",\"captchaId\":\"a26bf507e3ec4326969d205118eaa9b1\",\"username\":\"Exrick\"}', 'POST', '/xboot/login', 'Exrick', 1);
+INSERT INTO `t_log` VALUES (278781971167973376, NULL, '2020-05-29 13:12:23', 0, NULL, '2020-05-29 13:12:23', 142, '127.0.0.1', '未知', '登录系统', '{\"password\":\"你是看不见我的\",\"code\":\"CNcn\",\"saveLogin\":\"true\",\"captchaId\":\"cc3e55956761439592bf6f599fb3d93f\",\"username\":\"admin\"}', 'POST', '/xboot/login', 'admin', 1);
+INSERT INTO `t_log` VALUES (278782563965734912, NULL, '2020-05-29 13:14:44', 0, NULL, '2020-05-29 13:14:44', 195, '127.0.0.1', '未知', '登录系统', '{\"password\":\"你是看不见我的\",\"code\":\"njSm\",\"saveLogin\":\"true\",\"captchaId\":\"0a2350a61fb34cfe955806037448966a\",\"username\":\"Exrick\"}', 'POST', '/xboot/login', 'Exrick', 1);
+INSERT INTO `t_log` VALUES (278782709130596352, NULL, '2020-05-29 13:15:19', 0, NULL, '2020-05-29 13:15:19', 255, '127.0.0.1', '未知', '登录系统', '{\"password\":\"你是看不见我的\",\"code\":\"qoSB\",\"saveLogin\":\"true\",\"captchaId\":\"d0a7fbba1f6c47bd832b000439e3e86d\",\"username\":\"Exrick\"}', 'POST', '/xboot/login', 'Exrick', 1);
+INSERT INTO `t_log` VALUES (278782808820813824, NULL, '2020-05-29 13:15:42', 0, NULL, '2020-05-29 13:15:42', 186, '127.0.0.1', '未知', '登录系统', '{\"password\":\"你是看不见我的\",\"code\":\"1k9v\",\"saveLogin\":\"true\",\"captchaId\":\"f3f9d4d26c394d7c9552a67d6a763211\",\"username\":\"admin\"}', 'POST', '/xboot/login', 'admin', 1);
+INSERT INTO `t_log` VALUES (278783291128025088, NULL, '2020-05-29 13:17:37', 0, NULL, '2020-05-29 13:17:37', 220, '127.0.0.1', '未知', '登录系统', '{\"password\":\"你是看不见我的\",\"code\":\"vgz6\",\"saveLogin\":\"true\",\"captchaId\":\"fd71ed5b0c644c3e8feb9ccaabd8dff0\",\"username\":\"Exrick\"}', 'POST', '/xboot/login', 'Exrick', 1);
+INSERT INTO `t_log` VALUES (278783438482313216, NULL, '2020-05-29 13:18:12', 0, NULL, '2020-05-29 13:18:12', 161, '127.0.0.1', '未知', '登录系统', '{\"password\":\"你是看不见我的\",\"code\":\"SoDI\",\"saveLogin\":\"true\",\"captchaId\":\"1dd8b38ed4334364ab63464382e86488\",\"username\":\"Exrick\"}', 'POST', '/xboot/login', 'Exrick', 1);
+INSERT INTO `t_log` VALUES (278784056697556992, NULL, '2020-05-29 13:20:40', 0, NULL, '2020-05-29 13:20:40', 173, '127.0.0.1', '未知', '登录系统', '{\"password\":\"你是看不见我的\",\"code\":\"4DtA\",\"saveLogin\":\"true\",\"captchaId\":\"314d56f8fc574de8aba7512b0c94228a\",\"username\":\"admin\"}', 'POST', '/xboot/login', 'admin', 1);
+INSERT INTO `t_log` VALUES (278785568521850880, NULL, '2020-05-29 13:26:41', 0, NULL, '2020-05-29 13:26:41', 506, '127.0.0.1', '未知', '登录系统', '{\"password\":\"你是看不见我的\",\"code\":\"icza\",\"saveLogin\":\"true\",\"captchaId\":\"5210a8e13210471c892da749c7e183ce\",\"username\":\"admin\"}', 'POST', '/xboot/login', 'admin', 1);
+INSERT INTO `t_log` VALUES (278793282660601856, NULL, '2020-05-29 13:57:20', 0, NULL, '2020-05-29 13:57:20', 660, '127.0.0.1', '未知', '登录系统', '{\"password\":\"你是看不见我的\",\"code\":\"IHGP\",\"saveLogin\":\"true\",\"captchaId\":\"edaf6bac81524dc3a8eb51148f627c01\",\"username\":\" lind\"}', 'POST', '/xboot/login', 'lind', 1);
+INSERT INTO `t_log` VALUES (278793358904659968, NULL, '2020-05-29 13:57:38', 0, NULL, '2020-05-29 13:57:38', 248, '127.0.0.1', '未知', '登录系统', '{\"password\":\"你是看不见我的\",\"code\":\"iNZp\",\"saveLogin\":\"true\",\"captchaId\":\"c48c31189d32490581ce42e3d9af1e77\",\"username\":\"admin\"}', 'POST', '/xboot/login', 'admin', 1);
+INSERT INTO `t_log` VALUES (278793711586906112, NULL, '2020-05-29 13:59:02', 0, NULL, '2020-05-29 13:59:02', 260, '127.0.0.1', '未知', '登录系统', '{\"password\":\"你是看不见我的\",\"code\":\"4NtH\",\"saveLogin\":\"true\",\"captchaId\":\"3639f2a3a47a4898889da06f609e2306\",\"username\":\"admin\"}', 'POST', '/xboot/login', 'admin', 1);
+INSERT INTO `t_log` VALUES (278795269414326272, NULL, '2020-05-29 14:05:13', 0, NULL, '2020-05-29 14:05:13', 269, '127.0.0.1', '未知', '登录系统', '{\"password\":\"你是看不见我的\",\"code\":\"3A5z\",\"saveLogin\":\"true\",\"captchaId\":\"bd7f8efa27b440aeae82dce044872c61\",\"username\":\"lind\"}', 'POST', '/xboot/login', 'lind', 1);
+INSERT INTO `t_log` VALUES (278797902791315456, NULL, '2020-05-29 14:15:41', 0, NULL, '2020-05-29 14:15:41', 551, '127.0.0.1', '未知', '登录系统', '{\"password\":\"你是看不见我的\",\"code\":\"qnum\",\"saveLogin\":\"true\",\"captchaId\":\"095b71da964744b9a65476e845b87f8e\",\"username\":\" lind\"}', 'POST', '/xboot/login', 'lind', 1);
+INSERT INTO `t_log` VALUES (278798655236870144, NULL, '2020-05-29 14:18:40', 0, NULL, '2020-05-29 14:18:40', 195, '127.0.0.1', '未知', '登录系统', '{\"password\":\"你是看不见我的\",\"code\":\"g3zw\",\"saveLogin\":\"true\",\"captchaId\":\"8f244b13af8a431ca4c4192c3a39658c\",\"username\":\"admin\"}', 'POST', '/xboot/login', 'admin', 1);
+INSERT INTO `t_log` VALUES (278801429173374976, NULL, '2020-05-29 14:29:42', 0, NULL, '2020-05-29 14:29:42', 810, '127.0.0.1', '未知', '登录系统', '{\"password\":\"你是看不见我的\",\"code\":\"o3BE\",\"saveLogin\":\"true\",\"captchaId\":\"5d893c4cfdae40c2a5c28074d6c9949a\",\"username\":\"lind\"}', 'POST', '/xboot/login', 'lind', 1);
+INSERT INTO `t_log` VALUES (278958236856487936, NULL, '2020-05-30 00:52:48', 0, NULL, '2020-05-30 00:52:48', 213, '127.0.0.1', '未知', '登录系统', '{\"password\":\"你是看不见我的\",\"code\":\"UFBi\",\"saveLogin\":\"true\",\"captchaId\":\"7cef3c118cdb41d1a33a6ad7b38b7856\",\"username\":\"admin\"}', 'POST', '/xboot/login', 'admin', 1);
+INSERT INTO `t_log` VALUES (279094549706444800, NULL, '2020-05-30 09:54:27', 0, NULL, '2020-05-30 09:54:27', 354, '127.0.0.1', '未知', '登录系统', '{\"password\":\"你是看不见我的\",\"code\":\"IvpG\",\"saveLogin\":\"true\",\"captchaId\":\"e297ffb490e54e31a4a99fffd397de67\",\"username\":\" xinhua\"}', 'POST', '/xboot/login', 'xinhua', 1);
+INSERT INTO `t_log` VALUES (279111088157495296, NULL, '2020-05-30 11:00:10', 0, NULL, '2020-05-30 11:00:10', 158, '127.0.0.1', '未知', '登录系统', '{\"password\":\"你是看不见我的\",\"code\":\"fjUY\",\"saveLogin\":\"true\",\"captchaId\":\"5042523e8cdb4ee1be74d46eeedb06db\",\"username\":\"admin\"}', 'POST', '/xboot/login', 'admin', 1);
+COMMIT;
+
+-- ----------------------------
 -- Table structure for t_permission
 -- ----------------------------
 DROP TABLE IF EXISTS `t_permission`;
 CREATE TABLE `t_permission` (
-  `id` bigint(20) unsigned NOT NULL,
+  `id` bigint unsigned NOT NULL,
   `create_by` varchar(255) DEFAULT NULL,
   `create_time` datetime DEFAULT NULL,
   `del_flag` tinyint(1) DEFAULT NULL,
@@ -268,14 +668,14 @@ CREATE TABLE `t_permission` (
   `update_time` datetime DEFAULT NULL,
   `description` varchar(255) DEFAULT NULL,
   `name` varchar(255) DEFAULT NULL,
-  `parent_id` bigint(20) unsigned DEFAULT NULL,
+  `parent_id` bigint unsigned DEFAULT NULL,
   `type` tinyint(1) DEFAULT NULL,
   `sort_order` decimal(10,2) DEFAULT NULL,
   `component` varchar(255) DEFAULT NULL,
   `path` varchar(255) DEFAULT NULL,
   `title` varchar(255) DEFAULT NULL,
   `icon` varchar(255) DEFAULT NULL,
-  `level` int(11) unsigned DEFAULT NULL,
+  `level` int unsigned DEFAULT NULL,
   `button_type` varchar(255) DEFAULT NULL,
   `status` tinyint(1) DEFAULT NULL,
   `url` varchar(255) DEFAULT NULL,
@@ -454,7 +854,7 @@ COMMIT;
 -- ----------------------------
 DROP TABLE IF EXISTS `t_quartz_job`;
 CREATE TABLE `t_quartz_job` (
-  `id` bigint(20) unsigned NOT NULL,
+  `id` bigint unsigned NOT NULL,
   `create_by` varchar(255) DEFAULT NULL,
   `create_time` datetime DEFAULT NULL,
   `del_flag` tinyint(1) DEFAULT NULL,
@@ -473,7 +873,7 @@ CREATE TABLE `t_quartz_job` (
 -- ----------------------------
 DROP TABLE IF EXISTS `t_role`;
 CREATE TABLE `t_role` (
-  `id` bigint(20) unsigned NOT NULL,
+  `id` bigint unsigned NOT NULL,
   `create_by` varchar(255) DEFAULT NULL,
   `create_time` datetime DEFAULT NULL,
   `update_by` varchar(255) DEFAULT NULL,
@@ -491,7 +891,7 @@ CREATE TABLE `t_role` (
 -- ----------------------------
 BEGIN;
 INSERT INTO `t_role` VALUES (496138616573952, '', '2018-04-22 23:03:49', 'admin', '2018-11-15 23:02:59', 'ROLE_ADMIN', 0, NULL, '超级管理员 拥有所有权限', 0);
-INSERT INTO `t_role` VALUES (496138616573953, '', '2018-05-02 21:40:03', 'admin', '2018-11-01 22:59:48', 'ROLE_USER', 0, b'1', '普通注册用户 路过看看', 0);
+INSERT INTO `t_role` VALUES (496138616573953, '', '2018-05-02 21:40:03', 'admin', '2020-05-31 06:19:28', 'ROLE_USER', 0, b'1', '普通注册用户 路过看看', 1);
 INSERT INTO `t_role` VALUES (16457350655250432, '', '2018-06-06 00:08:00', 'admin', '2018-11-02 20:42:24', 'ROLE_TEST', 0, NULL, '测试权限按钮显示', 1);
 COMMIT;
 
@@ -500,16 +900,16 @@ COMMIT;
 -- ----------------------------
 DROP TABLE IF EXISTS `t_role_department`;
 CREATE TABLE `t_role_department` (
-  `id` bigint(20) unsigned NOT NULL,
+  `id` bigint unsigned NOT NULL,
   `create_by` varchar(255) DEFAULT NULL,
   `create_time` datetime DEFAULT NULL,
   `del_flag` tinyint(1) DEFAULT NULL,
   `update_by` varchar(255) DEFAULT NULL,
   `update_time` datetime DEFAULT NULL,
-  `department_id` bigint(20) unsigned DEFAULT NULL,
-  `role_id` bigint(20) unsigned DEFAULT NULL,
+  `department_id` bigint unsigned DEFAULT NULL,
+  `role_id` bigint unsigned DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='自定义数据权限表，查看对组织机构的控制';
 
 -- ----------------------------
 -- Records of t_role_department
@@ -518,6 +918,9 @@ BEGIN;
 INSERT INTO `t_role_department` VALUES (70763874256687105, 'admin', '2018-11-02 20:42:43', 0, 'admin', '2018-11-02 20:42:43', 40322777781112832, 16457350655250432);
 INSERT INTO `t_role_department` VALUES (70763874265075712, 'admin', '2018-11-02 20:42:43', 0, 'admin', '2018-11-02 20:42:43', 40322811096469504, 16457350655250432);
 INSERT INTO `t_role_department` VALUES (70763874277658624, 'admin', '2018-11-02 20:42:43', 0, 'admin', '2018-11-02 20:42:43', 40322852833988608, 16457350655250432);
+INSERT INTO `t_role_department` VALUES (279403399315722242, 'admin', '2020-05-31 06:21:42', 0, 'admin', '2020-05-31 06:21:42', 279091722783297536, 496138616573953);
+INSERT INTO `t_role_department` VALUES (279403399340888064, 'admin', '2020-05-31 06:21:43', 0, 'admin', '2020-05-31 06:21:43', 279092167815729152, 496138616573953);
+INSERT INTO `t_role_department` VALUES (279403399504465920, 'admin', '2020-05-31 06:21:43', 0, 'admin', '2020-05-31 06:21:43', 279092472854876160, 496138616573953);
 COMMIT;
 
 -- ----------------------------
@@ -525,14 +928,14 @@ COMMIT;
 -- ----------------------------
 DROP TABLE IF EXISTS `t_role_permission`;
 CREATE TABLE `t_role_permission` (
-  `id` bigint(20) unsigned NOT NULL,
+  `id` bigint unsigned NOT NULL,
   `create_by` varchar(255) DEFAULT NULL,
   `create_time` datetime DEFAULT NULL,
   `del_flag` tinyint(1) DEFAULT NULL,
   `update_by` varchar(255) DEFAULT NULL,
   `update_time` datetime DEFAULT NULL,
-  `permission_id` bigint(20) unsigned DEFAULT NULL,
-  `role_id` bigint(20) unsigned DEFAULT NULL,
+  `permission_id` bigint unsigned DEFAULT NULL,
+  `role_id` bigint unsigned DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -550,85 +953,41 @@ INSERT INTO `t_role_permission` VALUES (175877432602005504, NULL, '2019-08-19 22
 INSERT INTO `t_role_permission` VALUES (175877432606199808, NULL, '2019-08-19 22:06:29', 0, NULL, '2019-08-19 22:06:29', 16439068543946752, 16457350655250432);
 INSERT INTO `t_role_permission` VALUES (175877432610394113, NULL, '2019-08-19 22:06:29', 0, NULL, '2019-08-19 22:06:29', 175808753877127169, 16457350655250432);
 INSERT INTO `t_role_permission` VALUES (175877432614588417, NULL, '2019-08-19 22:06:29', 0, NULL, '2019-08-19 22:06:29', 175808922710446081, 16457350655250432);
-INSERT INTO `t_role_permission` VALUES (1255381124516024320, 'admin', '2020-04-29 14:19:18', 0, 'admin', '2020-04-29 14:19:18', 125909152017944576, 496138616573953);
-INSERT INTO `t_role_permission` VALUES (1255381124516024321, 'admin', '2020-04-29 14:19:18', 0, 'admin', '2020-04-29 14:19:18', 5129710648430592, 496138616573953);
-INSERT INTO `t_role_permission` VALUES (1255381124516024322, 'admin', '2020-04-29 14:19:18', 0, 'admin', '2020-04-29 14:19:18', 5129710648430593, 496138616573953);
-INSERT INTO `t_role_permission` VALUES (1255381124516024323, 'admin', '2020-04-29 14:19:18', 0, 'admin', '2020-04-29 14:19:18', 40238597734928384, 496138616573953);
-INSERT INTO `t_role_permission` VALUES (1255381124516024324, 'admin', '2020-04-29 14:19:18', 0, 'admin', '2020-04-29 14:19:18', 43117268627886080, 496138616573953);
-INSERT INTO `t_role_permission` VALUES (1255381124516024325, 'admin', '2020-04-29 14:19:18', 0, 'admin', '2020-04-29 14:19:18', 57009744761589760, 496138616573953);
-INSERT INTO `t_role_permission` VALUES (1255381124516024326, 'admin', '2020-04-29 14:19:18', 0, 'admin', '2020-04-29 14:19:18', 56309618086776832, 496138616573953);
-INSERT INTO `t_role_permission` VALUES (1255381124516024327, 'admin', '2020-04-29 14:19:18', 0, 'admin', '2020-04-29 14:19:18', 44986029924421632, 496138616573953);
-INSERT INTO `t_role_permission` VALUES (1255381124516024328, 'admin', '2020-04-29 14:19:18', 0, 'admin', '2020-04-29 14:19:18', 5129710648430594, 496138616573953);
-INSERT INTO `t_role_permission` VALUES (1255381124516024329, 'admin', '2020-04-29 14:19:18', 0, 'admin', '2020-04-29 14:19:18', 5129710648430595, 496138616573953);
-INSERT INTO `t_role_permission` VALUES (1255381124516024330, 'admin', '2020-04-29 14:19:18', 0, 'admin', '2020-04-29 14:19:18', 75002207560273920, 496138616573953);
-INSERT INTO `t_role_permission` VALUES (1255381124516024331, 'admin', '2020-04-29 14:19:18', 0, 'admin', '2020-04-29 14:19:18', 58480609315524608, 496138616573953);
-INSERT INTO `t_role_permission` VALUES (1255381124516024332, 'admin', '2020-04-29 14:19:18', 0, 'admin', '2020-04-29 14:19:18', 76606430504816640, 496138616573953);
-INSERT INTO `t_role_permission` VALUES (1255381124516024333, 'admin', '2020-04-29 14:19:18', 0, 'admin', '2020-04-29 14:19:18', 81558529864896512, 496138616573953);
-INSERT INTO `t_role_permission` VALUES (1255381124516024334, 'admin', '2020-04-29 14:19:18', 0, 'admin', '2020-04-29 14:19:18', 81716172680073216, 496138616573953);
-INSERT INTO `t_role_permission` VALUES (1255381124516024335, 'admin', '2020-04-29 14:19:18', 0, 'admin', '2020-04-29 14:19:18', 82269650301227008, 496138616573953);
-INSERT INTO `t_role_permission` VALUES (1255381124516024336, 'admin', '2020-04-29 14:19:18', 0, 'admin', '2020-04-29 14:19:18', 81319435670917120, 496138616573953);
-INSERT INTO `t_role_permission` VALUES (1255381124516024337, 'admin', '2020-04-29 14:19:18', 0, 'admin', '2020-04-29 14:19:18', 117806106536841216, 496138616573953);
-INSERT INTO `t_role_permission` VALUES (1255381124516024338, 'admin', '2020-04-29 14:19:18', 0, 'admin', '2020-04-29 14:19:18', 76914082455752704, 496138616573953);
-INSERT INTO `t_role_permission` VALUES (1255381124516024339, 'admin', '2020-04-29 14:19:18', 0, 'admin', '2020-04-29 14:19:18', 76607201262702592, 496138616573953);
-INSERT INTO `t_role_permission` VALUES (1255381124516024340, 'admin', '2020-04-29 14:19:18', 0, 'admin', '2020-04-29 14:19:18', 80539147005071360, 496138616573953);
-INSERT INTO `t_role_permission` VALUES (1255381124516024341, 'admin', '2020-04-29 14:19:18', 0, 'admin', '2020-04-29 14:19:18', 211251162815401984, 496138616573953);
-INSERT INTO `t_role_permission` VALUES (1255381124516024342, 'admin', '2020-04-29 14:19:18', 0, 'admin', '2020-04-29 14:19:18', 211251678651879424, 496138616573953);
-INSERT INTO `t_role_permission` VALUES (1255381124516024343, 'admin', '2020-04-29 14:19:18', 0, 'admin', '2020-04-29 14:19:18', 211652331387752448, 496138616573953);
-INSERT INTO `t_role_permission` VALUES (1255381124516024344, 'admin', '2020-04-29 14:19:18', 0, 'admin', '2020-04-29 14:19:18', 39915540965232640, 496138616573953);
-INSERT INTO `t_role_permission` VALUES (1255381124516024345, 'admin', '2020-04-29 14:19:18', 0, 'admin', '2020-04-29 14:19:18', 41370251991977984, 496138616573953);
-INSERT INTO `t_role_permission` VALUES (1255381124516024346, 'admin', '2020-04-29 14:19:18', 0, 'admin', '2020-04-29 14:19:18', 41363147411427328, 496138616573953);
-INSERT INTO `t_role_permission` VALUES (1255381124516024347, 'admin', '2020-04-29 14:19:18', 0, 'admin', '2020-04-29 14:19:18', 121426317022334976, 496138616573953);
-INSERT INTO `t_role_permission` VALUES (1255381124516024348, 'admin', '2020-04-29 14:19:18', 0, 'admin', '2020-04-29 14:19:18', 149452775095275520, 496138616573953);
-INSERT INTO `t_role_permission` VALUES (1255381124516024349, 'admin', '2020-04-29 14:19:18', 0, 'admin', '2020-04-29 14:19:18', 41371711400054784, 496138616573953);
-INSERT INTO `t_role_permission` VALUES (1255381124516024350, 'admin', '2020-04-29 14:19:18', 0, 'admin', '2020-04-29 14:19:18', 39916171171991552, 496138616573953);
-INSERT INTO `t_role_permission` VALUES (1255381124516024351, 'admin', '2020-04-29 14:19:18', 0, 'admin', '2020-04-29 14:19:18', 39918482854252544, 496138616573953);
-INSERT INTO `t_role_permission` VALUES (1255381124516024352, 'admin', '2020-04-29 14:19:18', 0, 'admin', '2020-04-29 14:19:18', 102235632889237504, 496138616573953);
-INSERT INTO `t_role_permission` VALUES (1255381124516024353, 'admin', '2020-04-29 14:19:18', 0, 'admin', '2020-04-29 14:19:18', 102237605176807424, 496138616573953);
-INSERT INTO `t_role_permission` VALUES (1255381124516024354, 'admin', '2020-04-29 14:19:18', 0, 'admin', '2020-04-29 14:19:18', 102240052523831296, 496138616573953);
-INSERT INTO `t_role_permission` VALUES (1255381124516024355, 'admin', '2020-04-29 14:19:18', 0, 'admin', '2020-04-29 14:19:18', 103658022701633536, 496138616573953);
-INSERT INTO `t_role_permission` VALUES (1255381124516024356, 'admin', '2020-04-29 14:19:18', 0, 'admin', '2020-04-29 14:19:18', 41373430515240960, 496138616573953);
-INSERT INTO `t_role_permission` VALUES (1255381124516024357, 'admin', '2020-04-29 14:19:18', 0, 'admin', '2020-04-29 14:19:18', 129033675403694080, 496138616573953);
-INSERT INTO `t_role_permission` VALUES (1255381124516024358, 'admin', '2020-04-29 14:19:18', 0, 'admin', '2020-04-29 14:19:18', 41375330996326400, 496138616573953);
-INSERT INTO `t_role_permission` VALUES (1255381124516024359, 'admin', '2020-04-29 14:19:18', 0, 'admin', '2020-04-29 14:19:18', 42082442672082944, 496138616573953);
-INSERT INTO `t_role_permission` VALUES (1255381124516024360, 'admin', '2020-04-29 14:19:18', 0, 'admin', '2020-04-29 14:19:18', 41378916912336896, 496138616573953);
-INSERT INTO `t_role_permission` VALUES (1255381124516024361, 'admin', '2020-04-29 14:19:18', 0, 'admin', '2020-04-29 14:19:18', 63741744973352960, 496138616573953);
-INSERT INTO `t_role_permission` VALUES (1255381124516024362, 'admin', '2020-04-29 14:19:18', 0, 'admin', '2020-04-29 14:19:18', 41376192166629376, 496138616573953);
-INSERT INTO `t_role_permission` VALUES (1255381124516024363, 'admin', '2020-04-29 14:19:18', 0, 'admin', '2020-04-29 14:19:18', 41377034236071936, 496138616573953);
-INSERT INTO `t_role_permission` VALUES (1255381124516024364, 'admin', '2020-04-29 14:19:18', 0, 'admin', '2020-04-29 14:19:18', 56911328312299520, 496138616573953);
-INSERT INTO `t_role_permission` VALUES (1255381124516024365, 'admin', '2020-04-29 14:19:18', 0, 'admin', '2020-04-29 14:19:18', 63482475359244288, 496138616573953);
-INSERT INTO `t_role_permission` VALUES (1255381124516024366, 'admin', '2020-04-29 14:19:18', 0, 'admin', '2020-04-29 14:19:18', 64290663792906240, 496138616573953);
-INSERT INTO `t_role_permission` VALUES (1255381124516024367, 'admin', '2020-04-29 14:19:18', 0, 'admin', '2020-04-29 14:19:18', 66790433014943744, 496138616573953);
-INSERT INTO `t_role_permission` VALUES (1255381124516024368, 'admin', '2020-04-29 14:19:18', 0, 'admin', '2020-04-29 14:19:18', 210154306362413056, 496138616573953);
-INSERT INTO `t_role_permission` VALUES (1255381124516024369, 'admin', '2020-04-29 14:19:18', 0, 'admin', '2020-04-29 14:19:18', 210155258859491329, 496138616573953);
-INSERT INTO `t_role_permission` VALUES (1255381124516024370, 'admin', '2020-04-29 14:19:18', 0, 'admin', '2020-04-29 14:19:18', 210156371755143168, 496138616573953);
-INSERT INTO `t_role_permission` VALUES (1255381124516024371, 'admin', '2020-04-29 14:19:18', 0, 'admin', '2020-04-29 14:19:18', 67027338952445952, 496138616573953);
-INSERT INTO `t_role_permission` VALUES (1255381124516024372, 'admin', '2020-04-29 14:19:18', 0, 'admin', '2020-04-29 14:19:18', 67027909637836800, 496138616573953);
-INSERT INTO `t_role_permission` VALUES (1255381124516024373, 'admin', '2020-04-29 14:19:18', 0, 'admin', '2020-04-29 14:19:18', 67042515441684480, 496138616573953);
-INSERT INTO `t_role_permission` VALUES (1255381124516024374, 'admin', '2020-04-29 14:19:18', 0, 'admin', '2020-04-29 14:19:18', 67082402312228864, 496138616573953);
-INSERT INTO `t_role_permission` VALUES (1255381124516024375, 'admin', '2020-04-29 14:19:18', 0, 'admin', '2020-04-29 14:19:18', 113602149589454848, 496138616573953);
-INSERT INTO `t_role_permission` VALUES (1255381124516024376, 'admin', '2020-04-29 14:19:18', 0, 'admin', '2020-04-29 14:19:18', 113602342657462272, 496138616573953);
-INSERT INTO `t_role_permission` VALUES (1255381124516024377, 'admin', '2020-04-29 14:19:18', 0, 'admin', '2020-04-29 14:19:18', 113603512293658624, 496138616573953);
-INSERT INTO `t_role_permission` VALUES (1255381124516024378, 'admin', '2020-04-29 14:19:18', 0, 'admin', '2020-04-29 14:19:18', 113603617897844736, 496138616573953);
-INSERT INTO `t_role_permission` VALUES (1255381124516024379, 'admin', '2020-04-29 14:19:18', 0, 'admin', '2020-04-29 14:19:18', 16392452747300864, 496138616573953);
-INSERT INTO `t_role_permission` VALUES (1255381124516024380, 'admin', '2020-04-29 14:19:18', 0, 'admin', '2020-04-29 14:19:18', 16392767785668608, 496138616573953);
-INSERT INTO `t_role_permission` VALUES (1255381124516024381, 'admin', '2020-04-29 14:19:18', 0, 'admin', '2020-04-29 14:19:18', 16438800255291392, 496138616573953);
-INSERT INTO `t_role_permission` VALUES (1255381124516024382, 'admin', '2020-04-29 14:19:18', 0, 'admin', '2020-04-29 14:19:18', 16438962738434048, 496138616573953);
-INSERT INTO `t_role_permission` VALUES (1255381124516024383, 'admin', '2020-04-29 14:19:18', 0, 'admin', '2020-04-29 14:19:18', 16439068543946752, 496138616573953);
-INSERT INTO `t_role_permission` VALUES (1255381124516024384, 'admin', '2020-04-29 14:19:18', 0, 'admin', '2020-04-29 14:19:18', 175808753877127169, 496138616573953);
-INSERT INTO `t_role_permission` VALUES (1255381124516024385, 'admin', '2020-04-29 14:19:18', 0, 'admin', '2020-04-29 14:19:18', 175808922710446081, 496138616573953);
-INSERT INTO `t_role_permission` VALUES (1255381124516024386, 'admin', '2020-04-29 14:19:18', 0, 'admin', '2020-04-29 14:19:18', 127996320085446656, 496138616573953);
-INSERT INTO `t_role_permission` VALUES (1255381124516024387, 'admin', '2020-04-29 14:19:18', 0, 'admin', '2020-04-29 14:19:18', 160509731956330496, 496138616573953);
-INSERT INTO `t_role_permission` VALUES (1255381124516024388, 'admin', '2020-04-29 14:19:18', 0, 'admin', '2020-04-29 14:19:18', 160509918166650881, 496138616573953);
-INSERT INTO `t_role_permission` VALUES (1255381124516024389, 'admin', '2020-04-29 14:19:18', 0, 'admin', '2020-04-29 14:19:18', 128366789653434368, 496138616573953);
-INSERT INTO `t_role_permission` VALUES (1255381124516024390, 'admin', '2020-04-29 14:19:18', 0, 'admin', '2020-04-29 14:19:18', 128368112335589376, 496138616573953);
-INSERT INTO `t_role_permission` VALUES (1255381124516024391, 'admin', '2020-04-29 14:19:18', 0, 'admin', '2020-04-29 14:19:18', 1251152298521006080, 496138616573953);
-INSERT INTO `t_role_permission` VALUES (1255381124516024392, 'admin', '2020-04-29 14:19:18', 0, 'admin', '2020-04-29 14:19:18', 1251153074307862528, 496138616573953);
-INSERT INTO `t_role_permission` VALUES (1255381124516024393, 'admin', '2020-04-29 14:19:18', 0, 'admin', '2020-04-29 14:19:18', 1251760630449442816, 496138616573953);
-INSERT INTO `t_role_permission` VALUES (1255381124516024394, 'admin', '2020-04-29 14:19:18', 0, 'admin', '2020-04-29 14:19:18', 1251761480286736384, 496138616573953);
-INSERT INTO `t_role_permission` VALUES (1255381124516024395, 'admin', '2020-04-29 14:19:18', 0, 'admin', '2020-04-29 14:19:18', 127995258721013760, 496138616573953);
-INSERT INTO `t_role_permission` VALUES (1255381124516024396, 'admin', '2020-04-29 14:19:18', 0, 'admin', '2020-04-29 14:19:18', 128364633437245440, 496138616573953);
-INSERT INTO `t_role_permission` VALUES (1255381124516024397, 'admin', '2020-04-29 14:19:18', 0, 'admin', '2020-04-29 14:19:18', 127996726786134016, 496138616573953);
-INSERT INTO `t_role_permission` VALUES (1255381124516024398, 'admin', '2020-04-29 14:19:18', 0, 'admin', '2020-04-29 14:19:18', 127997001756315648, 496138616573953);
+INSERT INTO `t_role_permission` VALUES (278793828486352896, 'admin', '2020-05-29 13:59:29', 0, 'admin', '2020-05-29 13:59:29', 125909152017944576, 496138616573953);
+INSERT INTO `t_role_permission` VALUES (278793828574433280, 'admin', '2020-05-29 13:59:29', 0, 'admin', '2020-05-29 13:59:29', 5129710648430592, 496138616573953);
+INSERT INTO `t_role_permission` VALUES (278793828587016192, 'admin', '2020-05-29 13:59:29', 0, 'admin', '2020-05-29 13:59:29', 5129710648430593, 496138616573953);
+INSERT INTO `t_role_permission` VALUES (278793828603793408, 'admin', '2020-05-29 13:59:29', 0, 'admin', '2020-05-29 13:59:29', 15701400130424832, 496138616573953);
+INSERT INTO `t_role_permission` VALUES (278793828620570624, 'admin', '2020-05-29 13:59:29', 0, 'admin', '2020-05-29 13:59:29', 16678126574637056, 496138616573953);
+INSERT INTO `t_role_permission` VALUES (278793828645736448, 'admin', '2020-05-29 13:59:30', 0, 'admin', '2020-05-29 13:59:30', 15701915807518720, 496138616573953);
+INSERT INTO `t_role_permission` VALUES (278793828675096576, 'admin', '2020-05-29 13:59:30', 0, 'admin', '2020-05-29 13:59:30', 15708892205944832, 496138616573953);
+INSERT INTO `t_role_permission` VALUES (278793828687679488, 'admin', '2020-05-29 13:59:30', 0, 'admin', '2020-05-29 13:59:30', 16678447719911424, 496138616573953);
+INSERT INTO `t_role_permission` VALUES (278793828704456704, 'admin', '2020-05-29 13:59:30', 0, 'admin', '2020-05-29 13:59:30', 25014528525733888, 496138616573953);
+INSERT INTO `t_role_permission` VALUES (278793828725428224, 'admin', '2020-05-29 13:59:30', 0, 'admin', '2020-05-29 13:59:30', 56898976661639168, 496138616573953);
+INSERT INTO `t_role_permission` VALUES (278793828746399744, 'admin', '2020-05-29 13:59:30', 0, 'admin', '2020-05-29 13:59:30', 156365156580855808, 496138616573953);
+INSERT INTO `t_role_permission` VALUES (278793828758982656, 'admin', '2020-05-29 13:59:30', 0, 'admin', '2020-05-29 13:59:30', 40238597734928384, 496138616573953);
+INSERT INTO `t_role_permission` VALUES (278793828784148480, 'admin', '2020-05-29 13:59:30', 0, 'admin', '2020-05-29 13:59:30', 45235621697949696, 496138616573953);
+INSERT INTO `t_role_permission` VALUES (278793828800925696, 'admin', '2020-05-29 13:59:30', 0, 'admin', '2020-05-29 13:59:30', 45235787867885568, 496138616573953);
+INSERT INTO `t_role_permission` VALUES (278793828813508608, 'admin', '2020-05-29 13:59:30', 0, 'admin', '2020-05-29 13:59:30', 45235939278065664, 496138616573953);
+INSERT INTO `t_role_permission` VALUES (278793828830285824, 'admin', '2020-05-29 13:59:30', 0, 'admin', '2020-05-29 13:59:30', 5129710648430594, 496138616573953);
+INSERT INTO `t_role_permission` VALUES (278793828851257344, 'admin', '2020-05-29 13:59:30', 0, 'admin', '2020-05-29 13:59:30', 16687383932047360, 496138616573953);
+INSERT INTO `t_role_permission` VALUES (278793828868034560, 'admin', '2020-05-29 13:59:30', 0, 'admin', '2020-05-29 13:59:30', 16689632049631232, 496138616573953);
+INSERT INTO `t_role_permission` VALUES (278793828884811776, 'admin', '2020-05-29 13:59:30', 0, 'admin', '2020-05-29 13:59:30', 16689745006432256, 496138616573953);
+INSERT INTO `t_role_permission` VALUES (278793828897394688, 'admin', '2020-05-29 13:59:30', 0, 'admin', '2020-05-29 13:59:30', 16689883993083904, 496138616573953);
+INSERT INTO `t_role_permission` VALUES (278793828914171904, 'admin', '2020-05-29 13:59:30', 0, 'admin', '2020-05-29 13:59:30', 16690313745666048, 496138616573953);
+INSERT INTO `t_role_permission` VALUES (278793828935143424, 'admin', '2020-05-29 13:59:30', 0, 'admin', '2020-05-29 13:59:30', 5129710648430595, 496138616573953);
+INSERT INTO `t_role_permission` VALUES (278793828947726336, 'admin', '2020-05-29 13:59:30', 0, 'admin', '2020-05-29 13:59:30', 16694861252005888, 496138616573953);
+INSERT INTO `t_role_permission` VALUES (278793828960309249, 'admin', '2020-05-29 13:59:30', 0, 'admin', '2020-05-29 13:59:30', 16695107491205120, 496138616573953);
+INSERT INTO `t_role_permission` VALUES (278793828977086464, 'admin', '2020-05-29 13:59:30', 0, 'admin', '2020-05-29 13:59:30', 16695243126607872, 496138616573953);
+INSERT INTO `t_role_permission` VALUES (278793828993863680, 'admin', '2020-05-29 13:59:30', 0, 'admin', '2020-05-29 13:59:30', 75002207560273920, 496138616573953);
+INSERT INTO `t_role_permission` VALUES (278793829010640896, 'admin', '2020-05-29 13:59:30', 0, 'admin', '2020-05-29 13:59:30', 76215889006956544, 496138616573953);
+INSERT INTO `t_role_permission` VALUES (278793829027418112, 'admin', '2020-05-29 13:59:30', 0, 'admin', '2020-05-29 13:59:30', 76216071333351424, 496138616573953);
+INSERT INTO `t_role_permission` VALUES (278793829040001024, 'admin', '2020-05-29 13:59:30', 0, 'admin', '2020-05-29 13:59:30', 76216264070008832, 496138616573953);
+INSERT INTO `t_role_permission` VALUES (278793829060972544, 'admin', '2020-05-29 13:59:30', 0, 'admin', '2020-05-29 13:59:30', 76216459709124608, 496138616573953);
+INSERT INTO `t_role_permission` VALUES (278793829077749760, 'admin', '2020-05-29 13:59:30', 0, 'admin', '2020-05-29 13:59:30', 76216594207870976, 496138616573953);
+INSERT INTO `t_role_permission` VALUES (278793829098721280, 'admin', '2020-05-29 13:59:30', 0, 'admin', '2020-05-29 13:59:30', 76216702639017984, 496138616573953);
+INSERT INTO `t_role_permission` VALUES (278793829115498496, 'admin', '2020-05-29 13:59:30', 0, 'admin', '2020-05-29 13:59:30', 127996320085446656, 496138616573953);
+INSERT INTO `t_role_permission` VALUES (278793829140664320, 'admin', '2020-05-29 13:59:30', 0, 'admin', '2020-05-29 13:59:30', 160509731956330496, 496138616573953);
+INSERT INTO `t_role_permission` VALUES (278793829161635840, 'admin', '2020-05-29 13:59:30', 0, 'admin', '2020-05-29 13:59:30', 160509918166650881, 496138616573953);
 INSERT INTO `t_role_permission` VALUES (1256400030353461248, 'admin', '2020-05-02 09:48:04', 0, 'admin', '2020-05-02 09:48:04', 125909152017944576, 496138616573952);
 INSERT INTO `t_role_permission` VALUES (1256400030353461249, 'admin', '2020-05-02 09:48:04', 0, 'admin', '2020-05-02 09:48:04', 5129710648430592, 496138616573952);
 INSERT INTO `t_role_permission` VALUES (1256400030353461250, 'admin', '2020-05-02 09:48:04', 0, 'admin', '2020-05-02 09:48:04', 5129710648430593, 496138616573952);
@@ -796,28 +1155,29 @@ COMMIT;
 -- ----------------------------
 DROP TABLE IF EXISTS `t_user`;
 CREATE TABLE `t_user` (
-  `id` bigint(20) unsigned NOT NULL,
+  `id` bigint unsigned NOT NULL,
   `create_by` varchar(255) DEFAULT NULL,
   `create_time` datetime DEFAULT NULL,
   `update_by` varchar(255) DEFAULT NULL,
   `update_time` datetime DEFAULT NULL,
   `address` varchar(255) DEFAULT NULL,
   `avatar` varchar(255) DEFAULT NULL,
-  `description` varchar(255) CHARACTER SET utf8mb4 DEFAULT NULL,
+  `description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `email` varchar(255) DEFAULT NULL,
   `mobile` varchar(255) DEFAULT NULL,
-  `nickname` varchar(255) CHARACTER SET utf8mb4 DEFAULT NULL,
+  `nickname` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `password` varchar(255) DEFAULT NULL,
   `sex` varchar(255) DEFAULT NULL,
-  `status` int(11) DEFAULT NULL,
-  `type` int(11) DEFAULT NULL,
+  `status` int DEFAULT NULL,
+  `type` int DEFAULT NULL,
   `username` varchar(255) DEFAULT NULL,
   `del_flag` tinyint(1) DEFAULT NULL,
-  `department_id` bigint(20) unsigned DEFAULT NULL,
+  `department_id` bigint unsigned DEFAULT NULL,
   `street` varchar(255) DEFAULT NULL,
   `pass_strength` varchar(2) DEFAULT NULL,
   `department_title` varchar(255) DEFAULT NULL,
   `birth` datetime(6) DEFAULT NULL,
+  `nick_name` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`) USING BTREE,
   UNIQUE KEY `email` (`email`) USING BTREE,
@@ -829,10 +1189,11 @@ CREATE TABLE `t_user` (
 -- Records of t_user
 -- ----------------------------
 BEGIN;
-INSERT INTO `t_user` VALUES (682265633886208, '', '2018-05-01 03:13:51', 'admin', '2020-04-30 04:56:32', '[\"510000\",\"510100\",\"510104\"]', 'https://i.loli.net/2019/04/28/5cc5a71a6e3b6.png', '我是大帅逼', 'admin@exrick.cn', '18782059031', '管理员', '$2a$10$PS04ecXfknNd3V8d.ymLTObQciapMU4xU8.GADBZZsuTZr7ymnagy', '男', 0, 1, 'admin', 0, 40322777781112832, '天府1街', '弱', '总部', '2020-04-15 11:00:00.000000');
-INSERT INTO `t_user` VALUES (682265633886209, '', '2018-04-30 23:28:42', 'admin', '2020-04-12 13:57:08', '[\"110000\",\"110100\",\"110101\"]', 'https://i.loli.net/2019/04/28/5cc5a71a6e3b6.png', '', 'Exrick@exrick.cn', '18782059032', 'exrick', '$2a$10$PS04ecXfknNd3V8d.ymLTObQciapMU4xU8.GADBZZsuTZr7ymnagy', '女', -1, 0, 'Exrick', 0, 40343262766043136, '', '弱', '成都分部', '2020-04-13 00:00:00.000000');
-INSERT INTO `t_user` VALUES (4363087427670016, '', '2018-05-03 15:09:42', 'admin', '2020-04-18 22:24:08', '[\"510000\",\"510100\",\"510114\"]', 'https://i.loli.net/2019/04/28/5cc5a71a6e3b6.png', '', 'test@exrick.cn', '18782059033', '游客1', '$2a$10$PS04ecXfknNd3V8d.ymLTObQciapMU4xU8.GADBZZsuTZr7ymnagy', '男', 0, 0, 'test', 0, 40343262766043136, '', '弱', '成都分部', '2020-04-28 00:00:00.000000');
-INSERT INTO `t_user` VALUES (16739222421508096, '', '2018-06-06 18:48:02', 'admin', '2020-04-30 03:13:37', '[]', 'https://i.loli.net/2019/04/28/5cc5a71a6e3b6.png', '', 'test2@exrick.cn', '18782059034', '游客2', '$2a$10$PS04ecXfknNd3V8d.ymLTObQciapMU4xU8.GADBZZsuTZr7ymnagy', '男', 0, 0, 'test2', 0, 40322777781112832, '', '弱', '总部', '2020-04-22 11:00:00.000000');
+INSERT INTO `t_user` VALUES (682265633886208, '', '2018-05-01 03:13:51', 'admin', '2020-04-30 04:56:32', '[\"510000\",\"510100\",\"510104\"]', 'https://i.loli.net/2019/04/28/5cc5a71a6e3b6.png', '我是大帅逼', 'admin@exrick.cn', '18782059031', '管理员', '$2a$10$PS04ecXfknNd3V8d.ymLTObQciapMU4xU8.GADBZZsuTZr7ymnagy', '男', 0, 1, 'admin', 0, 40322777781112832, '天府1街', '弱', '总部', '2020-04-15 11:00:00.000000', NULL);
+INSERT INTO `t_user` VALUES (682265633886209, '', '2018-04-30 23:28:42', 'Exrick', '2020-05-29 13:11:45', '[\"110000\",\"110100\",\"110101\"]', 'https://i.loli.net/2019/04/28/5cc5a71a6e3b6.png', '', 'Exrick@exrick.cn', '18782059032', 'exrick', '$2a$10$PS04ecXfknNd3V8d.ymLTObQciapMU4xU8.GADBZZsuTZr7ymnagy', '女', 0, 0, 'Exrick', 0, 40343262766043136, '', '弱', '成都分部', '2020-04-13 00:00:00.000000', '');
+INSERT INTO `t_user` VALUES (4363087427670016, '', '2018-05-03 15:09:42', 'admin', '2020-04-18 22:24:08', '[\"510000\",\"510100\",\"510114\"]', 'https://i.loli.net/2019/04/28/5cc5a71a6e3b6.png', '', 'test@exrick.cn', '18782059033', '游客1', '$2a$10$PS04ecXfknNd3V8d.ymLTObQciapMU4xU8.GADBZZsuTZr7ymnagy', '男', 0, 0, 'test', 0, 40343262766043136, '', '弱', '成都分部', '2020-04-28 00:00:00.000000', NULL);
+INSERT INTO `t_user` VALUES (278793145926291456, 'admin', '2020-05-29 13:56:54', 'admin', '2020-05-29 14:20:01', '', 'https://i.loli.net/2019/04/28/5cc5a71a6e3b6.png', '', 'bfyxzls@sina.com', '13521972991', NULL, '$2a$10$NG9.RUkH35AbLCSFy8wcdueNmSEW4KcrBD.DBd.MfLbObv675uMay', '男', 0, 0, 'lind', 0, 40322777781112832, '', '弱', NULL, NULL, '');
+INSERT INTO `t_user` VALUES (279093015459401728, 'admin', '2020-05-30 09:48:21', 'admin', '2020-05-30 09:50:13', '', 'https://i.loli.net/2019/04/28/5cc5a71a6e3b6.png', '', 'xinhua@sina.com', '13521972992', NULL, '$2a$10$04jZV89ggGQfNberyU23Rufg6uZyDtRqtv84AeprOSyI8M/W7etYe', '', 0, 0, 'xinhua', 0, 279092472854876160, '', '弱', NULL, NULL, '');
 COMMIT;
 
 -- ----------------------------
@@ -840,14 +1201,14 @@ COMMIT;
 -- ----------------------------
 DROP TABLE IF EXISTS `t_user_role`;
 CREATE TABLE `t_user_role` (
-  `id` bigint(20) unsigned NOT NULL,
+  `id` bigint unsigned NOT NULL,
   `create_by` varchar(255) DEFAULT NULL,
   `create_time` datetime DEFAULT NULL,
   `del_flag` tinyint(1) DEFAULT NULL,
   `update_by` varchar(255) DEFAULT NULL,
   `update_time` datetime DEFAULT NULL,
-  `role_id` bigint(20) unsigned DEFAULT NULL,
-  `user_id` bigint(20) unsigned DEFAULT NULL,
+  `role_id` bigint unsigned DEFAULT NULL,
+  `user_id` bigint unsigned DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -855,166 +1216,10 @@ CREATE TABLE `t_user_role` (
 -- Records of t_user_role
 -- ----------------------------
 BEGIN;
-INSERT INTO `t_user_role` VALUES (1251516834239352832, 'admin', '2020-04-18 22:24:00', 0, 'admin', '2020-04-18 22:24:00', 496138616573952, 682265633886209);
-INSERT INTO `t_user_role` VALUES (1251516834239352833, 'admin', '2020-04-18 22:24:00', 0, 'admin', '2020-04-18 22:24:00', 496138616573953, 682265633886209);
+INSERT INTO `t_user_role` VALUES (278801302899658752, 'admin', '2020-05-29 14:29:12', 0, 'admin', '2020-05-29 14:29:12', 496138616573953, 278793145926291456);
+INSERT INTO `t_user_role` VALUES (279402316837163008, 'admin', '2020-05-31 06:17:24', 0, 'admin', '2020-05-31 06:17:24', 496138616573953, 279093015459401728);
 INSERT INTO `t_user_role` VALUES (1251516869526032384, 'admin', '2020-04-18 22:24:08', 0, 'admin', '2020-04-18 22:24:08', 496138616573953, 4363087427670016);
 INSERT INTO `t_user_role` VALUES (1254427593457930240, 'admin', '2020-04-26 23:10:19', 0, 'admin', '2020-04-26 23:10:19', 496138616573952, 682265633886208);
-INSERT INTO `t_user_role` VALUES (1255772277023313920, 'admin', '2020-04-30 03:13:37', 0, 'admin', '2020-04-30 03:13:37', 16457350655250432, 16739222421508096);
 COMMIT;
 
-DROP TABLE IF EXISTS QRTZ_FIRED_TRIGGERS;
-DROP TABLE IF EXISTS QRTZ_PAUSED_TRIGGER_GRPS;
-DROP TABLE IF EXISTS QRTZ_SCHEDULER_STATE;
-DROP TABLE IF EXISTS QRTZ_LOCKS;
-DROP TABLE IF EXISTS QRTZ_SIMPLE_TRIGGERS;
-DROP TABLE IF EXISTS QRTZ_SIMPROP_TRIGGERS;
-DROP TABLE IF EXISTS QRTZ_CRON_TRIGGERS;
-DROP TABLE IF EXISTS QRTZ_BLOB_TRIGGERS;
-DROP TABLE IF EXISTS QRTZ_TRIGGERS;
-DROP TABLE IF EXISTS QRTZ_JOB_DETAILS;
-DROP TABLE IF EXISTS QRTZ_CALENDARS;
-
-
-CREATE TABLE QRTZ_JOB_DETAILS
-  (
-    SCHED_NAME VARCHAR(120) NOT NULL,
-    JOB_NAME  VARCHAR(200) NOT NULL,
-    JOB_GROUP VARCHAR(200) NOT NULL,
-    DESCRIPTION VARCHAR(250) NULL,
-    JOB_CLASS_NAME   VARCHAR(250) NOT NULL,
-    IS_DURABLE VARCHAR(1) NOT NULL,
-    IS_NONCONCURRENT VARCHAR(1) NOT NULL,
-    IS_UPDATE_DATA VARCHAR(1) NOT NULL,
-    REQUESTS_RECOVERY VARCHAR(1) NOT NULL,
-    JOB_DATA BLOB NULL,
-    PRIMARY KEY (SCHED_NAME,JOB_NAME,JOB_GROUP)
-);
-
-CREATE TABLE QRTZ_TRIGGERS
-  (
-    SCHED_NAME VARCHAR(120) NOT NULL,
-    TRIGGER_NAME VARCHAR(200) NOT NULL,
-    TRIGGER_GROUP VARCHAR(200) NOT NULL,
-    JOB_NAME  VARCHAR(200) NOT NULL,
-    JOB_GROUP VARCHAR(200) NOT NULL,
-    DESCRIPTION VARCHAR(250) NULL,
-    NEXT_FIRE_TIME BIGINT(13) NULL,
-    PREV_FIRE_TIME BIGINT(13) NULL,
-    PRIORITY INTEGER NULL,
-    TRIGGER_STATE VARCHAR(16) NOT NULL,
-    TRIGGER_TYPE VARCHAR(8) NOT NULL,
-    START_TIME BIGINT(13) NOT NULL,
-    END_TIME BIGINT(13) NULL,
-    CALENDAR_NAME VARCHAR(200) NULL,
-    MISFIRE_INSTR SMALLINT(2) NULL,
-    JOB_DATA BLOB NULL,
-    PRIMARY KEY (SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP),
-    FOREIGN KEY (SCHED_NAME,JOB_NAME,JOB_GROUP)
-        REFERENCES QRTZ_JOB_DETAILS(SCHED_NAME,JOB_NAME,JOB_GROUP)
-);
-
-CREATE TABLE QRTZ_SIMPLE_TRIGGERS
-  (
-    SCHED_NAME VARCHAR(120) NOT NULL,
-    TRIGGER_NAME VARCHAR(200) NOT NULL,
-    TRIGGER_GROUP VARCHAR(200) NOT NULL,
-    REPEAT_COUNT BIGINT(7) NOT NULL,
-    REPEAT_INTERVAL BIGINT(12) NOT NULL,
-    TIMES_TRIGGERED BIGINT(10) NOT NULL,
-    PRIMARY KEY (SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP),
-    FOREIGN KEY (SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP)
-        REFERENCES QRTZ_TRIGGERS(SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP)
-);
-
-CREATE TABLE QRTZ_CRON_TRIGGERS
-  (
-    SCHED_NAME VARCHAR(120) NOT NULL,
-    TRIGGER_NAME VARCHAR(200) NOT NULL,
-    TRIGGER_GROUP VARCHAR(200) NOT NULL,
-    CRON_EXPRESSION VARCHAR(200) NOT NULL,
-    TIME_ZONE_ID VARCHAR(80),
-    PRIMARY KEY (SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP),
-    FOREIGN KEY (SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP)
-        REFERENCES QRTZ_TRIGGERS(SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP)
-);
-
-CREATE TABLE QRTZ_SIMPROP_TRIGGERS
-  (          
-    SCHED_NAME VARCHAR(120) NOT NULL,
-    TRIGGER_NAME VARCHAR(200) NOT NULL,
-    TRIGGER_GROUP VARCHAR(200) NOT NULL,
-    STR_PROP_1 VARCHAR(512) NULL,
-    STR_PROP_2 VARCHAR(512) NULL,
-    STR_PROP_3 VARCHAR(512) NULL,
-    INT_PROP_1 INT NULL,
-    INT_PROP_2 INT NULL,
-    LONG_PROP_1 BIGINT NULL,
-    LONG_PROP_2 BIGINT NULL,
-    DEC_PROP_1 NUMERIC(13,4) NULL,
-    DEC_PROP_2 NUMERIC(13,4) NULL,
-    BOOL_PROP_1 VARCHAR(1) NULL,
-    BOOL_PROP_2 VARCHAR(1) NULL,
-    PRIMARY KEY (SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP),
-    FOREIGN KEY (SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP) 
-    REFERENCES QRTZ_TRIGGERS(SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP)
-);
-
-CREATE TABLE QRTZ_BLOB_TRIGGERS
-  (
-    SCHED_NAME VARCHAR(120) NOT NULL,
-    TRIGGER_NAME VARCHAR(200) NOT NULL,
-    TRIGGER_GROUP VARCHAR(200) NOT NULL,
-    BLOB_DATA BLOB NULL,
-    PRIMARY KEY (SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP),
-    FOREIGN KEY (SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP)
-        REFERENCES QRTZ_TRIGGERS(SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP)
-);
-
-CREATE TABLE QRTZ_CALENDARS
-  (
-    SCHED_NAME VARCHAR(120) NOT NULL,
-    CALENDAR_NAME  VARCHAR(200) NOT NULL,
-    CALENDAR BLOB NOT NULL,
-    PRIMARY KEY (SCHED_NAME,CALENDAR_NAME)
-);
-
-CREATE TABLE QRTZ_PAUSED_TRIGGER_GRPS
-  (
-    SCHED_NAME VARCHAR(120) NOT NULL,
-    TRIGGER_GROUP  VARCHAR(200) NOT NULL, 
-    PRIMARY KEY (SCHED_NAME,TRIGGER_GROUP)
-);
-
-CREATE TABLE QRTZ_FIRED_TRIGGERS
-  (
-    SCHED_NAME VARCHAR(120) NOT NULL,
-    ENTRY_ID VARCHAR(95) NOT NULL,
-    TRIGGER_NAME VARCHAR(200) NOT NULL,
-    TRIGGER_GROUP VARCHAR(200) NOT NULL,
-    INSTANCE_NAME VARCHAR(200) NOT NULL,
-    FIRED_TIME BIGINT(13) NOT NULL,
-    SCHED_TIME BIGINT(13) NOT NULL,
-    PRIORITY INTEGER NOT NULL,
-    STATE VARCHAR(16) NOT NULL,
-    JOB_NAME VARCHAR(200) NULL,
-    JOB_GROUP VARCHAR(200) NULL,
-    IS_NONCONCURRENT VARCHAR(1) NULL,
-    REQUESTS_RECOVERY VARCHAR(1) NULL,
-    PRIMARY KEY (SCHED_NAME,ENTRY_ID)
-);
-
-CREATE TABLE QRTZ_SCHEDULER_STATE
-  (
-    SCHED_NAME VARCHAR(120) NOT NULL,
-    INSTANCE_NAME VARCHAR(200) NOT NULL,
-    LAST_CHECKIN_TIME BIGINT(13) NOT NULL,
-    CHECKIN_INTERVAL BIGINT(13) NOT NULL,
-    PRIMARY KEY (SCHED_NAME,INSTANCE_NAME)
-);
-
-CREATE TABLE QRTZ_LOCKS
-  (
-    SCHED_NAME VARCHAR(120) NOT NULL,
-    LOCK_NAME  VARCHAR(40) NOT NULL, 
-    PRIMARY KEY (SCHED_NAME,LOCK_NAME)
-);
+SET FOREIGN_KEY_CHECKS = 1;
