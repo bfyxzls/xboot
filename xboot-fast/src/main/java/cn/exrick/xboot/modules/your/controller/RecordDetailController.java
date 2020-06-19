@@ -47,6 +47,7 @@ public class RecordDetailController extends XbootBaseController<RecordDetail, St
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     @ApiOperation(value = "前台批量添加表单")
     public Result<Object> add(@RequestBody RecordFormDTO recordFormDTO) {
+        log.info("RecordDetailController.add.param:{}",recordFormDTO);
         recordDetailService.addRecordDetails(recordFormDTO);
         return ResultUtil.success("添加成功");
     }
