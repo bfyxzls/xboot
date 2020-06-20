@@ -11,3 +11,5 @@ xboot-logs/
 *.bak
 
 rebel.xml
+
+*.DS_Store

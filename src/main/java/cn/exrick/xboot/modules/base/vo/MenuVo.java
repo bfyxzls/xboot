@@ -2,6 +2,7 @@ package cn.exrick.xboot.modules.base.vo;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.ToString;
 
 import java.util.List;
 
@@ -9,6 +10,7 @@ import java.util.List;
  * @author Exrick
  */
 @Data
+@ToString
 public class MenuVo {
 
     @ApiModelProperty(value = "id")

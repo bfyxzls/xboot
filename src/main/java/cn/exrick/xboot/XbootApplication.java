@@ -13,7 +13,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
  */
 @SpringBootApplication
 //启用缓存
-//@EnableCaching
+@EnableCaching
 //启用异步
 @EnableAsync
 @EnableAdminServer

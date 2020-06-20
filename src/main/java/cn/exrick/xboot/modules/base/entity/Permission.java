@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.ToString;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -21,6 +22,7 @@ import java.util.List;
  */
 @Data
 @Entity
+@ToString
 @Table(name = "t_permission")
 @TableName("t_permission")
 @ApiModel(value = "菜单权限")
