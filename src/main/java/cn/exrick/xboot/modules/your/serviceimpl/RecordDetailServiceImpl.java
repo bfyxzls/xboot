@@ -121,11 +121,11 @@ public class RecordDetailServiceImpl implements RecordDetailService {
                 recordDetail.setTemplateId(id[0]);
                 recordDetail.setTaskId(taskId);
                 recordDetail.setTypeId(recordFormDTO.getTypeId());
-                if (template.getQuestionType() <= 1) {
-                    //单选和多选
+                if (template.getScoreType() != null & template.getScoreType().equals(1)) {
+                    // 记分
                     recordDetail.setScore(Double.parseDouble(id[1]));
                 } else {
-                    //其它
+                    // 不记分
                     recordDetail.setContent(id[1]);
                 }
                 recordDetailList.add(recordDetail);
@@ -159,17 +159,23 @@ public class RecordDetailServiceImpl implements RecordDetailService {
         for (RecordDetail o : list) {
             RecordDetail recordDetail = recordDetailDao.getOne(o.getId());
             recordId = recordDetail.getRecordId();
-            Template template = templateService.get(o.getTemplateId());
-            if (template.getQuestionType() <= 1) {
-                recordDetail.setScore(o.getScore());
-            } else {
-                recordDetail.setContent(o.getContent());
+            Template template = templateService.get(recordDetail.getTemplateId());
+            if (template != null) {
+                if (template.getScoreType() != null & template.getScoreType().equals(1)) {
+                    recordDetail.setScore(o.getScore());
+                } else {
+                    recordDetail.setContent(o.getContent());
+                }
             }
             save(recordDetail);
         }
         List<RecordDetail> recordDetails = findByRecordId(recordId);
         Double sum = recordDetails.stream().mapToDouble(RecordDetail::getScore).sum();
         Record record = recordService.get(recordId);
+        //如果当前角色是审核员，就将记录状态改为已审核
+        if (securityUtil.getCurrUser().getType().equals(2)) {
+            record.setStatus(1);
+        }
         record.setScore(sum);
         recordService.update(record);
     }

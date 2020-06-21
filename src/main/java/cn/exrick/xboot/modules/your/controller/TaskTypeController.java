@@ -34,6 +34,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author lind
@@ -52,6 +53,10 @@ public class TaskTypeController extends XbootBaseController<TaskType, String> {
     SecurityUtil securityUtil;
     @Autowired
     RoleService roleService;
+    @Autowired
+    TemplateService templateService;
+    @Autowired
+    EntityUtil entityUtil;
     @Autowired
     private TaskTypeService taskTypeService;
 
@@ -86,18 +91,22 @@ public class TaskTypeController extends XbootBaseController<TaskType, String> {
         return new ResultUtil<Page<TaskType>>().setData(page);
     }
 
-    @Autowired
-    TemplateService templateService;
-
     @RequestMapping(value = "/getByRoles", method = RequestMethod.GET)
     @ApiOperation(value = "按着当前登陆人的角色返回列表,包括了评价模版")
     public Result<List<TaskType>> getListByRoles() {
-
+        List<String> roles = securityUtil.getCurrUser().getRoles().stream().map(o -> o.getId()).collect(Collectors.toList());
         Specification<TaskType> s1 = new Specification<TaskType>() {
             @Override
             public Predicate toPredicate(Root<TaskType> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
-                Predicate p1 = criteriaBuilder.equal(root.get("roleIds"), securityUtil.getCurrUser().getRoles().stream().map(o -> o.getId()));
-                return criteriaBuilder.and(p1);
+                List<Predicate> listOr = new ArrayList<>();
+                for (String roleId : roles) {
+                    listOr.add(criteriaBuilder.like(root.get("roleIds"), "%" + roleId + "%"));
+
+                }
+                Predicate[] arrayOr = new Predicate[listOr.size()];
+                Predicate Pre_Or = criteriaBuilder.or(listOr.toArray(arrayOr));
+                criteriaQuery.where(Pre_Or);
+                return null;
             }
         };
         List<TaskType> page = taskTypeService.findAll(s1);
@@ -107,12 +116,11 @@ public class TaskTypeController extends XbootBaseController<TaskType, String> {
         for (TaskType taskType1 : page) {
             taskType1.setTaskTitle(taskService.get(taskType1.getTaskId()).getTitle());
             taskType1.setTypeTitle(typeService.get(taskType1.getTypeId()).getTitle());
-            taskType1.setTemplates(templateService.findByTypeIdOrderBySortOrder(taskType1.getTypeId()));
+            taskType1.setTemplates(templateService.findAllTreeByTypeId(taskType1.getTypeId()));
         }
         return new ResultUtil<List<TaskType>>().setData(page);
     }
-    @Autowired
-    EntityUtil entityUtil;
+
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     @ApiOperation(value = "添加任务配置")
     public Result<Object> add(TaskType entity) {

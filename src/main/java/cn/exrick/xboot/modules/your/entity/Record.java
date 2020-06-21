@@ -33,7 +33,8 @@ public class Record extends XbootBaseEntity {
     private String taskId;
     @ApiModelProperty(value = "分值")
     private Double score;
-
+    @ApiModelProperty(value = "状态：0未审核，1已审核")
+    private Integer status;
     @Transient
     @TableField(exist = false)
     @ApiModelProperty(value = "小区名称")

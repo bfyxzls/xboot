@@ -9,6 +9,7 @@ import cn.exrick.xboot.modules.your.entity.Template;
 import cn.exrick.xboot.modules.your.service.TemplateService;
 import cn.exrick.xboot.modules.your.service.TypeService;
 import cn.hutool.core.util.StrUtil;
+import io.micrometer.core.instrument.util.StringUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -75,7 +76,9 @@ public class TemplateController {
     @RequestMapping(value = "/edit", method = RequestMethod.POST)
     @ApiOperation(value = "编辑")
     public Result<Object> edit(Template template) {
-
+        if (StringUtils.isBlank(template.getParentId())) {
+            template.setParentId("0");
+        }
         templateService.update(template);
         // 手动删除所有分类缓存
         Set<String> keys = redisTemplate.keys("template:" + "*");
@@ -183,5 +186,12 @@ public class TemplateController {
         }
         template.setTypeTitle(typeService.get(template.getTypeId()).getTitle());
         return new ResultUtil<Template>().setData(template);
+    }
+
+    @RequestMapping(value = "/getAllList/{typeId}", method = RequestMethod.GET)
+    @ApiOperation(value = "获取模版树")
+    @Cacheable(value = "allListForType", key = "#typeId")
+    public Result<List<Template>> getAllListByType(@PathVariable String typeId) {
+        return new ResultUtil<List<Template>>().setData(templateService.findAllTreeByTypeId(typeId));
     }
 }

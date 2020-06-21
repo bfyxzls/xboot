@@ -1,10 +1,13 @@
 package cn.exrick.xboot.modules.base.serviceimpl;
 
 import cn.exrick.xboot.common.constant.CommonConstant;
+import cn.exrick.xboot.modules.base.dao.DictDao;
 import cn.exrick.xboot.modules.base.dao.DictDataDao;
+import cn.exrick.xboot.modules.base.entity.Dict;
 import cn.exrick.xboot.modules.base.entity.DictData;
 import cn.exrick.xboot.modules.base.service.DictDataService;
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -20,6 +23,7 @@ import java.util.List;
 
 /**
  * 字典数据接口实现
+ *
  * @author Exrick
  */
 @Slf4j
@@ -27,6 +31,8 @@ import java.util.List;
 @Transactional
 public class DictDataServiceImpl implements DictDataService {
 
+    @Autowired
+    DictDao dictDao;
     @Autowired
     private DictDataDao dictDataDao;
 
@@ -50,17 +56,17 @@ public class DictDataServiceImpl implements DictDataService {
                 List<Predicate> list = new ArrayList<Predicate>();
 
                 //模糊搜素
-                if(StrUtil.isNotBlank(dictData.getTitle())){
-                    list.add(cb.like(titleField,'%'+dictData.getTitle()+'%'));
+                if (StrUtil.isNotBlank(dictData.getTitle())) {
+                    list.add(cb.like(titleField, '%' + dictData.getTitle() + '%'));
                 }
 
                 //状态
-                if(dictData.getStatus()!=null){
+                if (dictData.getStatus() != null) {
                     list.add(cb.equal(statusField, dictData.getStatus()));
                 }
 
                 //所属字典
-                if(StrUtil.isNotBlank(dictData.getDictId())){
+                if (StrUtil.isNotBlank(dictData.getDictId())) {
                     list.add(cb.equal(dictIdField, dictData.getDictId()));
                 }
 
@@ -81,5 +87,17 @@ public class DictDataServiceImpl implements DictDataService {
     public void deleteByDictId(String dictId) {
 
         dictDataDao.deleteByDictId(dictId);
+    }
+
+    @Override
+    public DictData findByTypeAndValue(String type, String value) {
+        Dict dic = dictDao.findByType(type);
+        if (dic != null) {
+            List<DictData> dictDatas = dictDataDao.findByDictIdAndStatusOrderBySortOrder(dic.getId(), CommonConstant.STATUS_NORMAL);
+            if (CollectionUtils.isNotEmpty(dictDatas)) {
+                return dictDatas.stream().filter(o -> o.getValue().equals(value)).findFirst().orElse(null);
+            }
+        }
+        return null;
     }
 }

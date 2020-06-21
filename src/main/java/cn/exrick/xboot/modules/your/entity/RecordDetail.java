@@ -1,6 +1,7 @@
 package cn.exrick.xboot.modules.your.entity;
 
 import cn.exrick.xboot.base.XbootBaseEntity;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -10,6 +11,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 /**
  * @author lind
@@ -42,4 +44,9 @@ public class RecordDetail extends XbootBaseEntity {
     private String taskId;
     @ApiModelProperty(value = "文本内容")
     private String content;
+    @Transient
+    @TableField(exist = false)
+    @ApiModelProperty(value = "试题类型")
+    private Integer questionType;
+
 }

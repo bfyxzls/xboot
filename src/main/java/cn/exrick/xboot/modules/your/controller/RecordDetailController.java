@@ -5,8 +5,10 @@ import cn.exrick.xboot.common.utils.ResultUtil;
 import cn.exrick.xboot.common.vo.Result;
 import cn.exrick.xboot.modules.your.dto.RecordFormDTO;
 import cn.exrick.xboot.modules.your.entity.RecordDetail;
+import cn.exrick.xboot.modules.your.entity.Template;
 import cn.exrick.xboot.modules.your.service.RecordDetailService;
 import cn.exrick.xboot.modules.your.service.RecordService;
+import cn.exrick.xboot.modules.your.service.TemplateService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +33,8 @@ public class RecordDetailController extends XbootBaseController<RecordDetail, St
     RecordService recordService;
     @Autowired
     private RecordDetailService recordDetailService;
-
+@Autowired
+    TemplateService templateService;
     @Override
     public RecordDetailService getService() {
         return recordDetailService;
@@ -41,6 +44,12 @@ public class RecordDetailController extends XbootBaseController<RecordDetail, St
     @ApiOperation(value = "按recordid获取表单列表")
     public Result<List<RecordDetail>> getByCondition(@RequestParam String recordId) {
         List<RecordDetail> page = recordDetailService.findByRecordId(recordId);
+        for(RecordDetail detail : page){
+           Template template= templateService.get(detail.getTemplateId());
+           if(template!=null){
+               detail.setQuestionType(template.getQuestionType());
+           }
+        }
         return new ResultUtil<List<RecordDetail>>().setData(page);
     }
 

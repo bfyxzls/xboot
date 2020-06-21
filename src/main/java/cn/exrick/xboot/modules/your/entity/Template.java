@@ -41,6 +41,10 @@ public class Template extends XbootBaseEntity {
     private Integer level;
     @ApiModelProperty(value = "层级类型0标题，1内容")
     private Integer levelType;
+    @ApiModelProperty(value = "试题类型，字典questionType")
+    private Integer questionType;
+    @ApiModelProperty(value = "计分类型0不计分，1计分")
+    private Integer scoreType;
 
     @Transient
     @TableField(exist = false)
@@ -59,6 +63,5 @@ public class Template extends XbootBaseEntity {
     @ApiModelProperty(value = "分类名称")
     private String typeTitle;
 
-    @ApiModelProperty(value = "试题类型")
-    private Integer questionType;
+
 }

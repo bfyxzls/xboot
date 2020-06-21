@@ -195,7 +195,9 @@ public class UserController {
         }
 
         // 若修改了手机和邮箱判断是否唯一
-        if (!old.getMobile().equals(u.getMobile()) && userService.findByMobile(u.getMobile()) != null) {
+        if (old.getMobile()!=null &&
+                !old.getMobile().equals(u.getMobile()) &&
+                userService.findByMobile(u.getMobile()) != null) {
             return ResultUtil.error("该手机号已绑定其他账户");
         }
         if (!old.getEmail().equals(u.getEmail()) && userService.findByMobile(u.getEmail()) != null) {

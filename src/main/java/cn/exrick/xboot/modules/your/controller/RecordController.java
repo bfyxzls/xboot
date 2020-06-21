@@ -7,7 +7,10 @@ import cn.exrick.xboot.common.vo.PageVo;
 import cn.exrick.xboot.common.vo.Result;
 import cn.exrick.xboot.common.vo.SearchVo;
 import cn.exrick.xboot.modules.base.utils.EntityUtil;
+import cn.exrick.xboot.modules.your.entity.Court;
 import cn.exrick.xboot.modules.your.entity.Record;
+import cn.exrick.xboot.modules.your.entity.Task;
+import cn.exrick.xboot.modules.your.entity.Type;
 import cn.exrick.xboot.modules.your.service.*;
 import cn.exrick.xboot.modules.your.util.FileUtil;
 import io.swagger.annotations.Api;
@@ -60,9 +63,18 @@ public class RecordController extends XbootBaseController<Record, String> {
         Page<Record> page = recordService.findByCondition(record, searchVo, PageUtil.initPage(pageVo));
 
         for (Record record1 : page) {
-            record1.setTaskTitle(taskService.get(record1.getTaskId()).getTitle());
-            record1.setTypeTitle(typeService.get(record1.getTypeId()).getTitle());
-            record1.setCourtTitle(courtService.get(record1.getCourtId()).getTitle());
+            Task task = taskService.get(record1.getTaskId());
+            if (task != null) {
+                record1.setTaskTitle(taskService.get(record1.getTaskId()).getTitle());
+            }
+            Type type = typeService.get(record1.getTypeId());
+            if (type != null) {
+                record1.setTypeTitle(type.getTitle());
+            }
+            Court court = courtService.get(record1.getCourtId());
+            if (court != null) {
+                record1.setCourtTitle(court.getTitle());
+            }
 
         }
 

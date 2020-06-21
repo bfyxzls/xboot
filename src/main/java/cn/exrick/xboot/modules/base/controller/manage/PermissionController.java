@@ -216,10 +216,10 @@ public class PermissionController {
         return new ResultUtil<Permission>().setData(u);
     }
 
-    @RequestMapping(value = "/delByIds/{ids}", method = RequestMethod.POST)
+    @RequestMapping(value = "/delByIds", method = RequestMethod.POST)
     @ApiOperation(value = "批量通过id删除")
     @CacheEvict(key = "'menuList'")
-    public Result<Object> delByIds(@PathVariable String[] ids) {
+    public Result<Object> delByIds(@RequestParam String[] ids) {
 
         for (String id : ids) {
             List<RolePermission> list = rolePermissionService.findByPermissionId(id);
