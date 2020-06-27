@@ -128,12 +128,13 @@ public class RecordDetailServiceImpl implements RecordDetailService {
                 recordDetail.setTemplateId(id[0]);
                 recordDetail.setTaskId(taskId);
                 recordDetail.setTypeId(recordFormDTO.getTypeId());
-                if (template.getScoreType() != null & template.getScoreType().equals(1)) {
+                if (template.getScoreType() != null && template.getScoreType().equals(1)) {
                     // 记分
                     recordDetail.setScore(Double.parseDouble(id[1]));
                 } else {
                     // 不记分
                     recordDetail.setContent(id[1]);
+                    recordDetail.setScore(0d);
                 }
                 recordDetailList.add(recordDetail);
 
