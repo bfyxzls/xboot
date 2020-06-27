@@ -32,7 +32,10 @@ public class Court extends XbootBaseEntity {
     private String tenementId;
     @ApiModelProperty("组织机构ID")
     private String departmentId;
-
+    @ApiModelProperty("纬度")
+    private Double latitude;
+    @ApiModelProperty("经度")
+    private  Double longitude;
     @Transient
     @TableField(exist = false)
     @ApiModelProperty(value = "组织机构")

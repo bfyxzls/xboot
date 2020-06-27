@@ -4,6 +4,7 @@ import cn.exrick.xboot.common.utils.SecurityUtil;
 import cn.exrick.xboot.modules.base.dao.DepartmentDao;
 import cn.exrick.xboot.modules.base.entity.Department;
 import cn.exrick.xboot.modules.base.service.DepartmentService;
+import io.micrometer.core.instrument.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -58,4 +59,47 @@ public class DepartmentServiceImpl implements DepartmentService {
         }
         return departmentDao.findByTitleLikeOrderBySortOrder(title);
     }
+
+    /**
+     * 找老子.
+     *
+     * @param son
+     */
+    @Override
+    public void generateParents(Department son) {
+        if (StringUtils.isNotBlank(son.getParentId()) && son.getParentId() != "0") { //没有到顶级
+            Department father = get(son.getParentId());
+            if (father != null) {
+                son.setParent(father);
+                generateParents(father);
+            }
+        }
+    }
+
+    /**
+     * 生成上级的名称，返回一个集合.
+     *
+     * @param department
+     */
+    @Override
+   public void generateParentTitle(Department department, List<String> result) {
+        result.add(0,department.getTitle());
+        if (department.getParent() != null) {
+            generateParentTitle(department.getParent(), result);
+        }
+    }
+
+    /**
+     * 生成上级的ID，返回一个集合.
+     *
+     * @param department
+     */
+    @Override
+    public void generateParentId(Department department, List<String> result) {
+        result.add(0,department.getId());
+        if (department.getParent() != null) {
+            generateParentId(department.getParent(), result);
+        }
+    }
+
 }

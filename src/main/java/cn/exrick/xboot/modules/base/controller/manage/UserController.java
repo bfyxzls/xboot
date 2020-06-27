@@ -50,11 +50,11 @@ public class UserController {
     @Autowired
     EmailHelper emailHelper;
     @Autowired
+    DepartmentService departmentService;
+    @Autowired
     private UserService userService;
     @Autowired
     private RoleService roleService;
-    @Autowired
-    private DepartmentService departmentService;
     @Autowired
     private IUserRoleService iUserRoleService;
     @Autowired
@@ -195,7 +195,7 @@ public class UserController {
         }
 
         // 若修改了手机和邮箱判断是否唯一
-        if (old.getMobile()!=null &&
+        if (old.getMobile() != null &&
                 !old.getMobile().equals(u.getMobile()) &&
                 userService.findByMobile(u.getMobile()) != null) {
             return ResultUtil.error("该手机号已绑定其他账户");
@@ -225,6 +225,8 @@ public class UserController {
         redisTemplate.delete("userRole::depIds:" + u.getId());
         redisTemplate.delete("userPermission::" + u.getId());
         redisTemplate.delete("permission::userMenuList:" + u.getId());
+        redisTemplate.delete("user::"+u.getUsername());
+
         return ResultUtil.success("修改成功");
     }
 
@@ -440,6 +442,52 @@ public class UserController {
         redisTemplate.delete("user::" + u.getUsername());
 
         return ResultUtil.success("操作成功");
+    }
+
+    /**
+     * 得到组织机构.
+     *
+     * @return
+     */
+    @GetMapping("getDepartment")
+    @ApiOperation(value = "得到当前用户的组织机构")
+    public Result<Department> getDepartmentTree() {
+        Department department = departmentService.get(securityUtil.getCurrUser().getDepartmentId());
+        generateParents(department);
+        List<Department> sons = departmentService.findByParentIdAndStatusOrderBySortOrder(department.getId(), CommonConstant.STATUS_NORMAL);
+        generateSons(sons);
+        department.setChildren(sons);
+        return ResultUtil.data(department);
+    }
+
+    /**
+     * 找老子.
+     *
+     * @param son
+     */
+    void generateParents(Department son) {
+        if (StringUtils.isNotBlank(son.getParentId()) && son.getParentId() != "0") { //没有到顶级
+            Department father = departmentService.get(son.getParentId());
+            if (father != null) {
+                son.setParent(father);
+                generateParents(father);
+            }
+        }
+    }
+
+    /**
+     * 生儿子.
+     *
+     * @param list0
+     */
+    void generateSons(List<Department> list0) {
+        for (Department p0 : list0) {
+            List<Department> list1 = departmentService.findByParentIdAndStatusOrderBySortOrder(p0.getId(), CommonConstant.STATUS_NORMAL);
+            if (list1 != null) {
+                p0.setChildren(list1);
+                generateSons(list1);
+            }
+        }
     }
 
 }

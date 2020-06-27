@@ -18,6 +18,6 @@ public class EntityUtil {
         xbootBaseEntity.setCreateTime(DateTime.now());
         xbootBaseEntity.setDelFlag(0);
         xbootBaseEntity.setUpdateBy(user.getUpdateBy());
-        xbootBaseEntity.setUpdateTime(user.getUpdateTime());
+        xbootBaseEntity.setUpdateTime(DateTime.now());
     }
 }

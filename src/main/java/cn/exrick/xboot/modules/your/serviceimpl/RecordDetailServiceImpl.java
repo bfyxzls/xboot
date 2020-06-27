@@ -1,17 +1,18 @@
 package cn.exrick.xboot.modules.your.serviceimpl;
 
+import cn.exrick.xboot.common.exception.XbootException;
 import cn.exrick.xboot.common.utils.SecurityUtil;
 import cn.exrick.xboot.common.vo.SearchVo;
+import cn.exrick.xboot.modules.base.entity.Department;
+import cn.exrick.xboot.modules.base.service.DepartmentService;
 import cn.exrick.xboot.modules.base.utils.EntityUtil;
 import cn.exrick.xboot.modules.your.dao.RecordDetailDao;
 import cn.exrick.xboot.modules.your.dto.RecordFormDTO;
+import cn.exrick.xboot.modules.your.entity.Court;
 import cn.exrick.xboot.modules.your.entity.Record;
 import cn.exrick.xboot.modules.your.entity.RecordDetail;
 import cn.exrick.xboot.modules.your.entity.Template;
-import cn.exrick.xboot.modules.your.service.RecordDetailService;
-import cn.exrick.xboot.modules.your.service.RecordService;
-import cn.exrick.xboot.modules.your.service.TemplateService;
-import cn.exrick.xboot.modules.your.service.TypeService;
+import cn.exrick.xboot.modules.your.service.*;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import io.micrometer.core.instrument.util.StringUtils;
@@ -50,6 +51,10 @@ public class RecordDetailServiceImpl implements RecordDetailService {
     EntityUtil entityUtil;
     @Autowired
     SecurityUtil securityUtil;
+    @Autowired
+    CourtService courtService;
+    @Autowired
+    DepartmentService departmentService;
     @Autowired
     private RecordDetailDao recordDetailDao;
 
@@ -110,13 +115,15 @@ public class RecordDetailServiceImpl implements RecordDetailService {
     public void addRecordDetails(RecordFormDTO recordFormDTO) {
         String recordDetails = recordFormDTO.getRecordDetails();
         String taskId = recordFormDTO.getTaskId();
-        recordDetails = recordDetails.substring(0, recordDetails.length() - 1);
         List<RecordDetail> recordDetailList = new ArrayList<>();
         String[] one = recordDetails.split("\\|");
         for (String detail : one) {
             String[] id = detail.split("_");
             if (id.length > 1) {
                 Template template = templateService.get(id[0]);
+                if (template == null) {
+                    throw new XbootException("template不存在");
+                }
                 RecordDetail recordDetail = new RecordDetail();
                 recordDetail.setTemplateId(id[0]);
                 recordDetail.setTaskId(taskId);
@@ -129,13 +136,37 @@ public class RecordDetailServiceImpl implements RecordDetailService {
                     recordDetail.setContent(id[1]);
                 }
                 recordDetailList.add(recordDetail);
+
             }
         }
+
+        //写入统计
+        Double sum = recordDetailList.stream().mapToDouble(RecordDetail::getScore).sum();
+        Record record = new Record();
+        BeanUtils.copyProperties(recordFormDTO, record);
+        entityUtil.initEntity(record);
+        if (StringUtils.isNotBlank(record.getCourtId())) {
+            Court court = courtService.get(record.getCourtId());
+            if (court != null) {
+                record.setDepartmentId(court.getDepartmentId());
+            }
+        }
+        String deptId = securityUtil.getCurrUser().getDepartmentId();
+        Department department = departmentService.get(deptId);
+        record.setDepartmentId(deptId);
+        List<String> result = new ArrayList<>();
+        departmentService.generateParents(department);
+        departmentService.generateParentId(department, result);
+        record.setDepartmentIds(String.join(",", result));
+        record.setScore(sum);
+        recordService.save(record);
+
         //写入表单明细
         recordDetailList.forEach(o -> {
             entityUtil.initEntity(o);
             Template template = templateService.get(o.getTemplateId());
             o.setTaskId(taskId);
+            o.setRecordId(record.getId());
             o.setTemplateId(template.getId());
             o.setTemplateTitle(template.getTitle());
             o.setTypeId(template.getTypeId());
@@ -143,14 +174,7 @@ public class RecordDetailServiceImpl implements RecordDetailService {
             o.setCreateDepartmentId(securityUtil.getCurrUser().getDepartmentId());
             save(o);
         });
-        //写入统计
-        Double sum = recordDetailList.stream().mapToDouble(RecordDetail::getScore).sum();
-        Record record = new Record();
-        BeanUtils.copyProperties(recordFormDTO, record);
-        entityUtil.initEntity(record);
-        record.setCreateDepartmentId(securityUtil.getCurrUser().getDepartmentId());
-        record.setScore(sum);
-        recordService.save(record);
+
     }
 
     @Override

@@ -11,7 +11,10 @@ import cn.exrick.xboot.modules.your.entity.Court;
 import cn.exrick.xboot.modules.your.entity.Record;
 import cn.exrick.xboot.modules.your.entity.Task;
 import cn.exrick.xboot.modules.your.entity.Type;
-import cn.exrick.xboot.modules.your.service.*;
+import cn.exrick.xboot.modules.your.service.CourtService;
+import cn.exrick.xboot.modules.your.service.RecordService;
+import cn.exrick.xboot.modules.your.service.TaskService;
+import cn.exrick.xboot.modules.your.service.TypeService;
 import cn.exrick.xboot.modules.your.util.FileUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -44,8 +47,6 @@ public class RecordController extends XbootBaseController<Record, String> {
     private TaskService taskService;
     @Autowired
     private TypeService typeService;
-    @Autowired
-    private TenementService tenementService;
     @Autowired
     private CourtService courtService;
 
@@ -97,7 +98,6 @@ public class RecordController extends XbootBaseController<Record, String> {
         old.setTaskId(entity.getTaskId());
         old.setTypeId(entity.getTypeId());
         old.setCourtId(entity.getCourtId());
-        old.setCreateDepartmentId(entity.getCreateDepartmentId());
         old.setScore(entity.getScore());
         recordService.save(old);
         return ResultUtil.success("保存成功");

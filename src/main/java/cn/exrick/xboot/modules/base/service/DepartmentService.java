@@ -7,12 +7,14 @@ import java.util.List;
 
 /**
  * 部门接口
+ *
  * @author Exrick
  */
-public interface DepartmentService extends XbootBaseService<Department,String> {
+public interface DepartmentService extends XbootBaseService<Department, String> {
 
     /**
      * 通过父id获取 升序
+     *
      * @param parentId
      * @param openDataFilter 是否开启数据权限
      * @return
@@ -21,6 +23,7 @@ public interface DepartmentService extends XbootBaseService<Department,String> {
 
     /**
      * 通过父id和状态获取
+     *
      * @param parentId
      * @param status
      * @return
@@ -29,9 +32,34 @@ public interface DepartmentService extends XbootBaseService<Department,String> {
 
     /**
      * 部门名模糊搜索 升序
+     *
      * @param title
      * @param openDataFilter 是否开启数据权限
      * @return
      */
     List<Department> findByTitleLikeOrderBySortOrder(String title, Boolean openDataFilter);
+
+    /**
+     * 找老子.
+     *
+     * @param son
+     */
+    void generateParents(Department son);
+
+    /**
+     * 生成上级的名称，返回一个集合.
+     *
+     * @param department
+     * @param result
+     */
+    void generateParentTitle(Department department, List<String> result);
+
+    /**
+     * 生成上级的ID，返回一个集合.
+     *
+     * @param department
+     * @param result
+     */
+    void generateParentId(Department department, List<String> result);
+
 }

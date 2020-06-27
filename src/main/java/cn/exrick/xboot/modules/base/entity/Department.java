@@ -2,6 +2,7 @@ package cn.exrick.xboot.modules.base.entity;
 
 import cn.exrick.xboot.base.XbootBaseEntity;
 import cn.exrick.xboot.common.constant.CommonConstant;
+import cn.exrick.xboot.modules.your.entity.Template;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
@@ -57,4 +58,14 @@ public class Department extends XbootBaseEntity {
     @TableField(exist=false)
     @ApiModelProperty(value = "副负责人")
     private List<String> viceHeader;
+
+    @Transient
+    @TableField(exist = false)
+    @ApiModelProperty(value = "孩子")
+    private List<Department> children;
+
+    @Transient
+    @TableField(exist = false)
+    @ApiModelProperty(value = "父亲")
+    private Department parent;
 }
