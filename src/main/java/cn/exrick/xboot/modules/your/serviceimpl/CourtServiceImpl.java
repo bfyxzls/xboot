@@ -74,6 +74,9 @@ public class CourtServiceImpl implements CourtService {
                 if (StringUtils.isNotBlank(court.getTitle())) {
                     list.add(cb.like(titleField, court.getTitle().trim() + "%"));
                 }
+                if (StringUtils.isNotBlank(court.getDepartmentId())) {
+                    list.add(cb.like(root.get("departmentIds"), "%"+court.getDepartmentId()+"%"));
+                }
                 Predicate[] arr = new Predicate[list.size()];
                 cq.where(list.toArray(arr));
                 return null;

@@ -176,7 +176,7 @@ public class RecordDetailServiceImpl implements RecordDetailService {
     }
 
     @Override
-    public void updateRecordDetail(List<RecordDetail> list) {
+    public void updateRecordDetail(List<RecordDetail> list,Boolean isAudit) {
         String recordId = null;
         for (RecordDetail o : list) {
             RecordDetail recordDetail = recordDetailDao.getOne(o.getId());
@@ -195,7 +195,7 @@ public class RecordDetailServiceImpl implements RecordDetailService {
         Double sum = recordDetails.stream().mapToDouble(RecordDetail::getScore).sum();
         Record record = recordService.get(recordId);
         //如果当前角色是审核员，就将记录状态改为已审核
-        if (securityUtil.getCurrUser().getType().equals(2)) {
+        if (isAudit) {
             record.setStatus(1);
         }
         record.setScore(sum);

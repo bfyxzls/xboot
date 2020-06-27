@@ -76,7 +76,26 @@ public class RecordDetailController extends XbootBaseController<RecordDetail, St
                 recordDetailList.add(recordDetail);
             }
         }
-        recordDetailService.updateRecordDetail(recordDetailList);
+        recordDetailService.updateRecordDetail(recordDetailList,false);
+        return ResultUtil.success("保存成功");
+    }
+
+    @RequestMapping(value = "/audit", method = RequestMethod.POST)
+    @ApiOperation(value = "审核单条编辑表单")
+    public Result<Object> audit(@RequestParam String recordDetails) {
+        recordDetails = recordDetails.substring(0, recordDetails.length() - 1);
+        List<RecordDetail> recordDetailList = new ArrayList<>();
+        String[] one = recordDetails.split("\\|");
+        for (String detail : one) {
+            String[] id = detail.split("_");
+            if (id.length > 1) {
+                RecordDetail recordDetail = new RecordDetail();
+                recordDetail.setId(id[0]);
+                recordDetail.setScore(Double.parseDouble(id[1]));
+                recordDetailList.add(recordDetail);
+            }
+        }
+        recordDetailService.updateRecordDetail(recordDetailList,true);
         return ResultUtil.success("保存成功");
     }
 

@@ -45,6 +45,6 @@ public interface RecordDetailService extends XbootBaseService<RecordDetail, Stri
      *
      * @param list
      */
-    void updateRecordDetail(List<RecordDetail> list);
+    void updateRecordDetail(List<RecordDetail> list,Boolean isAudit);
 
 }
