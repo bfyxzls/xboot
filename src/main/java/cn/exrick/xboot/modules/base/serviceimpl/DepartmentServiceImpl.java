@@ -10,10 +10,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * 部门接口实现
+ *
  * @author Exrick
  */
 @Slf4j
@@ -37,7 +39,7 @@ public class DepartmentServiceImpl implements DepartmentService {
 
         // 数据权限
         List<String> depIds = securityUtil.getDeparmentIds();
-        if(depIds!=null&&depIds.size()>0&&openDataFilter){
+        if (depIds != null && depIds.size() > 0 && openDataFilter) {
             return departmentDao.findByParentIdAndIdInOrderBySortOrder(parentId, depIds);
         }
         return departmentDao.findByParentIdOrderBySortOrder(parentId);
@@ -54,7 +56,7 @@ public class DepartmentServiceImpl implements DepartmentService {
 
         // 数据权限
         List<String> depIds = securityUtil.getDeparmentIds();
-        if(depIds!=null&&depIds.size()>0&&openDataFilter){
+        if (depIds != null && depIds.size() > 0 && openDataFilter) {
             return departmentDao.findByTitleLikeAndIdInOrderBySortOrder(title, depIds);
         }
         return departmentDao.findByTitleLikeOrderBySortOrder(title);
@@ -82,8 +84,8 @@ public class DepartmentServiceImpl implements DepartmentService {
      * @param department
      */
     @Override
-   public void generateParentTitle(Department department, List<String> result) {
-        result.add(0,department.getTitle());
+    public void generateParentTitle(Department department, List<String> result) {
+        result.add(0, department.getTitle());
         if (department.getParent() != null) {
             generateParentTitle(department.getParent(), result);
         }
@@ -95,11 +97,23 @@ public class DepartmentServiceImpl implements DepartmentService {
      * @param department
      */
     @Override
-    public void generateParentId(Department department, List<String> result) {
-        result.add(0,department.getId());
+    public void generateParentIdList(Department department, List<String> result) {
+        result.add(0, department.getId());
         if (department.getParent() != null) {
-            generateParentId(department.getParent(), result);
+            generateParentIdList(department.getParent(), result);
         }
+    }
+
+    @Override
+    public String generateParentIdsString(String departmentId) {
+        Department department = get(departmentId);
+        if (department != null) {
+            generateParents(department);
+            List<String> result = new ArrayList<>();
+            generateParentIdList(department, result);
+            return String.join(",", result);
+        }
+        return null;
     }
 
 }

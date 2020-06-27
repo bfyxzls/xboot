@@ -60,6 +60,14 @@ public interface DepartmentService extends XbootBaseService<Department, String> 
      * @param department
      * @param result
      */
-    void generateParentId(Department department, List<String> result);
+    void generateParentIdList(Department department, List<String> result);
+
+    /**
+     * 生成当前部门的上级部门列表，用逗号分开.
+     *
+     * @param departmentId
+     * @return
+     */
+    String generateParentIdsString(String departmentId);
 
 }

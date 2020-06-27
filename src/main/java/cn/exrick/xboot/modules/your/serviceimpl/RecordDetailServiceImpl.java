@@ -3,10 +3,10 @@ package cn.exrick.xboot.modules.your.serviceimpl;
 import cn.exrick.xboot.common.exception.XbootException;
 import cn.exrick.xboot.common.utils.SecurityUtil;
 import cn.exrick.xboot.common.vo.SearchVo;
-import cn.exrick.xboot.modules.base.entity.Department;
 import cn.exrick.xboot.modules.base.service.DepartmentService;
 import cn.exrick.xboot.modules.base.utils.EntityUtil;
 import cn.exrick.xboot.modules.your.dao.RecordDetailDao;
+import cn.exrick.xboot.modules.your.dto.RecordDetailDTO;
 import cn.exrick.xboot.modules.your.dto.RecordFormDTO;
 import cn.exrick.xboot.modules.your.entity.Court;
 import cn.exrick.xboot.modules.your.entity.Record;
@@ -113,32 +113,33 @@ public class RecordDetailServiceImpl implements RecordDetailService {
 
     @Override
     public void addRecordDetails(RecordFormDTO recordFormDTO) {
-        String recordDetails = recordFormDTO.getRecordDetails();
         String taskId = recordFormDTO.getTaskId();
         List<RecordDetail> recordDetailList = new ArrayList<>();
-        String[] one = recordDetails.split("\\|");
-        for (String detail : one) {
-            String[] id = detail.split("_");
-            if (id.length > 1) {
-                Template template = templateService.get(id[0]);
-                if (template == null) {
-                    throw new XbootException("template不存在");
-                }
-                RecordDetail recordDetail = new RecordDetail();
-                recordDetail.setTemplateId(id[0]);
-                recordDetail.setTaskId(taskId);
-                recordDetail.setTypeId(recordFormDTO.getTypeId());
-                if (template.getScoreType() != null && template.getScoreType().equals(1)) {
-                    // 记分
-                    recordDetail.setScore(Double.parseDouble(id[1]));
-                } else {
-                    // 不记分
-                    recordDetail.setContent(id[1]);
-                    recordDetail.setScore(0d);
-                }
-                recordDetailList.add(recordDetail);
-
+        for (RecordDetailDTO detail : recordFormDTO.getJsonRecordDetails()) {
+            Template template = templateService.get(detail.getTemplateId());
+            if (template == null) {
+                throw new XbootException("template不存在");
             }
+            RecordDetail recordDetail = new RecordDetail();
+            recordDetail.setTemplateId(detail.getTemplateId());
+            recordDetail.setTaskId(taskId);
+            recordDetail.setTypeId(recordFormDTO.getTypeId());
+            if (detail.getScore() != null) {
+                recordDetail.setScore(detail.getScore());
+            }
+            if (detail.getContent() != null) {
+                recordDetail.setContent(detail.getContent());
+            }
+            if (detail.getTextValue() != null) {
+                recordDetail.setTextValue(detail.getTextValue());
+            }
+            if (detail.getPictureUrl() != null) {
+                recordDetail.setPictureUrl(detail.getPictureUrl());
+            }
+            if (detail.getDateValue() != null) {
+                recordDetail.setDateValue(detail.getDateValue());
+            }
+            recordDetailList.add(recordDetail);
         }
 
         //写入统计
@@ -153,12 +154,8 @@ public class RecordDetailServiceImpl implements RecordDetailService {
             }
         }
         String deptId = securityUtil.getCurrUser().getDepartmentId();
-        Department department = departmentService.get(deptId);
         record.setDepartmentId(deptId);
-        List<String> result = new ArrayList<>();
-        departmentService.generateParents(department);
-        departmentService.generateParentId(department, result);
-        record.setDepartmentIds(String.join(",", result));
+        record.setDepartmentIds(departmentService.generateParentIdsString(deptId));
         record.setScore(sum);
         recordService.save(record);
 
