@@ -1,5 +1,6 @@
 package cn.exrick.xboot.modules.base.serviceimpl;
 
+import cn.exrick.xboot.common.constant.CommonConstant;
 import cn.exrick.xboot.common.utils.SecurityUtil;
 import cn.exrick.xboot.modules.base.dao.DepartmentDao;
 import cn.exrick.xboot.modules.base.entity.Department;
@@ -116,4 +117,19 @@ public class DepartmentServiceImpl implements DepartmentService {
         return null;
     }
 
+    /**
+     * 找儿子.
+     *
+     * @param list0
+     */
+    @Override
+    public  void generateSons(List<Department> list0) {
+        for (Department p0 : list0) {
+            List<Department> list1 = findByParentIdAndStatusOrderBySortOrder(p0.getId(), CommonConstant.STATUS_NORMAL);
+            if (list1 != null) {
+                p0.setChildren(list1);
+                generateSons(list1);
+            }
+        }
+    }
 }

@@ -95,7 +95,14 @@ public class CourtController extends XbootBaseController<Court, String> {
     @ApiOperation(value = "添加小区")
     public Result<Object> add(Court entity) {
         entityUtil.initEntity(entity);
-        entity.setDepartmentIds(departmentService.generateParentIdsString(entity.getDepartmentId()));
+        if(entity.getLatitude()==null){
+            entity.setLatitude(0d);
+        }
+        if(entity.getLongitude()==null){
+            entity.setLongitude(0d);
+        }
+        String deptIds=departmentService.generateParentIdsString(entity.getDepartmentId());
+        entity.setDepartmentIds(deptIds);
         courtService.save(entity);
         return ResultUtil.success("添加成功");
     }

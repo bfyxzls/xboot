@@ -70,4 +70,11 @@ public interface DepartmentService extends XbootBaseService<Department, String> 
      */
     String generateParentIdsString(String departmentId);
 
+    /**
+     * 找儿子.
+     *
+     * @param list0
+     */
+    void generateSons(List<Department> list0);
+
 }

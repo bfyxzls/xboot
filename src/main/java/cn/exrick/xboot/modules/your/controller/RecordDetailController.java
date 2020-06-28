@@ -32,9 +32,10 @@ public class RecordDetailController extends XbootBaseController<RecordDetail, St
     @Autowired
     RecordService recordService;
     @Autowired
-    private RecordDetailService recordDetailService;
-@Autowired
     TemplateService templateService;
+    @Autowired
+    private RecordDetailService recordDetailService;
+
     @Override
     public RecordDetailService getService() {
         return recordDetailService;
@@ -44,11 +45,11 @@ public class RecordDetailController extends XbootBaseController<RecordDetail, St
     @ApiOperation(value = "按recordid获取表单列表")
     public Result<List<RecordDetail>> getByCondition(@RequestParam String recordId) {
         List<RecordDetail> page = recordDetailService.findByRecordId(recordId);
-        for(RecordDetail detail : page){
-           Template template= templateService.get(detail.getTemplateId());
-           if(template!=null){
-               detail.setQuestionType(template.getQuestionType());
-           }
+        for (RecordDetail detail : page) {
+            Template template = templateService.get(detail.getTemplateId());
+            if (template != null) {
+                detail.setQuestionType(template.getQuestionType());
+            }
         }
         return new ResultUtil<List<RecordDetail>>().setData(page);
     }
@@ -56,7 +57,7 @@ public class RecordDetailController extends XbootBaseController<RecordDetail, St
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     @ApiOperation(value = "前台批量添加表单")
     public Result<Object> add(@RequestBody RecordFormDTO recordFormDTO) {
-        log.info("RecordDetailController.add.param:{}",recordFormDTO);
+        log.info("RecordDetailController.add.param:{}", recordFormDTO);
         recordDetailService.addRecordDetails(recordFormDTO);
         return ResultUtil.success("添加成功");
     }
@@ -76,7 +77,7 @@ public class RecordDetailController extends XbootBaseController<RecordDetail, St
                 recordDetailList.add(recordDetail);
             }
         }
-        recordDetailService.updateRecordDetail(recordDetailList,false);
+        recordDetailService.updateRecordDetail(recordDetailList, false);
         return ResultUtil.success("保存成功");
     }
 
@@ -95,7 +96,7 @@ public class RecordDetailController extends XbootBaseController<RecordDetail, St
                 recordDetailList.add(recordDetail);
             }
         }
-        recordDetailService.updateRecordDetail(recordDetailList,true);
+        recordDetailService.updateRecordDetail(recordDetailList, true);
         return ResultUtil.success("保存成功");
     }
 
