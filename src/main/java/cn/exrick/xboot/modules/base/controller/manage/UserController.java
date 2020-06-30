@@ -411,38 +411,34 @@ public class UserController {
     @RequestMapping(value = "/sendmail", method = RequestMethod.POST)
     @ApiOperation(value = "找回密码-发送邮件")
     public Result<Object> sendmail(@RequestParam String username) {
-        emailHelper.sendFindPassworldMail(username);
-        return ResultUtil.success("验证码已发到您的邮箱，请及时查收 ！");
-    }
-
-    /**
-     * 验证码
-     *
-     * @param code
-     * @return
-     */
-    @RequestMapping(value = "/verifyCode", method = RequestMethod.POST)
-    @ApiOperation(value = "找回密码-发送邮件")
-    public Result<Object> verifyCode(@RequestParam String username, @RequestParam String code) {
-        return ResultUtil.data(emailHelper.verifyCode(username, code));
-
+        return ResultUtil.success("验证码已发到您的" +
+                emailHelper.sendFindPassworldMail(username) +
+                "邮箱，请及时查收 ！");
     }
 
     /**
      * 重置自己的密码
      *
+     * @param username 用户名
+     * @param code     验证码
      * @return
      */
     @RequestMapping(value = "/resetMePass", method = RequestMethod.POST)
-    @ApiOperation(value = "重置自己的密码")
-    public Result<Object> resetMePass(@RequestParam String username) {
-        User u = userService.findByUsername(username);
-        u.setPassword(new BCryptPasswordEncoder().encode("123456"));
-        userService.update(u);
-        redisTemplate.delete("user::" + u.getUsername());
+    @ApiOperation(value = "找回密码-验证-并重置密码123456")
+    public Result<Object> verifyCode(@ApiParam("账号") @RequestParam String username,
+                                     @ApiParam("验证码") @RequestParam String code) {
+        if (emailHelper.verifyCode(username, code)) {
+            User u = userService.findByUsername(username);
+            u.setPassword(new BCryptPasswordEncoder().encode("123456"));
+            userService.update(u);
+            redisTemplate.delete("user::" + u.getUsername());
+            redisTemplate.delete("vode:" + u.getUsername());
+            return ResultUtil.success("操作成功，请使用密码123456进行登陆");
+        }
+        return ResultUtil.error("操作失败，验证码不正确");
 
-        return ResultUtil.success("操作成功");
     }
+
 
     /**
      * 得到组织机构.

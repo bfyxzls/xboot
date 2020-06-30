@@ -202,7 +202,13 @@ file.staticAccessPath: /api/file/**
 spring.mail:
   host: smtp.163.com
   username: bjjbdpg@163.com
-  password: 123456ab #这块应该是授权码而不是密码
+  password: RFDPQAYTBXBPNBKN #这块应该是授权码而不是密码
   default-encoding: UTF-8
-  smtp.port: 25
-  from: bjjbdpg@163.com
+  properties:
+    mail:
+      smtp:
+        auth: true
+        ssl:
+          enable: true
+spring.boot.admin.notify.mail.from: bjjbdpg@163.com
+

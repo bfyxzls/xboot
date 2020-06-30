@@ -142,13 +142,6 @@
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>com.lind</groupId>
-            <artifactId>aspose</artifactId>
-            <version>0.0.1</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/src/main/resources/lib/aspose-words-15.8.0-jdk16.jar</systemPath>
-        </dependency>
-        <dependency>
             <groupId>com.squareup.okhttp3</groupId>
             <artifactId>okhttp</artifactId>
             <version>3.10.0</version>

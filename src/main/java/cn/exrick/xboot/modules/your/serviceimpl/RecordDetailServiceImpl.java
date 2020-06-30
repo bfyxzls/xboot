@@ -113,6 +113,7 @@ public class RecordDetailServiceImpl implements RecordDetailService {
 
     @Override
     public void addRecordDetails(RecordFormDTO recordFormDTO) {
+        log.info("addRecordDetails:{}", recordFormDTO);
         String taskId = recordFormDTO.getTaskId();
         List<RecordDetail> recordDetailList = new ArrayList<>();
         for (RecordDetailDTO detail : recordFormDTO.getJsonRecordDetails()) {
@@ -126,6 +127,8 @@ public class RecordDetailServiceImpl implements RecordDetailService {
             recordDetail.setTypeId(recordFormDTO.getTypeId());
             if (detail.getScore() != null) {
                 recordDetail.setScore(detail.getScore());
+            } else {
+                recordDetail.setScore(0d);
             }
             if (detail.getContent() != null) {
                 recordDetail.setContent(detail.getContent());
@@ -176,7 +179,7 @@ public class RecordDetailServiceImpl implements RecordDetailService {
     }
 
     @Override
-    public void updateRecordDetail(List<RecordDetail> list,Boolean isAudit) {
+    public void updateRecordDetail(List<RecordDetail> list, Boolean isAudit) {
         String recordId = null;
         for (RecordDetail o : list) {
             RecordDetail recordDetail = recordDetailDao.getOne(o.getId());
@@ -192,6 +195,11 @@ public class RecordDetailServiceImpl implements RecordDetailService {
             save(recordDetail);
         }
         List<RecordDetail> recordDetails = findByRecordId(recordId);
+        for (RecordDetail recordDetail : recordDetails) {
+            if (recordDetail.getScore() == null) {
+                recordDetail.setScore(0d);
+            }
+        }
         Double sum = recordDetails.stream().mapToDouble(RecordDetail::getScore).sum();
         Record record = recordService.get(recordId);
         //如果当前角色是审核员，就将记录状态改为已审核
