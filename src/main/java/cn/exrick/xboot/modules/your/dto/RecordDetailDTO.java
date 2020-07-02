@@ -8,7 +8,9 @@ import lombok.ToString;
 @Data
 @ToString
 public class RecordDetailDTO {
-    @ApiModelProperty(value = "模版ID")
+    @ApiModelProperty(value = "评价试题ID，新增不赋值，修改时赋值")
+    private String recordDetailId;
+    @ApiModelProperty(value = "模版ID，新增操作需要为它赋值")
     private String templateId;
     @ApiModelProperty(value = "分数")
     private Double score;

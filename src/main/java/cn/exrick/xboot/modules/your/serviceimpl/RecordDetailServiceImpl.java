@@ -112,9 +112,10 @@ public class RecordDetailServiceImpl implements RecordDetailService {
     }
 
     @Override
-    public void addRecordDetails(RecordFormDTO recordFormDTO) {
+    public void addRecordDetails(RecordFormDTO recordFormDTO, Boolean isAudit) {
         log.info("addRecordDetails:{}", recordFormDTO);
         String taskId = recordFormDTO.getTaskId();
+        String recordId = null;
         List<RecordDetail> recordDetailList = new ArrayList<>();
         for (RecordDetailDTO detail : recordFormDTO.getJsonRecordDetails()) {
             Template template = templateService.get(detail.getTemplateId());
@@ -122,6 +123,10 @@ public class RecordDetailServiceImpl implements RecordDetailService {
                 throw new XbootException("template不存在");
             }
             RecordDetail recordDetail = new RecordDetail();
+            if (detail.getRecordDetailId() != null) {
+                recordDetail = recordDetailDao.getOne(detail.getRecordDetailId());//更新现有的
+            }
+            recordId = recordDetail.getRecordId();
             recordDetail.setTemplateId(detail.getTemplateId());
             recordDetail.setTaskId(taskId);
             recordDetail.setTypeId(recordFormDTO.getTypeId());
@@ -148,6 +153,12 @@ public class RecordDetailServiceImpl implements RecordDetailService {
         //写入统计
         Double sum = recordDetailList.stream().mapToDouble(RecordDetail::getScore).sum();
         Record record = new Record();
+        if (recordId != null) {
+            record = recordService.get(recordId);
+        }
+        if(isAudit){
+            record.setStatus(1);
+        }
         BeanUtils.copyProperties(recordFormDTO, record);
         entityUtil.initEntity(record);
         if (StringUtils.isNotBlank(record.getCourtId())) {
@@ -161,9 +172,8 @@ public class RecordDetailServiceImpl implements RecordDetailService {
         record.setDepartmentIds(departmentService.generateParentIdsString(deptId));
         record.setScore(sum);
         recordService.save(record);
-
         //写入表单明细
-        recordDetailList.forEach(o -> {
+        for (RecordDetail o : recordDetailList) {
             entityUtil.initEntity(o);
             Template template = templateService.get(o.getTemplateId());
             o.setTaskId(taskId);
@@ -174,7 +184,8 @@ public class RecordDetailServiceImpl implements RecordDetailService {
             o.setTypeTitle(typeService.get(template.getTypeId()).getTitle());
             o.setCreateDepartmentId(securityUtil.getCurrUser().getDepartmentId());
             save(o);
-        });
+        }
+        ;
 
     }
 
