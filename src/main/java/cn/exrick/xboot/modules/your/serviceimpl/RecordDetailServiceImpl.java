@@ -17,7 +17,6 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import io.micrometer.core.instrument.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -129,7 +128,7 @@ public class RecordDetailServiceImpl implements RecordDetailService {
             recordId = recordDetail.getRecordId();
             recordDetail.setTemplateId(detail.getTemplateId());
             recordDetail.setTaskId(taskId);
-            recordDetail.setTypeId(recordFormDTO.getTypeId());
+            recordDetail.setTypeId(template.getTypeId());
             if (detail.getScore() != null) {
                 recordDetail.setScore(detail.getScore());
             } else {
@@ -152,15 +151,20 @@ public class RecordDetailServiceImpl implements RecordDetailService {
 
         //写入统计
         Double sum = recordDetailList.stream().mapToDouble(RecordDetail::getScore).sum();
+
+        //新的记录
         Record record = new Record();
+        entityUtil.initEntity(record);
+        record.setCourtId(recordFormDTO.getCourtId());
+        record.setTaskId(recordFormDTO.getTaskId());
+        record.setTypeId(recordFormDTO.getTypeId());
+
         if (recordId != null) {
             record = recordService.get(recordId);
         }
-        if(isAudit){
+        if (isAudit) {
             record.setStatus(1);
         }
-        BeanUtils.copyProperties(recordFormDTO, record);
-        entityUtil.initEntity(record);
         if (StringUtils.isNotBlank(record.getCourtId())) {
             Court court = courtService.get(record.getCourtId());
             if (court != null) {
