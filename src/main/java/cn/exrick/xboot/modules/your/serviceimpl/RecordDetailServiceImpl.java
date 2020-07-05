@@ -158,7 +158,7 @@ public class RecordDetailServiceImpl implements RecordDetailService {
         record.setCourtId(recordFormDTO.getCourtId());
         record.setTaskId(recordFormDTO.getTaskId());
         record.setTypeId(recordFormDTO.getTypeId());
-
+        record.setStatus(0);
         if (recordId != null) {
             record = recordService.get(recordId);
         }

@@ -11,6 +11,7 @@ import cn.exrick.xboot.modules.base.entity.*;
 import cn.exrick.xboot.modules.base.service.*;
 import cn.exrick.xboot.modules.base.service.mybatis.IUserRoleService;
 import cn.exrick.xboot.modules.your.util.EmailHelper;
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 import io.micrometer.core.instrument.util.StringUtils;
 import io.swagger.annotations.Api;
@@ -28,8 +29,11 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 
 /**
@@ -447,6 +451,25 @@ public class UserController {
      */
     @GetMapping("getDepartment")
     @ApiOperation(value = "得到当前用户的组织机构")
+    public Result<Department> getDepartmens() {
+        Department department = departmentService.get(securityUtil.getCurrUser().getDepartmentId());
+        if (department != null) {
+            departmentService.generateParents(department);
+            List<Department> sons = departmentService.findByParentIdAndStatusOrderBySortOrder(department.getId(), CommonConstant.STATUS_NORMAL);
+            departmentService.generateSons(sons);
+            department.setChildren(sons);
+        }
+
+        return ResultUtil.data(department);
+    }
+
+    /**
+     * 得到组织机构.
+     *
+     * @return
+     */
+    @GetMapping("getDepartmentTree")
+    @ApiOperation(value = "得到当前用户的组织机构")
     public Result<Department> getDepartmentTree() {
         Department department = departmentService.get(securityUtil.getCurrUser().getDepartmentId());
         if (department != null) {
@@ -455,7 +478,37 @@ public class UserController {
             departmentService.generateSons(sons);
             department.setChildren(sons);
         }
+        List<Department> departmentTrees = new ArrayList<>();
+        findFather(departmentTrees, department);
+        departmentTrees.add(department);
+        department.setParent(null);
+        departmentTrees = departmentTrees.stream()
+                .filter(dept -> dept.getParentId() != null && dept.getParentId().length() >= 4).collect(Collectors.toList());
+
+        if (CollectionUtil.isNotEmpty(departmentTrees)) {
+            Department departmentTree = null;
+
+            for (Department dept : departmentTrees) {
+
+                if (departmentTree == null) {
+                    departmentTree = department;
+                } else {
+                    departmentTree.setChildren(Arrays.asList(department));
+                    department = departmentTree;
+                }
+            }
+            return ResultUtil.data(departmentTree);
+        }
+
         return ResultUtil.data(department);
     }
 
+
+    void findFather(List<Department> departmentTrees, Department department) {
+        Department departmentFather = department.getParent();
+        if (departmentFather != null) {
+            departmentTrees.add(departmentFather);
+            findFather(departmentTrees, departmentFather);
+        }
+    }
 }
