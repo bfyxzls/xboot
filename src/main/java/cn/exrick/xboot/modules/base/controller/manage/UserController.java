@@ -480,23 +480,25 @@ public class UserController {
         }
         List<Department> departmentTrees = new ArrayList<>();
         findFather(departmentTrees, department);
-        departmentTrees.add(department);
-        department.setParent(null);
+
         departmentTrees = departmentTrees.stream()
-                .filter(dept -> dept.getParentId() != null && dept.getParentId().length() >= 4).collect(Collectors.toList());
+                .filter(dept -> dept.getParentId() != null && dept.getParentId().length() >= 4)
+                .collect(Collectors.toList());
+        CollectionUtil.reverse(departmentTrees);
+        department.setParent(null);
 
         if (CollectionUtil.isNotEmpty(departmentTrees)) {
-            Department departmentTree = null;
-
-            for (Department dept : departmentTrees) {
-
-                if (departmentTree == null) {
-                    departmentTree = department;
-                } else {
-                    departmentTree.setChildren(Arrays.asList(department));
-                    department = departmentTree;
-                }
+            Department departmentTree = departmentTrees.get(0);
+            departmentTree.setParent(null);
+            if (departmentTrees.size() == 2) {//第一级区，下一级，第三级社区
+                Department son = departmentTrees.get(1);
+                son.setParent(null);
+                son.setChildren(Arrays.asList(department));
+                departmentTree.setChildren(Arrays.asList(son));
+            } else if (departmentTrees.size() == 1) {
+                departmentTree.setChildren(Arrays.asList(department));
             }
+
             return ResultUtil.data(departmentTree);
         }
 

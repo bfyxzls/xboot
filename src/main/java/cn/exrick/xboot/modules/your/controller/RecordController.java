@@ -6,6 +6,8 @@ import cn.exrick.xboot.common.utils.ResultUtil;
 import cn.exrick.xboot.common.vo.PageVo;
 import cn.exrick.xboot.common.vo.Result;
 import cn.exrick.xboot.common.vo.SearchVo;
+import cn.exrick.xboot.modules.base.entity.Department;
+import cn.exrick.xboot.modules.base.service.DepartmentService;
 import cn.exrick.xboot.modules.base.utils.EntityUtil;
 import cn.exrick.xboot.modules.your.entity.Court;
 import cn.exrick.xboot.modules.your.entity.Record;
@@ -16,6 +18,7 @@ import cn.exrick.xboot.modules.your.service.RecordService;
 import cn.exrick.xboot.modules.your.service.TaskService;
 import cn.exrick.xboot.modules.your.service.TypeService;
 import cn.exrick.xboot.modules.your.util.FileUtil;
+import io.micrometer.core.instrument.util.StringUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +29,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author lind
@@ -49,6 +55,8 @@ public class RecordController extends XbootBaseController<Record, String> {
     private TypeService typeService;
     @Autowired
     private CourtService courtService;
+    @Autowired
+    private DepartmentService departmentService;
 
     @Override
     public RecordService getService() {
@@ -75,6 +83,14 @@ public class RecordController extends XbootBaseController<Record, String> {
             Court court = courtService.get(record1.getCourtId());
             if (court != null) {
                 record1.setCourtTitle(court.getTitle());
+            }
+            if (StringUtils.isNotBlank(record1.getDepartmentId())) {
+                Department department = departmentService.get(record1.getDepartmentId());
+                departmentService.generateParents(department);
+                record1.setDepartment(department);
+                List<String> result = new ArrayList<>();
+                departmentService.generateParentTitle(department, result);
+                record1.setDepartmentTreeTitle(String.join("-", result));
             }
 
         }
