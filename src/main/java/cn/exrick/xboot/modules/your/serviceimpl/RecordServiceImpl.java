@@ -36,7 +36,6 @@ public class RecordServiceImpl implements RecordService {
     SecurityUtil securityUtil;
     @Autowired
     private RecordDao recordDao;
-
     @Override
     public RecordDao getRepository() {
         return recordDao;

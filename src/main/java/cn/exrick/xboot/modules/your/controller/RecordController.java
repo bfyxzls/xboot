@@ -83,6 +83,7 @@ public class RecordController extends XbootBaseController<Record, String> {
             Court court = courtService.get(record1.getCourtId());
             if (court != null) {
                 record1.setCourtTitle(court.getTitle());
+                record1.setDepartmentId(court.getDepartmentId());//从新设置小区的行政区
             }
             if (StringUtils.isNotBlank(record1.getDepartmentId())) {
                 Department department = departmentService.get(record1.getDepartmentId());
