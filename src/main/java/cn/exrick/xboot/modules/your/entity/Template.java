@@ -45,7 +45,8 @@ public class Template extends XbootBaseEntity {
     private Integer questionType;
     @ApiModelProperty(value = "计分类型0不计分，1计分")
     private Integer scoreType;
-
+    @ApiModelProperty(value = "是否为必填")
+    private Integer isRequired;
     @Transient
     @TableField(exist = false)
     @ApiModelProperty(value = "是否为上级")

@@ -1,6 +1,7 @@
 package cn.exrick.xboot.modules.your.entity;
 
 import cn.exrick.xboot.base.XbootBaseEntity;
+import cn.hutool.core.date.DateTime;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
@@ -32,8 +33,6 @@ public class RecordDetail extends XbootBaseEntity {
     private String templateId;
     @ApiModelProperty(value = "建立部门ID")
     private String createDepartmentId;
-    @ApiModelProperty(value = "分数")
-    private Double score;
     @ApiModelProperty(value = "记录ID")
     private String recordId;
     @ApiModelProperty(value = "分类ID")
@@ -42,8 +41,16 @@ public class RecordDetail extends XbootBaseEntity {
     private String typeTitle;
     @ApiModelProperty(value = "任务ID")
     private String taskId;
+    @ApiModelProperty(value = "分数")
+    private Double score;
+    @ApiModelProperty(value = "文本选项")
+    private String textValue;
     @ApiModelProperty(value = "文本内容")
     private String content;
+    @ApiModelProperty(value = "照片内容")
+    private String pictureUrl;
+    @ApiModelProperty(value = "时间选项")
+    private DateTime dateValue;
     @Transient
     @TableField(exist = false)
     @ApiModelProperty(value = "试题类型")

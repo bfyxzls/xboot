@@ -15,7 +15,7 @@ server:
 spring:
   # 数据源
   datasource:
-    url: jdbc:mysql://localhost:3306/xboot?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=UTC
+    url: jdbc:mysql://121.89.189.120:3306/xboot?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=UTC
     username: root
     # Jasypt加密 可到common-utils中找到JasyptUtil加解密工具类生成加密结果 格式为ENC(加密结果) 以下解密结果为123456
     password: 123456
@@ -81,14 +81,14 @@ xboot:
     # 每1秒内
     timeout: 1000
     # 总限制200个请求
-    limit: 200
+    limit: 2
   # IP限流
   iplimit:
     enable: true
     # 每1秒内
     timeout: 1000
     # 每个ip限制20个请求
-    limit: 20
+    limit: 1
   # token交互方式
   token:
     # 设置为true后，token将存入redis，并具有单点登录功能 默认false使用JWT交互
@@ -202,10 +202,13 @@ file.staticAccessPath: /api/file/**
 spring.mail:
   host: smtp.163.com
   username: bjjbdpg@163.com
-  password: 123456ab
+  password: RFDPQAYTBXBPNBKN #这块应该是授权码而不是密码
   default-encoding: UTF-8
-  properties.mail.smtp.port: 25
-  smtp:
-      ssl.enable: true
-      auth: true
-  from: bjjbdpg@163.com
+  properties:
+    mail:
+      smtp:
+        auth: true
+        ssl:
+          enable: true
+spring.boot.admin.notify.mail.from: bjjbdpg@163.com
+

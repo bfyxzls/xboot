@@ -11,6 +11,7 @@ import cn.exrick.xboot.modules.base.entity.*;
 import cn.exrick.xboot.modules.base.service.*;
 import cn.exrick.xboot.modules.base.service.mybatis.IUserRoleService;
 import cn.exrick.xboot.modules.your.util.EmailHelper;
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 import io.micrometer.core.instrument.util.StringUtils;
 import io.swagger.annotations.Api;
@@ -28,8 +29,11 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 
 /**
@@ -50,11 +54,11 @@ public class UserController {
     @Autowired
     EmailHelper emailHelper;
     @Autowired
+    DepartmentService departmentService;
+    @Autowired
     private UserService userService;
     @Autowired
     private RoleService roleService;
-    @Autowired
-    private DepartmentService departmentService;
     @Autowired
     private IUserRoleService iUserRoleService;
     @Autowired
@@ -195,7 +199,7 @@ public class UserController {
         }
 
         // 若修改了手机和邮箱判断是否唯一
-        if (old.getMobile()!=null &&
+        if (old.getMobile() != null &&
                 !old.getMobile().equals(u.getMobile()) &&
                 userService.findByMobile(u.getMobile()) != null) {
             return ResultUtil.error("该手机号已绑定其他账户");
@@ -225,6 +229,8 @@ public class UserController {
         redisTemplate.delete("userRole::depIds:" + u.getId());
         redisTemplate.delete("userPermission::" + u.getId());
         redisTemplate.delete("permission::userMenuList:" + u.getId());
+        redisTemplate.delete("user::" + u.getUsername());
+
         return ResultUtil.success("修改成功");
     }
 
@@ -409,37 +415,102 @@ public class UserController {
     @RequestMapping(value = "/sendmail", method = RequestMethod.POST)
     @ApiOperation(value = "找回密码-发送邮件")
     public Result<Object> sendmail(@RequestParam String username) {
-        emailHelper.sendFindPassworldMail(username);
-        return ResultUtil.success("验证码已发到您的邮箱，请及时查收 ！");
-    }
-
-    /**
-     * 验证码
-     *
-     * @param code
-     * @return
-     */
-    @RequestMapping(value = "/verifyCode", method = RequestMethod.POST)
-    @ApiOperation(value = "找回密码-发送邮件")
-    public Result<Object> verifyCode(@RequestParam String username, @RequestParam String code) {
-        return ResultUtil.data(emailHelper.verifyCode(username, code));
-
+        return ResultUtil.success("验证码已发到您的" +
+                emailHelper.sendFindPassworldMail(username) +
+                "邮箱，请及时查收 ！");
     }
 
     /**
      * 重置自己的密码
      *
+     * @param username 用户名
+     * @param code     验证码
      * @return
      */
     @RequestMapping(value = "/resetMePass", method = RequestMethod.POST)
-    @ApiOperation(value = "重置自己的密码")
-    public Result<Object> resetMePass(@RequestParam String username) {
-        User u = userService.findByUsername(username);
-        u.setPassword(new BCryptPasswordEncoder().encode("123456"));
-        userService.update(u);
-        redisTemplate.delete("user::" + u.getUsername());
+    @ApiOperation(value = "找回密码-验证-并重置密码123456")
+    public Result<Object> verifyCode(@ApiParam("账号") @RequestParam String username,
+                                     @ApiParam("验证码") @RequestParam String code) {
+        if (emailHelper.verifyCode(username, code)) {
+            User u = userService.findByUsername(username);
+            u.setPassword(new BCryptPasswordEncoder().encode("123456"));
+            userService.update(u);
+            redisTemplate.delete("user::" + u.getUsername());
+            redisTemplate.delete("vode:" + u.getUsername());
+            return ResultUtil.success("操作成功，请使用密码123456进行登陆");
+        }
+        return ResultUtil.error("操作失败，验证码不正确");
 
-        return ResultUtil.success("操作成功");
     }
 
+
+    /**
+     * 得到组织机构.
+     *
+     * @return
+     */
+    @GetMapping("getDepartment")
+    @ApiOperation(value = "得到当前用户的组织机构")
+    public Result<Department> getDepartmens() {
+        Department department = departmentService.get(securityUtil.getCurrUser().getDepartmentId());
+        if (department != null) {
+            departmentService.generateParents(department);
+            List<Department> sons = departmentService.findByParentIdAndStatusOrderBySortOrder(department.getId(), CommonConstant.STATUS_NORMAL);
+            departmentService.generateSons(sons);
+            department.setChildren(sons);
+        }
+
+        return ResultUtil.data(department);
+    }
+
+    /**
+     * 得到组织机构.
+     *
+     * @return
+     */
+    @GetMapping("getDepartmentTree")
+    @ApiOperation(value = "得到当前用户的组织机构")
+    public Result<Department> getDepartmentTree() {
+        Department department = departmentService.get(securityUtil.getCurrUser().getDepartmentId());
+        if (department != null) {
+            departmentService.generateParents(department);
+            List<Department> sons = departmentService.findByParentIdAndStatusOrderBySortOrder(department.getId(), CommonConstant.STATUS_NORMAL);
+            departmentService.generateSons(sons);
+            department.setChildren(sons);
+        }
+        List<Department> departmentTrees = new ArrayList<>();
+        findFather(departmentTrees, department);
+
+        departmentTrees = departmentTrees.stream()
+                .filter(dept -> dept.getParentId() != null && dept.getParentId().length() >= 4)
+                .collect(Collectors.toList());
+        CollectionUtil.reverse(departmentTrees);
+        department.setParent(null);
+
+        if (CollectionUtil.isNotEmpty(departmentTrees)) {
+            Department departmentTree = departmentTrees.get(0);
+            departmentTree.setParent(null);
+            if (departmentTrees.size() == 2) {//第一级区，下一级，第三级社区
+                Department son = departmentTrees.get(1);
+                son.setParent(null);
+                son.setChildren(Arrays.asList(department));
+                departmentTree.setChildren(Arrays.asList(son));
+            } else if (departmentTrees.size() == 1) {
+                departmentTree.setChildren(Arrays.asList(department));
+            }
+
+            return ResultUtil.data(departmentTree);
+        }
+
+        return ResultUtil.data(department);
+    }
+
+
+    void findFather(List<Department> departmentTrees, Department department) {
+        Department departmentFather = department.getParent();
+        if (departmentFather != null) {
+            departmentTrees.add(departmentFather);
+            findFather(departmentTrees, departmentFather);
+        }
+    }
 }

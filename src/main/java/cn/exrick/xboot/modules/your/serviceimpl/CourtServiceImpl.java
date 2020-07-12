@@ -1,5 +1,6 @@
 package cn.exrick.xboot.modules.your.serviceimpl;
 
+import cn.exrick.xboot.common.utils.SecurityUtil;
 import cn.exrick.xboot.common.vo.SearchVo;
 import cn.exrick.xboot.modules.base.dao.DepartmentDao;
 import cn.exrick.xboot.modules.base.entity.Department;
@@ -40,6 +41,8 @@ public class CourtServiceImpl implements CourtService {
     @Autowired
     TenementDao tenementDao;
     @Autowired
+    SecurityUtil securityUtil;
+    @Autowired
     private CourtDao courtDao;
 
     @Override
@@ -58,6 +61,9 @@ public class CourtServiceImpl implements CourtService {
                 Path<Date> createTimeField = root.get("createTime");
                 Path<String> titleField = root.get("title");
                 List<Predicate> list = new ArrayList<Predicate>();
+                // 数据权限
+                String currentDeptId = securityUtil.getCurrUser().getDepartmentId();
+                list.add(cb.like(root.get("departmentIds"), "%" + currentDeptId + "%"));
 
                 //创建时间
                 if (StrUtil.isNotBlank(searchVo.getStartDate()) && StrUtil.isNotBlank(searchVo.getEndDate())) {
@@ -67,6 +73,9 @@ public class CourtServiceImpl implements CourtService {
                 }
                 if (StringUtils.isNotBlank(court.getTitle())) {
                     list.add(cb.like(titleField, court.getTitle().trim() + "%"));
+                }
+                if (StringUtils.isNotBlank(court.getDepartmentId())) {
+                    list.add(cb.like(root.get("departmentIds"), "%"+court.getDepartmentId()+"%"));
                 }
                 Predicate[] arr = new Predicate[list.size()];
                 cq.where(list.toArray(arr));

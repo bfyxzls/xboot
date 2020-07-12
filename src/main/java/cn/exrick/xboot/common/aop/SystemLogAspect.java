@@ -100,7 +100,7 @@ public class SystemLogAspect {
                 //请求IP
                 log.setIp(ipInfoUtil.getIpAddr(request));
                 //IP地址
-                log.setIpInfo(ipInfoUtil.getIpCity(request));
+                //log.setIpInfo(ipInfoUtil.getIpCity(request));
                 //请求开始时间
                 Date logStartTime = beginTimeThreadLocal.get();
 

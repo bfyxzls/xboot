@@ -1,22 +1,22 @@
 package cn.exrick.xboot.modules.your.serviceimpl;
 
+import cn.exrick.xboot.common.exception.XbootException;
 import cn.exrick.xboot.common.utils.SecurityUtil;
 import cn.exrick.xboot.common.vo.SearchVo;
+import cn.exrick.xboot.modules.base.service.DepartmentService;
 import cn.exrick.xboot.modules.base.utils.EntityUtil;
 import cn.exrick.xboot.modules.your.dao.RecordDetailDao;
+import cn.exrick.xboot.modules.your.dto.RecordDetailDTO;
 import cn.exrick.xboot.modules.your.dto.RecordFormDTO;
+import cn.exrick.xboot.modules.your.entity.Court;
 import cn.exrick.xboot.modules.your.entity.Record;
 import cn.exrick.xboot.modules.your.entity.RecordDetail;
 import cn.exrick.xboot.modules.your.entity.Template;
-import cn.exrick.xboot.modules.your.service.RecordDetailService;
-import cn.exrick.xboot.modules.your.service.RecordService;
-import cn.exrick.xboot.modules.your.service.TemplateService;
-import cn.exrick.xboot.modules.your.service.TypeService;
+import cn.exrick.xboot.modules.your.service.*;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import io.micrometer.core.instrument.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -50,6 +50,10 @@ public class RecordDetailServiceImpl implements RecordDetailService {
     EntityUtil entityUtil;
     @Autowired
     SecurityUtil securityUtil;
+    @Autowired
+    CourtService courtService;
+    @Autowired
+    DepartmentService departmentService;
     @Autowired
     private RecordDetailDao recordDetailDao;
 
@@ -107,54 +111,90 @@ public class RecordDetailServiceImpl implements RecordDetailService {
     }
 
     @Override
-    public void addRecordDetails(RecordFormDTO recordFormDTO) {
-        String recordDetails = recordFormDTO.getRecordDetails();
+    public void addRecordDetails(RecordFormDTO recordFormDTO, Boolean isAudit) {
+        log.info("addRecordDetails:{}", recordFormDTO);
         String taskId = recordFormDTO.getTaskId();
-        recordDetails = recordDetails.substring(0, recordDetails.length() - 1);
+        String recordId = null;
         List<RecordDetail> recordDetailList = new ArrayList<>();
-        String[] one = recordDetails.split("\\|");
-        for (String detail : one) {
-            String[] id = detail.split("_");
-            if (id.length > 1) {
-                Template template = templateService.get(id[0]);
-                RecordDetail recordDetail = new RecordDetail();
-                recordDetail.setTemplateId(id[0]);
-                recordDetail.setTaskId(taskId);
-                recordDetail.setTypeId(recordFormDTO.getTypeId());
-                if (template.getScoreType() != null & template.getScoreType().equals(1)) {
-                    // 记分
-                    recordDetail.setScore(Double.parseDouble(id[1]));
-                } else {
-                    // 不记分
-                    recordDetail.setContent(id[1]);
-                }
-                recordDetailList.add(recordDetail);
+        for (RecordDetailDTO detail : recordFormDTO.getJsonRecordDetails()) {
+            Template template = templateService.get(detail.getTemplateId());
+            if (template == null) {
+                throw new XbootException("template不存在");
+            }
+            RecordDetail recordDetail = new RecordDetail();
+            if (detail.getRecordDetailId() != null) {
+                recordDetail = recordDetailDao.getOne(detail.getRecordDetailId());//更新现有的
+            }
+            recordId = recordDetail.getRecordId();
+            recordDetail.setTemplateId(detail.getTemplateId());
+            recordDetail.setTaskId(taskId);
+            recordDetail.setTypeId(template.getTypeId());
+            if (detail.getScore() != null) {
+                recordDetail.setScore(detail.getScore());
+            } else {
+                recordDetail.setScore(0d);
+            }
+            if (detail.getContent() != null) {
+                recordDetail.setContent(detail.getContent());
+            }
+            if (detail.getTextValue() != null) {
+                recordDetail.setTextValue(detail.getTextValue());
+            }
+            if (detail.getPictureUrl() != null) {
+                recordDetail.setPictureUrl(detail.getPictureUrl());
+            }
+            if (detail.getDateValue() != null) {
+                recordDetail.setDateValue(detail.getDateValue());
+            }
+            recordDetailList.add(recordDetail);
+        }
+
+        //写入统计
+        Double sum = recordDetailList.stream().mapToDouble(RecordDetail::getScore).sum();
+
+        //新的记录
+        Record record = new Record();
+        entityUtil.initEntity(record);
+        record.setCourtId(recordFormDTO.getCourtId());
+        record.setTaskId(recordFormDTO.getTaskId());
+        record.setTypeId(recordFormDTO.getTypeId());
+        record.setStatus(0);
+        if (recordId != null) {
+            record = recordService.get(recordId);
+        }
+        if (isAudit) {
+            record.setStatus(1);
+        }
+        if (StringUtils.isNotBlank(record.getCourtId())) {
+            Court court = courtService.get(record.getCourtId());
+            if (court != null) {
+                record.setDepartmentId(court.getDepartmentId());
             }
         }
+        String deptId = securityUtil.getCurrUser().getDepartmentId();
+        record.setDepartmentId(deptId);
+        record.setDepartmentIds(departmentService.generateParentIdsString(deptId));
+        record.setScore(sum);
+        recordService.save(record);
         //写入表单明细
-        recordDetailList.forEach(o -> {
+        for (RecordDetail o : recordDetailList) {
             entityUtil.initEntity(o);
             Template template = templateService.get(o.getTemplateId());
             o.setTaskId(taskId);
+            o.setRecordId(record.getId());
             o.setTemplateId(template.getId());
             o.setTemplateTitle(template.getTitle());
             o.setTypeId(template.getTypeId());
             o.setTypeTitle(typeService.get(template.getTypeId()).getTitle());
             o.setCreateDepartmentId(securityUtil.getCurrUser().getDepartmentId());
             save(o);
-        });
-        //写入统计
-        Double sum = recordDetailList.stream().mapToDouble(RecordDetail::getScore).sum();
-        Record record = new Record();
-        BeanUtils.copyProperties(recordFormDTO, record);
-        entityUtil.initEntity(record);
-        record.setCreateDepartmentId(securityUtil.getCurrUser().getDepartmentId());
-        record.setScore(sum);
-        recordService.save(record);
+        }
+        ;
+
     }
 
     @Override
-    public void updateRecordDetail(List<RecordDetail> list) {
+    public void updateRecordDetail(List<RecordDetail> list, Boolean isAudit) {
         String recordId = null;
         for (RecordDetail o : list) {
             RecordDetail recordDetail = recordDetailDao.getOne(o.getId());
@@ -170,10 +210,15 @@ public class RecordDetailServiceImpl implements RecordDetailService {
             save(recordDetail);
         }
         List<RecordDetail> recordDetails = findByRecordId(recordId);
+        for (RecordDetail recordDetail : recordDetails) {
+            if (recordDetail.getScore() == null) {
+                recordDetail.setScore(0d);
+            }
+        }
         Double sum = recordDetails.stream().mapToDouble(RecordDetail::getScore).sum();
         Record record = recordService.get(recordId);
         //如果当前角色是审核员，就将记录状态改为已审核
-        if (securityUtil.getCurrUser().getType().equals(2)) {
+        if (isAudit) {
             record.setStatus(1);
         }
         record.setScore(sum);

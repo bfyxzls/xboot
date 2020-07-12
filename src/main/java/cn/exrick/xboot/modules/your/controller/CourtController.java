@@ -6,6 +6,7 @@ import cn.exrick.xboot.common.utils.ResultUtil;
 import cn.exrick.xboot.common.vo.PageVo;
 import cn.exrick.xboot.common.vo.Result;
 import cn.exrick.xboot.common.vo.SearchVo;
+import cn.exrick.xboot.modules.base.service.DepartmentService;
 import cn.exrick.xboot.modules.base.utils.EntityUtil;
 import cn.exrick.xboot.modules.your.dao.CourtDao;
 import cn.exrick.xboot.modules.your.entity.Court;
@@ -42,6 +43,8 @@ public class CourtController extends XbootBaseController<Court, String> {
 
     @Autowired
     EntityUtil entityUtil;
+    @Autowired
+    DepartmentService departmentService;
     @Autowired
     private CourtService courtService;
     @Autowired
@@ -92,6 +95,14 @@ public class CourtController extends XbootBaseController<Court, String> {
     @ApiOperation(value = "添加小区")
     public Result<Object> add(Court entity) {
         entityUtil.initEntity(entity);
+        if(entity.getLatitude()==null){
+            entity.setLatitude(0d);
+        }
+        if(entity.getLongitude()==null){
+            entity.setLongitude(0d);
+        }
+        String deptIds=departmentService.generateParentIdsString(entity.getDepartmentId());
+        entity.setDepartmentIds(deptIds);
         courtService.save(entity);
         return ResultUtil.success("添加成功");
     }
@@ -102,8 +113,13 @@ public class CourtController extends XbootBaseController<Court, String> {
         Court old = courtService.get(id);
         old.setTitle(entity.getTitle());
         old.setDescription(entity.getDescription());
-        old.setDepartmentId(entity.getDepartmentId());
         old.setTenementId(entity.getTenementId());
+        old.setRegion(entity.getRegion());
+        old.setLatitude(entity.getLatitude());
+        old.setLongitude(entity.getLongitude());
+        old.setAddress(entity.getAddress());
+        old.setDepartmentId(entity.getDepartmentId());
+        old.setDepartmentIds(departmentService.generateParentIdsString(entity.getDepartmentId()));
         courtService.save(old);
         return ResultUtil.success("保存成功");
     }

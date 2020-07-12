@@ -32,9 +32,10 @@ public class RecordDetailController extends XbootBaseController<RecordDetail, St
     @Autowired
     RecordService recordService;
     @Autowired
-    private RecordDetailService recordDetailService;
-@Autowired
     TemplateService templateService;
+    @Autowired
+    private RecordDetailService recordDetailService;
+
     @Override
     public RecordDetailService getService() {
         return recordDetailService;
@@ -44,11 +45,11 @@ public class RecordDetailController extends XbootBaseController<RecordDetail, St
     @ApiOperation(value = "按recordid获取表单列表")
     public Result<List<RecordDetail>> getByCondition(@RequestParam String recordId) {
         List<RecordDetail> page = recordDetailService.findByRecordId(recordId);
-        for(RecordDetail detail : page){
-           Template template= templateService.get(detail.getTemplateId());
-           if(template!=null){
-               detail.setQuestionType(template.getQuestionType());
-           }
+        for (RecordDetail detail : page) {
+            Template template = templateService.get(detail.getTemplateId());
+            if (template != null) {
+                detail.setQuestionType(template.getQuestionType());
+            }
         }
         return new ResultUtil<List<RecordDetail>>().setData(page);
     }
@@ -56,13 +57,27 @@ public class RecordDetailController extends XbootBaseController<RecordDetail, St
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     @ApiOperation(value = "前台批量添加表单")
     public Result<Object> add(@RequestBody RecordFormDTO recordFormDTO) {
-        log.info("RecordDetailController.add.param:{}",recordFormDTO);
-        recordDetailService.addRecordDetails(recordFormDTO);
+        log.info("RecordDetailController.add.param:{}", recordFormDTO);
+        recordDetailService.addRecordDetails(recordFormDTO, false);
+        return ResultUtil.success("添加成功");
+    }
+
+    @RequestMapping(value = "/editOne", method = RequestMethod.POST)
+    @ApiOperation(value = "单条编辑表单的分类")
+    public Result<Object> editOne(@RequestBody RecordFormDTO recordFormDTO) {
+        recordDetailService.addRecordDetails(recordFormDTO, false);
+        return ResultUtil.success("添加成功");
+    }
+
+    @RequestMapping(value = "/auditOne", method = RequestMethod.POST)
+    @ApiOperation(value = "单条编辑表单的分类")
+    public Result<Object> auditOne(@RequestBody RecordFormDTO recordFormDTO) {
+        recordDetailService.addRecordDetails(recordFormDTO, true);
         return ResultUtil.success("添加成功");
     }
 
     @RequestMapping(value = "/edit", method = RequestMethod.POST)
-    @ApiOperation(value = "单条编辑表单的分类")
+    @ApiOperation(value = "单条编辑表单的分类-目前已经不用了")
     public Result<Object> edit(@RequestParam String recordDetails) {
         recordDetails = recordDetails.substring(0, recordDetails.length() - 1);
         List<RecordDetail> recordDetailList = new ArrayList<>();
@@ -76,7 +91,26 @@ public class RecordDetailController extends XbootBaseController<RecordDetail, St
                 recordDetailList.add(recordDetail);
             }
         }
-        recordDetailService.updateRecordDetail(recordDetailList);
+        recordDetailService.updateRecordDetail(recordDetailList, false);
+        return ResultUtil.success("保存成功");
+    }
+
+    @RequestMapping(value = "/audit", method = RequestMethod.POST)
+    @ApiOperation(value = "审核单条编辑表单")
+    public Result<Object> audit(@RequestParam String recordDetails) {
+        recordDetails = recordDetails.substring(0, recordDetails.length() - 1);
+        List<RecordDetail> recordDetailList = new ArrayList<>();
+        String[] one = recordDetails.split("\\|");
+        for (String detail : one) {
+            String[] id = detail.split("_");
+            if (id.length > 1) {
+                RecordDetail recordDetail = new RecordDetail();
+                recordDetail.setId(id[0]);
+                recordDetail.setScore(Double.parseDouble(id[1]));
+                recordDetailList.add(recordDetail);
+            }
+        }
+        recordDetailService.updateRecordDetail(recordDetailList, true);
         return ResultUtil.success("保存成功");
     }
 

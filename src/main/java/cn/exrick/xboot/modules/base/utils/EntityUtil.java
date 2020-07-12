@@ -14,10 +14,10 @@ public class EntityUtil {
 
     public void initEntity(XbootBaseEntity xbootBaseEntity) {
         User user = securityUtil.getCurrUser();
-        xbootBaseEntity.setCreateBy(user.getCreateBy());
+        xbootBaseEntity.setCreateBy(user.getId());
         xbootBaseEntity.setCreateTime(DateTime.now());
         xbootBaseEntity.setDelFlag(0);
-        xbootBaseEntity.setUpdateBy(user.getUpdateBy());
-        xbootBaseEntity.setUpdateTime(user.getUpdateTime());
+        xbootBaseEntity.setUpdateBy(user.getId());
+        xbootBaseEntity.setUpdateTime(DateTime.now());
     }
 }

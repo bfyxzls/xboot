@@ -41,7 +41,7 @@ public class EmailHelper {
      *
      * @param receiver
      */
-    public void sendFindPassworldMail(String receiver) {
+    public String sendFindPassworldMail(String receiver) {
         User user = userService.findByUsername(receiver);
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom(sender);
@@ -56,6 +56,7 @@ public class EmailHelper {
         } catch (Exception e) {
             log.error("发送简单邮件时发生异常！", e);
         }
+        return user.getEmail();
     }
 
     /**

@@ -1,6 +1,7 @@
 package cn.exrick.xboot.modules.your.entity;
 
 import cn.exrick.xboot.base.XbootBaseEntity;
+import cn.exrick.xboot.modules.base.entity.Department;
 import cn.hutool.core.date.DateTime;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -23,18 +24,26 @@ import javax.persistence.Transient;
 public class Record extends XbootBaseEntity {
 
     private static final long serialVersionUID = 1L;
-    @ApiModelProperty(value = "建立人部门")
-    private String createDepartmentId;
     @ApiModelProperty(value = "小区ID")
     private String courtId;
     @ApiModelProperty(value = "分类ID")
     private String typeId;
     @ApiModelProperty(value = "任务ID")
     private String taskId;
+    @ApiModelProperty("组织机构ID")
+    private String departmentId;
+    @ApiModelProperty("上级组织机构列表，当前人所在组织包含这些组织的都是有权限的")
+    private String departmentIds;
     @ApiModelProperty(value = "分值")
     private Double score;
     @ApiModelProperty(value = "状态：0未审核，1已审核")
     private Integer status;
+
+    @Transient
+    @TableField(exist = false)
+    @ApiModelProperty(value = "小区")
+    private Court court;
+
     @Transient
     @TableField(exist = false)
     @ApiModelProperty(value = "小区名称")
@@ -49,4 +58,15 @@ public class Record extends XbootBaseEntity {
     @TableField(exist = false)
     @ApiModelProperty(value = "任务名称")
     private String taskTitle;
+
+    @Transient
+    @TableField(exist = false)
+    @ApiModelProperty(value = "组织机构")
+    private Department department;
+
+    @Transient
+    @TableField(exist = false)
+    @ApiModelProperty(value = "组织机构名称")
+    private String departmentTreeTitle;
+
 }
