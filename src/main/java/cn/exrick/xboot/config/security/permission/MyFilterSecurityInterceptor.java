@@ -26,7 +26,7 @@ public class MyFilterSecurityInterceptor extends AbstractSecurityInterceptor imp
 
     @Autowired
     public void setMyAccessDecisionManager(MyAccessDecisionManager myAccessDecisionManager) {
-        super.setAccessDecisionManager(myAccessDecisionManager);
+      super.setAccessDecisionManager(myAccessDecisionManager);
     }
 
     @Override

@@ -58,12 +58,26 @@ public class RecordDetailController extends XbootBaseController<RecordDetail, St
     @ApiOperation(value = "前台批量添加表单")
     public Result<Object> add(@RequestBody RecordFormDTO recordFormDTO) {
         log.info("RecordDetailController.add.param:{}", recordFormDTO);
-        recordDetailService.addRecordDetails(recordFormDTO);
+        recordDetailService.addRecordDetails(recordFormDTO, false);
+        return ResultUtil.success("添加成功");
+    }
+
+    @RequestMapping(value = "/editOne", method = RequestMethod.POST)
+    @ApiOperation(value = "单条编辑表单的分类")
+    public Result<Object> editOne(@RequestBody RecordFormDTO recordFormDTO) {
+        recordDetailService.addRecordDetails(recordFormDTO, false);
+        return ResultUtil.success("添加成功");
+    }
+
+    @RequestMapping(value = "/auditOne", method = RequestMethod.POST)
+    @ApiOperation(value = "单条编辑表单的分类")
+    public Result<Object> auditOne(@RequestBody RecordFormDTO recordFormDTO) {
+        recordDetailService.addRecordDetails(recordFormDTO, true);
         return ResultUtil.success("添加成功");
     }
 
     @RequestMapping(value = "/edit", method = RequestMethod.POST)
-    @ApiOperation(value = "单条编辑表单的分类")
+    @ApiOperation(value = "单条编辑表单的分类-目前已经不用了")
     public Result<Object> edit(@RequestParam String recordDetails) {
         recordDetails = recordDetails.substring(0, recordDetails.length() - 1);
         List<RecordDetail> recordDetailList = new ArrayList<>();
