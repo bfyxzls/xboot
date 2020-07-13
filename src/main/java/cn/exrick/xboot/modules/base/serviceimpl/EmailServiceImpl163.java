@@ -1,4 +1,4 @@
-package cn.exrick.xboot.modules.your.util;
+package cn.exrick.xboot.modules.base.serviceimpl;
 
 import cn.exrick.xboot.common.utils.SnowFlakeUtil;
 import cn.exrick.xboot.modules.base.entity.User;
@@ -8,11 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-@Component
+@Service
 @Slf4j
-public class EmailHelper {
+public class EmailServiceImpl163 implements cn.exrick.xboot.modules.base.service.EmailService {
 
     private static String sender = "bjjbdpg@163.com";
     @Autowired
@@ -22,6 +22,7 @@ public class EmailHelper {
     @Autowired
     private JavaMailSender javaMailSender;
 
+    @Override
     public void sendMail(String receiver) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom(sender);
@@ -41,6 +42,7 @@ public class EmailHelper {
      *
      * @param receiver
      */
+    @Override
     public String sendFindPassworldMail(String receiver) {
         User user = userService.findByUsername(receiver);
         SimpleMailMessage message = new SimpleMailMessage();
@@ -65,6 +67,7 @@ public class EmailHelper {
      * @param code
      * @return
      */
+    @Override
     public Boolean verifyCode(String username, String code) {
         return redisTemplate.opsForValue().get("vode:" + username).equals(code);
     }

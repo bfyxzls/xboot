@@ -1,4 +1,4 @@
-file.uploadFolder: /home/goldenpg/upload/
+file.uploadFolder: /home/goldenpg/upload
 file.imageUrl: http://apiwx.bj-jbdpg.com/api/file/
 spring:
   # 数据源
@@ -13,7 +13,7 @@ spring:
     host: 172.26.172.38
     password: redis.2019@Golden
     # 数据库索引 默认0
-    database: 10
+    database: 11
     port: 8611
     # 超时时间 Duration类型 3秒
     timeout: 3S

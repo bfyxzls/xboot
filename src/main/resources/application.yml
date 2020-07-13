@@ -77,18 +77,18 @@ spring:
 xboot:
   # 全局限流
   ratelimit:
-    enable: true
+    enable: false
     # 每1秒内
     timeout: 1000
     # 总限制200个请求
-    limit: 2
+    limit: 200
   # IP限流
   iplimit:
-    enable: true
+    enable: false
     # 每1秒内
     timeout: 1000
     # 每个ip限制20个请求
-    limit: 1
+    limit: 20
   # token交互方式
   token:
     # 设置为true后，token将存入redis，并具有单点登录功能 默认false使用JWT交互
@@ -144,12 +144,25 @@ ignored:
     - /**/*.css
     - /**/*.png
     - /**/*.ico
+    - /xboot/test/**
+    - /xboot/user/regist
+    - /xboot/type/**
+    - /xboot/task/**
+    - /xboot/taskType/**
+    - /xboot/template/**
+    - /xboot/court/**
+    - /xboot/tenement/**
+    - /xboot/report/**
+    - /xboot/record/**
+    - /xboot/sys/**
+    - /xboot/user/**
     - /doc.html
     - /xboot/upload/**
     - /api/file/**
     - /xboot/user/sendmail
     - /xboot/user/verifyCode
     - /xboot/user/resetMePass
+    - /xboot/common/needLogin
 
 
 # Swagger界面内容配置

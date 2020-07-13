@@ -10,7 +10,6 @@ import cn.exrick.xboot.common.vo.SearchVo;
 import cn.exrick.xboot.modules.base.entity.*;
 import cn.exrick.xboot.modules.base.service.*;
 import cn.exrick.xboot.modules.base.service.mybatis.IUserRoleService;
-import cn.exrick.xboot.modules.your.util.EmailHelper;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 import io.micrometer.core.instrument.util.StringUtils;
@@ -27,6 +26,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.ArrayList;
@@ -51,8 +51,8 @@ public class UserController {
     DictDataService dictDataService;
     @Autowired
     DictService dictService;
-    @Autowired
-    EmailHelper emailHelper;
+    @Resource(name = "emailServiceImpl")
+    EmailService emailHelper;
     @Autowired
     DepartmentService departmentService;
     @Autowired

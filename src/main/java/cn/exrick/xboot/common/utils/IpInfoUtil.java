@@ -106,26 +106,26 @@ public class IpInfoUtil {
 
     public void getUrl(HttpServletRequest request){
 
-        try {
-            String url = request.getRequestURL().toString();
-            if(url.contains("127.0.0.1")||url.contains("localhost")){
-                return;
-            }
-            asyncUtil.getUrl(url);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
+//        try {
+//            String url = request.getRequestURL().toString();
+//            if(url.contains("127.0.0.1")||url.contains("localhost")){
+//                return;
+//            }
+//            asyncUtil.getUrl(url);
+//        }catch (Exception e){
+//            e.printStackTrace();
+//        }
     }
 
     public void getInfo(HttpServletRequest request, String p){
-        try {
-            String url = request.getRequestURL().toString();
-            if(url.contains("127.0.0.1")||url.contains("localhost")){
-                return;
-            }
-            asyncUtil.getInfo(url, p);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
+//        try {
+//            String url = request.getRequestURL().toString();
+//            if(url.contains("127.0.0.1")||url.contains("localhost")){
+//                return;
+//            }
+//            asyncUtil.getInfo(url, p);
+//        }catch (Exception e){
+//            e.printStackTrace();
+//        }
     }
 }

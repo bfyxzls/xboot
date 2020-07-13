@@ -31,7 +31,7 @@ public class IpInfoController {
     @ApiOperation(value = "IP及天气相关信息")
     public Result<Object> upload(HttpServletRequest request) {
 
-        String result= ipInfoUtil.getIpCity(request);
-        return ResultUtil.data(result);
+       // String result= ipInfoUtil.getIpCity(request);
+        return ResultUtil.data(null);
     }
 }
