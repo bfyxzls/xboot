@@ -15,7 +15,7 @@ server:
 spring:
   # 数据源
   datasource:
-    url: jdbc:mysql://121.89.189.120:3306/xboot?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=UTC
+    url: jdbc:mysql://localhost:3306/xboot?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=UTC
     username: root
     # Jasypt加密 可到common-utils中找到JasyptUtil加解密工具类生成加密结果 格式为ENC(加密结果) 以下解密结果为123456
     password: 123456
@@ -77,14 +77,14 @@ spring:
 xboot:
   # 全局限流
   ratelimit:
-    enable: false
+    enable: true
     # 每1秒内
     timeout: 1000
     # 总限制200个请求
     limit: 200
   # IP限流
   iplimit:
-    enable: false
+    enable: true
     # 每1秒内
     timeout: 1000
     # 每个ip限制20个请求
@@ -130,10 +130,10 @@ captcha:
 # 忽略鉴权url
 ignored:
   urls:
-    - /login
     - /xboot/oauth2/**
     - /xboot/actuator/**
     - /xboot/admin/**
+    - /xboot/dictData/getByType/**
     - /xboot/user/regist
     - /xboot/common/**
     - /druid/**
@@ -158,12 +158,12 @@ ignored:
     - /xboot/sys/**
     - /xboot/user/**
     - /doc.html
+    - /xboot/record/upload
     - /xboot/upload/**
     - /api/file/**
     - /xboot/user/sendmail
     - /xboot/user/verifyCode
     - /xboot/user/resetMePass
-    - /xboot/common/needLogin
 
 
 # Swagger界面内容配置

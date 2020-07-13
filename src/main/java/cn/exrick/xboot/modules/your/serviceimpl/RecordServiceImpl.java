@@ -60,6 +60,7 @@ public class RecordServiceImpl implements RecordService {
                 // 数据权限
                 String currentDeptId = securityUtil.getCurrUser().getDepartmentId();
                 list.add(cb.like(departmentIdsField, "%" + currentDeptId + "%"));
+                list.add(cb.notEqual(courtIdField,""));
 
                 //创建时间F
                 if (StrUtil.isNotBlank(searchVo.getStartDate()) && StrUtil.isNotBlank(searchVo.getEndDate())) {
