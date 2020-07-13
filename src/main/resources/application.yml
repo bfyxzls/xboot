@@ -130,6 +130,7 @@ captcha:
 # 忽略鉴权url
 ignored:
   urls:
+    - /login
     - /xboot/oauth2/**
     - /xboot/actuator/**
     - /xboot/admin/**
