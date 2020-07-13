@@ -1,5 +1,5 @@
 file.uploadFolder: /home/goldenpg/upload/
-file.imageUrl: http://apiwx.bj-jbdpg.com:8888/api/file/
+file.imageUrl: http://apiwx.bj-jbdpg.com/api/file/
 spring:
   # 数据源
   datasource:
