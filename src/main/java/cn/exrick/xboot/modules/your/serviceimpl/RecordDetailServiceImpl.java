@@ -171,9 +171,11 @@ public class RecordDetailServiceImpl implements RecordDetailService {
                 record.setDepartmentId(court.getDepartmentId());
             }
         }
-        String deptId = securityUtil.getCurrUser().getDepartmentId();
-        record.setDepartmentId(deptId);
-        record.setDepartmentIds(departmentService.generateParentIdsString(deptId));
+        if (!isAudit) {
+            String deptId = securityUtil.getCurrUser().getDepartmentId();
+            record.setDepartmentId(deptId);
+            record.setDepartmentIds(departmentService.generateParentIdsString(deptId));
+        }
         record.setScore(sum);
         recordService.save(record);
         //写入表单明细
