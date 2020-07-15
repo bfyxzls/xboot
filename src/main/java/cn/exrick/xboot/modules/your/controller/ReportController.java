@@ -62,7 +62,7 @@ public class ReportController extends XbootBaseController<Record, String> {
                                                SearchVo searchVo,
                                                PageVo pageVo) {
         record.setStatus(1);//已审核
-        Page<Record> page = recordService.findByCondition(record, searchVo, PageUtil.initPage(pageVo));
+        Page<Record> page = recordService.findByCondition(false, record, searchVo, PageUtil.initPage(pageVo));
 
         for (Record record1 : page) {
             Task task = taskService.get(record1.getTaskId());

@@ -38,6 +38,11 @@ public class Record extends XbootBaseEntity {
     private Double score;
     @ApiModelProperty(value = "状态：0未审核，1已审核")
     private Integer status;
+    @ApiModelProperty("纬度")
+    private Double latitude;
+    @ApiModelProperty("经度")
+    private Double longitude;
+
 
     @Transient
     @TableField(exist = false)

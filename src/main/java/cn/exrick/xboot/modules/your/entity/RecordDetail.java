@@ -51,9 +51,7 @@ public class RecordDetail extends XbootBaseEntity {
     private String pictureUrl;
     @ApiModelProperty(value = "时间选项")
     private DateTime dateValue;
-    @Transient
-    @TableField(exist = false)
-    @ApiModelProperty(value = "试题类型")
     private Integer questionType;
+
 
 }

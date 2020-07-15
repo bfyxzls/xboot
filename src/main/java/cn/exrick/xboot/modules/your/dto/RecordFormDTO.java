@@ -19,5 +19,8 @@ public class RecordFormDTO {
     private String courtId;
     @ApiModelProperty(value = "分类ID")
     private String typeId;
-
+    @ApiModelProperty("纬度")
+    private Double latitude;
+    @ApiModelProperty("经度")
+    private Double longitude;
 }

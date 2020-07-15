@@ -63,6 +63,4 @@ public class Template extends XbootBaseEntity {
     @TableField(exist = false)
     @ApiModelProperty(value = "分类名称")
     private String typeTitle;
-
-
 }

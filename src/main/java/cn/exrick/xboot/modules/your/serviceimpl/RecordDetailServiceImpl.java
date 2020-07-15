@@ -6,6 +6,7 @@ import cn.exrick.xboot.common.vo.SearchVo;
 import cn.exrick.xboot.modules.base.service.DepartmentService;
 import cn.exrick.xboot.modules.base.utils.EntityUtil;
 import cn.exrick.xboot.modules.your.dao.RecordDetailDao;
+import cn.exrick.xboot.modules.your.dto.CourtTotal;
 import cn.exrick.xboot.modules.your.dto.RecordDetailDTO;
 import cn.exrick.xboot.modules.your.dto.RecordFormDTO;
 import cn.exrick.xboot.modules.your.entity.Court;
@@ -158,6 +159,8 @@ public class RecordDetailServiceImpl implements RecordDetailService {
         record.setCourtId(recordFormDTO.getCourtId());
         record.setTaskId(recordFormDTO.getTaskId());
         record.setTypeId(recordFormDTO.getTypeId());
+        record.setLatitude(recordFormDTO.getLatitude());
+        record.setLongitude(recordFormDTO.getLongitude());
         record.setStatus(0);
         if (recordId != null) {
             record = recordService.get(recordId);
@@ -226,5 +229,7 @@ public class RecordDetailServiceImpl implements RecordDetailService {
         record.setScore(sum);
         recordService.update(record);
     }
+
+
 
 }

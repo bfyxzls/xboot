@@ -9,8 +9,11 @@ import cn.exrick.xboot.common.vo.SearchVo;
 import cn.exrick.xboot.modules.base.service.DepartmentService;
 import cn.exrick.xboot.modules.base.utils.EntityUtil;
 import cn.exrick.xboot.modules.your.dao.CourtDao;
+import cn.exrick.xboot.modules.your.dto.CourtTotal;
 import cn.exrick.xboot.modules.your.entity.Court;
 import cn.exrick.xboot.modules.your.service.CourtService;
+import cn.exrick.xboot.modules.your.service.RecordDetailService;
+import cn.exrick.xboot.modules.your.service.RecordService;
 import io.micrometer.core.instrument.util.StringUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -49,6 +52,8 @@ public class CourtController extends XbootBaseController<Court, String> {
     private CourtService courtService;
     @Autowired
     private CourtDao courtDao;
+    @Autowired
+    private RecordService recordDetailService;
 
     @Override
     public CourtService getService() {
@@ -61,6 +66,12 @@ public class CourtController extends XbootBaseController<Court, String> {
 
         List<Court> list = courtDao.findAll();
         return new ResultUtil<List<Court>>().setData(list);
+    }
+
+    @RequestMapping(value = "/total", method = RequestMethod.GET)
+    @ApiOperation(value = "小区统计")
+    public Result<CourtTotal> total(@RequestParam String id) {
+        return new ResultUtil<CourtTotal>().setData(recordDetailService.getRecordCourtTotal(id));
     }
 
     @RequestMapping(value = "/getListByName", method = RequestMethod.GET)
@@ -95,13 +106,13 @@ public class CourtController extends XbootBaseController<Court, String> {
     @ApiOperation(value = "添加小区")
     public Result<Object> add(Court entity) {
         entityUtil.initEntity(entity);
-        if(entity.getLatitude()==null){
+        if (entity.getLatitude() == null) {
             entity.setLatitude(0d);
         }
-        if(entity.getLongitude()==null){
+        if (entity.getLongitude() == null) {
             entity.setLongitude(0d);
         }
-        String deptIds=departmentService.generateParentIdsString(entity.getDepartmentId());
+        String deptIds = departmentService.generateParentIdsString(entity.getDepartmentId());
         entity.setDepartmentIds(deptIds);
         courtService.save(entity);
         return ResultUtil.success("添加成功");

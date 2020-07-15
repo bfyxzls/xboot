@@ -64,12 +64,30 @@ public class RecordController extends XbootBaseController<Record, String> {
     }
 
     @RequestMapping(value = "/getByCondition", method = RequestMethod.GET)
-    @ApiOperation(value = "多条件分页获取")
+    @ApiOperation(value = "多条件分页获取-只查自己的")
     public Result<Page<Record>> getByCondition(Record record,
                                                SearchVo searchVo,
                                                PageVo pageVo) {
+        return getByCondition(true, record, searchVo, pageVo);
+    }
 
-        Page<Record> page = recordService.findByCondition(record, searchVo, PageUtil.initPage(pageVo));
+    @RequestMapping(value = "/getByConditionMgr", method = RequestMethod.GET)
+    @ApiOperation(value = "多条件分页获取-按权限查询")
+    public Result<Page<Record>> getByConditionMgr(Record record,
+                                                  SearchVo searchVo,
+                                                  PageVo pageVo) {
+
+        return getByCondition(false, record, searchVo, pageVo);
+
+    }
+
+
+    public Result<Page<Record>> getByCondition(Boolean isSelf,
+                                               Record record,
+                                               SearchVo searchVo,
+                                               PageVo pageVo) {
+
+        Page<Record> page = recordService.findByCondition(isSelf, record, searchVo, PageUtil.initPage(pageVo));
 
         for (Record record1 : page) {
             Task task = taskService.get(record1.getTaskId());

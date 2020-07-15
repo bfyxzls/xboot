@@ -2,6 +2,7 @@ package cn.exrick.xboot.modules.your.service;
 
 import cn.exrick.xboot.base.XbootBaseService;
 import cn.exrick.xboot.common.vo.SearchVo;
+import cn.exrick.xboot.modules.your.dto.CourtTotal;
 import cn.exrick.xboot.modules.your.dto.RecordDetailDTO;
 import cn.exrick.xboot.modules.your.dto.RecordFormDTO;
 import cn.exrick.xboot.modules.your.entity.RecordDetail;
