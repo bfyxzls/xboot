@@ -1,2 +1,12 @@
 file.uploadFolder: /Users/zzl/upload/
 file.imageUrl: http://localhost:8888/api/file/
+spring:
+  # Redis
+  redis:
+    host: 127.0.0.1
+    password: bdyh@2020
+    # 数据库索引 默认0
+    database: 0
+    port: 6379
+    # 超时时间 Duration类型 3秒
+    timeout: 3S

@@ -46,15 +46,6 @@ spring:
     generate-ddl: true
     hibernate:
       ddl-auto: update
-  # Redis
-  redis:
-    host: 127.0.0.1
-    password:
-    # 数据库索引 默认0
-    database: 0
-    port: 6379
-    # 超时时间 Duration类型 3秒
-    timeout: 3S
 
   # 文件大小上传配置
   servlet:

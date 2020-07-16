@@ -1,2 +1,11 @@
 file.uploadFolder: c://upload/
 file.imageUrl: http://121.89.189.120:8888/api/file/
+spring:
+  # Redis
+  redis:
+    host: 127.0.0.1
+    # 数据库索引 默认0
+    database: 0
+    port: 6379
+    # 超时时间 Duration类型 3秒
+    timeout: 3S

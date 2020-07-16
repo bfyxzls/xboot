@@ -1,6 +1,7 @@
 package cn.exrick.xboot.modules.your.controller;
 
 import cn.exrick.xboot.base.XbootBaseController;
+import cn.exrick.xboot.common.utils.ExcelUtil;
 import cn.exrick.xboot.common.utils.PageUtil;
 import cn.exrick.xboot.common.utils.ResultUtil;
 import cn.exrick.xboot.common.vo.PageVo;
@@ -27,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -61,7 +63,16 @@ public class ReportController extends XbootBaseController<Record, String> {
     public Result<Page<Record>> getByCondition(Record record,
                                                SearchVo searchVo,
                                                PageVo pageVo) {
+
+        return getByConditionData(record,searchVo,pageVo);
+    }
+
+    Result<Page<Record>> getByConditionData(Record record,
+                                        SearchVo searchVo,
+                                        PageVo pageVo) {
         record.setStatus(1);//已审核
+        pageVo.setSort("createTime");
+        pageVo.setOrder("desc");
         Page<Record> page = recordService.findByCondition(false, record, searchVo, PageUtil.initPage(pageVo));
 
         for (Record record1 : page) {
@@ -91,5 +102,21 @@ public class ReportController extends XbootBaseController<Record, String> {
         return new ResultUtil<Page<Record>>().setData(page);
     }
 
-
+    @RequestMapping(value = "/export", method = RequestMethod.GET)
+    @ApiOperation(value = "多条件分页获取-导出")
+    public void export(Record record,
+                       SearchVo searchVo,
+                       PageVo pageVo,
+                       HttpServletResponse response) {
+        pageVo.setSort("createTime");
+        pageVo.setOrder("desc");
+        pageVo.setPageSize(100000);
+        long t1 = System.currentTimeMillis();
+        ExcelUtil.writeExcel(
+                response,
+                getByConditionData( record, searchVo, pageVo).getResult().toList(),
+                Record.class);
+        long t2 = System.currentTimeMillis();
+        System.out.println(String.format("write over! cost:%sms", (t2 - t1)));
+    }
 }

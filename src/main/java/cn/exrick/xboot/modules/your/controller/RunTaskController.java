@@ -39,7 +39,8 @@ public class RunTaskController extends XbootBaseController<RunTask, String> {
     public Result<Page<RunTask>> getByCondition(RunTask runTask,
                                                             SearchVo searchVo,
                                                             PageVo pageVo){
-
+        pageVo.setSort("createTime");
+        pageVo.setOrder("desc");
         Page<RunTask> page = runTaskService.findByCondition(runTask, searchVo, PageUtil.initPage(pageVo));
         return new ResultUtil<Page<RunTask>>().setData(page);
     }

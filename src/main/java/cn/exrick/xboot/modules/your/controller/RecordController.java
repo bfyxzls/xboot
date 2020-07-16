@@ -1,6 +1,7 @@
 package cn.exrick.xboot.modules.your.controller;
 
 import cn.exrick.xboot.base.XbootBaseController;
+import cn.exrick.xboot.common.utils.ExcelUtil;
 import cn.exrick.xboot.common.utils.PageUtil;
 import cn.exrick.xboot.common.utils.ResultUtil;
 import cn.exrick.xboot.common.vo.PageVo;
@@ -30,6 +31,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -76,7 +78,8 @@ public class RecordController extends XbootBaseController<Record, String> {
     public Result<Page<Record>> getByConditionMgr(Record record,
                                                   SearchVo searchVo,
                                                   PageVo pageVo) {
-
+        pageVo.setSort("createTime");
+        pageVo.setOrder("desc");
         return getByCondition(false, record, searchVo, pageVo);
 
     }
@@ -86,7 +89,8 @@ public class RecordController extends XbootBaseController<Record, String> {
                                                Record record,
                                                SearchVo searchVo,
                                                PageVo pageVo) {
-
+        pageVo.setSort("createTime");
+        pageVo.setOrder("desc");
         Page<Record> page = recordService.findByCondition(isSelf, record, searchVo, PageUtil.initPage(pageVo));
 
         for (Record record1 : page) {
@@ -145,5 +149,23 @@ public class RecordController extends XbootBaseController<Record, String> {
             recordService.delete(id);
         }
         return ResultUtil.success("删除成功");
+    }
+
+    @RequestMapping(value = "/export", method = RequestMethod.GET)
+    @ApiOperation(value = "多条件分页获取-导出")
+    public void export(Record record,
+                       SearchVo searchVo,
+                       PageVo pageVo,
+                       HttpServletResponse response) {
+        pageVo.setSort("createTime");
+        pageVo.setOrder("desc");
+        pageVo.setPageSize(100000);
+        long t1 = System.currentTimeMillis();
+        ExcelUtil.writeExcel(
+                response,
+                getByCondition(false, record, searchVo, pageVo).getResult().toList(),
+                Record.class);
+        long t2 = System.currentTimeMillis();
+        System.out.println(String.format("write over! cost:%sms", (t2 - t1)));
     }
 }

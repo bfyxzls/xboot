@@ -48,7 +48,8 @@ public class TaskController extends XbootBaseController<Task, String> {
     public Result<Page<Task>> getByCondition(Task task,
                                              SearchVo searchVo,
                                              PageVo pageVo) {
-
+        pageVo.setSort("createTime");
+        pageVo.setOrder("desc");
         Page<Task> page = taskService.findByCondition(task, searchVo, PageUtil.initPage(pageVo));
         return new ResultUtil<Page<Task>>().setData(page);
     }

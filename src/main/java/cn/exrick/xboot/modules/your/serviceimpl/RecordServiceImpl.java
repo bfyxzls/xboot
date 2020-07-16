@@ -23,6 +23,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.criteria.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -150,7 +152,7 @@ public class RecordServiceImpl implements RecordService {
                 List<Predicate> list = new ArrayList<Predicate>();
                 list.add(cb.equal(root.get("courtId"), courtId));
                 list.add(cb.equal(root.get("createBy"), securityUtil.getCurrUser().getId()));
-                list.add(cb.equal(root.get("typeId"), 3));
+                list.add(cb.equal(root.get("typeId"), type.getId()));
                 Predicate[] arr = new Predicate[list.size()];
                 cq.where(list.toArray(arr));
                 return null;
@@ -161,5 +163,10 @@ public class RecordServiceImpl implements RecordService {
         courtTotal.setSelfCount(createByCount);
         courtTotal.setPlanCount(limitCount);
         return courtTotal;
+    }
+
+    @Override
+    public void exportRecordXls(Record record, HttpServletRequest request, HttpServletResponse response) {
+
     }
 }

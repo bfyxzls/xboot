@@ -47,7 +47,8 @@ public class TypeController extends XbootBaseController<Type, String> {
     public Result<Page<Type>> getByCondition(Type type,
                                              SearchVo searchVo,
                                              PageVo pageVo) {
-
+        pageVo.setSort("createTime");
+        pageVo.setOrder("desc");
         Page<Type> page = typeService.findByCondition(type, searchVo, PageUtil.initPage(pageVo));
         return new ResultUtil<Page<Type>>().setData(page);
     }

@@ -7,6 +7,9 @@ import cn.exrick.xboot.modules.your.entity.Record;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 /**
  * 评价记录接口
  *
@@ -23,10 +26,21 @@ public interface RecordService extends XbootBaseService<Record, String> {
      * @return
      */
     Page<Record> findByCondition(boolean isSelf, Record record, SearchVo searchVo, Pageable pageable);
+
     /**
      * 得到小区的统计.
+     *
      * @param courtId .
      * @return
      */
     CourtTotal getRecordCourtTotal(String courtId);
+
+    /**
+     * 评价导出.
+     *
+     * @param record
+     * @param request
+     * @param response
+     */
+    void exportRecordXls(Record record, HttpServletRequest request, HttpServletResponse response);
 }

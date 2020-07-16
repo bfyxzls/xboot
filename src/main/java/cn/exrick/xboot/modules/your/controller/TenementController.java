@@ -47,7 +47,8 @@ public class TenementController extends XbootBaseController<Tenement, String> {
     public Result<Page<Tenement>> getByCondition(Tenement tenement,
                                                  SearchVo searchVo,
                                                  PageVo pageVo) {
-
+        pageVo.setSort("createTime");
+        pageVo.setOrder("desc");
         Page<Tenement> page = tenementService.findByCondition(tenement, searchVo, PageUtil.initPage(pageVo));
         return new ResultUtil<Page<Tenement>>().setData(page);
     }

@@ -1,8 +1,8 @@
 package cn.exrick.xboot.modules.your.entity;
 
 import cn.exrick.xboot.base.XbootBaseEntity;
+import cn.exrick.xboot.common.utils.ExcelColumn;
 import cn.exrick.xboot.modules.base.entity.Department;
-import cn.hutool.core.date.DateTime;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
@@ -35,24 +35,22 @@ public class Record extends XbootBaseEntity {
     @ApiModelProperty("上级组织机构列表，当前人所在组织包含这些组织的都是有权限的")
     private String departmentIds;
     @ApiModelProperty(value = "分值")
+    @ExcelColumn(value = "分值", col = 3)
     private Double score;
     @ApiModelProperty(value = "状态：0未审核，1已审核")
+    @ExcelColumn(value = "状态", col = 4)
     private Integer status;
     @ApiModelProperty("纬度")
+    @ExcelColumn(value = "纬度", col = 5)
     private Double latitude;
     @ApiModelProperty("经度")
+    @ExcelColumn(value = "经度", col = 6)
     private Double longitude;
-
 
     @Transient
     @TableField(exist = false)
     @ApiModelProperty(value = "小区")
     private Court court;
-
-    @Transient
-    @TableField(exist = false)
-    @ApiModelProperty(value = "小区名称")
-    private String courtTitle;
 
     @Transient
     @TableField(exist = false)
@@ -72,6 +70,12 @@ public class Record extends XbootBaseEntity {
     @Transient
     @TableField(exist = false)
     @ApiModelProperty(value = "组织机构名称")
+    @ExcelColumn(value = "组织机构", col = 1)
     private String departmentTreeTitle;
 
+    @Transient
+    @TableField(exist = false)
+    @ApiModelProperty(value = "小区名称")
+    @ExcelColumn(value = "小区名称", col = 2)
+    private String courtTitle;
 }
