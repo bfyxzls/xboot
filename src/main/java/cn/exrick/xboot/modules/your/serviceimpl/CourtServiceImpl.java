@@ -60,6 +60,8 @@ public class CourtServiceImpl implements CourtService {
 
                 Path<Date> createTimeField = root.get("createTime");
                 Path<String> titleField = root.get("title");
+                Path<String> projectTypeField = root.get("projectType");
+
                 List<Predicate> list = new ArrayList<Predicate>();
                 // 数据权限
                 String currentDeptId = securityUtil.getCurrUser().getDepartmentId();
@@ -73,6 +75,9 @@ public class CourtServiceImpl implements CourtService {
                 }
                 if (StringUtils.isNotBlank(court.getTitle())) {
                     list.add(cb.like(titleField, court.getTitle().trim() + "%"));
+                }
+                if (StringUtils.isNotBlank(court.getProjectType())) {
+                    list.add(cb.like(projectTypeField, court.getProjectType().trim() + "%"));
                 }
                 if (StringUtils.isNotBlank(court.getDepartmentId())) {
                     list.add(cb.like(root.get("departmentIds"), "%"+court.getDepartmentId()+"%"));

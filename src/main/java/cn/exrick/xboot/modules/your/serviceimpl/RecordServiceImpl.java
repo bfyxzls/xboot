@@ -22,10 +22,12 @@ import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
 import javax.persistence.criteria.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -45,6 +47,8 @@ public class RecordServiceImpl implements RecordService {
     TaskTypeDao taskTypeDao;
     @Autowired
     TypeDao typeDao;
+    @Autowired
+    EntityManager em;
     @Autowired
     private RecordDao recordDao;
 
@@ -169,4 +173,20 @@ public class RecordServiceImpl implements RecordService {
     public void exportRecordXls(Record record, HttpServletRequest request, HttpServletResponse response) {
 
     }
+
+    @Override
+    public int updateAuditStatus(Collection<String> collection) {
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaUpdate op = cb.createCriteriaUpdate(Record.class);
+        Root root = op.from(Record.class);
+
+        CriteriaBuilder.In<String> in = cb.in(root.get("id"));
+        for (String id : collection) {
+            in.value(id);
+        }
+        op.set("status", 1).where(in);
+        em.createQuery(op).executeUpdate();
+        return 0;
+    }
+
 }

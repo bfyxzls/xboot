@@ -6,9 +6,11 @@ import cn.exrick.xboot.modules.your.dto.CourtTotal;
 import cn.exrick.xboot.modules.your.entity.Record;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.query.Param;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Collection;
 
 /**
  * 评价记录接口
@@ -43,4 +45,9 @@ public interface RecordService extends XbootBaseService<Record, String> {
      * @param response
      */
     void exportRecordXls(Record record, HttpServletRequest request, HttpServletResponse response);
+
+
+    int updateAuditStatus(@Param("collection") Collection<String> collection);
+
+
 }

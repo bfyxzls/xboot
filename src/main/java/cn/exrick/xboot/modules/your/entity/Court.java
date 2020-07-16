@@ -52,5 +52,7 @@ public class Court extends XbootBaseEntity {
     @TableField(exist = false)
     @ApiModelProperty(value = "物业")
     private String tenementTitle;
+    @ApiModelProperty(value = "项目类型，商品房|保障房")
+    private String  projectType;
 
 }

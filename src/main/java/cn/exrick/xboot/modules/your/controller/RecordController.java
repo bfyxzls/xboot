@@ -33,6 +33,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -80,6 +81,7 @@ public class RecordController extends XbootBaseController<Record, String> {
                                                   PageVo pageVo) {
         pageVo.setSort("createTime");
         pageVo.setOrder("desc");
+        record.setStatus(0);
         return getByCondition(false, record, searchVo, pageVo);
 
     }
@@ -91,6 +93,8 @@ public class RecordController extends XbootBaseController<Record, String> {
                                                PageVo pageVo) {
         pageVo.setSort("createTime");
         pageVo.setOrder("desc");
+        record.setStatus(0);
+
         Page<Record> page = recordService.findByCondition(isSelf, record, searchVo, PageUtil.initPage(pageVo));
 
         for (Record record1 : page) {
@@ -160,6 +164,7 @@ public class RecordController extends XbootBaseController<Record, String> {
         pageVo.setSort("createTime");
         pageVo.setOrder("desc");
         pageVo.setPageSize(100000);
+        record.setStatus(0);
         long t1 = System.currentTimeMillis();
         ExcelUtil.writeExcel(
                 response,
@@ -167,5 +172,12 @@ public class RecordController extends XbootBaseController<Record, String> {
                 Record.class);
         long t2 = System.currentTimeMillis();
         System.out.println(String.format("write over! cost:%sms", (t2 - t1)));
+    }
+
+    @RequestMapping(value = "/auditRecord", method = RequestMethod.POST)
+    @ApiOperation(value = "批量审核任务")
+    public Result<Object> auditRecord(@RequestParam String[] ids) {
+        recordService.updateAuditStatus(Arrays.asList(ids));
+        return ResultUtil.success("批量审核任务成功");
     }
 }
