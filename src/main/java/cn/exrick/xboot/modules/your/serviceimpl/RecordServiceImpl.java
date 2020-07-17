@@ -8,8 +8,8 @@ import cn.exrick.xboot.modules.your.dao.TypeDao;
 import cn.exrick.xboot.modules.your.dto.CourtTotal;
 import cn.exrick.xboot.modules.your.entity.Record;
 import cn.exrick.xboot.modules.your.entity.TaskType;
-import cn.exrick.xboot.modules.your.entity.Type;
 import cn.exrick.xboot.modules.your.service.RecordService;
+import cn.exrick.xboot.modules.your.service.TaskTypeService;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import io.micrometer.core.instrument.util.StringUtils;
@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 评价记录接口实现
@@ -49,6 +50,8 @@ public class RecordServiceImpl implements RecordService {
     TypeDao typeDao;
     @Autowired
     EntityManager em;
+    @Autowired
+    TaskTypeService taskTypeService;
     @Autowired
     private RecordDao recordDao;
 
@@ -126,28 +129,22 @@ public class RecordServiceImpl implements RecordService {
         });
 
 
-        Type type = typeDao.findOne(new Specification<Type>() {
-            @Nullable
+        List<String> roles = securityUtil.getCurrUser().getRoles().stream().map(o -> o.getId()).collect(Collectors.toList());
+        Specification<TaskType> s1 = new Specification<TaskType>() {
             @Override
-            public Predicate toPredicate(Root<Type> root, CriteriaQuery<?> cq, CriteriaBuilder cb) {
-                List<Predicate> list = new ArrayList<Predicate>();
-                list.add(cb.equal(root.get("title"), "业主评价表"));
-                Predicate[] arr = new Predicate[list.size()];
-                cq.where(list.toArray(arr));
+            public Predicate toPredicate(Root<TaskType> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+                List<Predicate> listOr = new ArrayList<>();
+                for (String roleId : roles) {
+                    listOr.add(criteriaBuilder.like(root.get("roleIds"), "%" + roleId + "%"));
+                }
+                Predicate[] arrayOr = new Predicate[listOr.size()];
+                Predicate Pre_Or = criteriaBuilder.or(listOr.toArray(arrayOr));
+                criteriaQuery.where(Pre_Or);
                 return null;
             }
-        }).orElse(new Type());
-        TaskType taskType = taskTypeDao.findOne(new Specification<TaskType>() {
-            @Nullable
-            @Override
-            public Predicate toPredicate(Root<TaskType> root, CriteriaQuery<?> cq, CriteriaBuilder cb) {
-                List<Predicate> list = new ArrayList<Predicate>();
-                list.add(cb.equal(root.get("typeId"), type.getId()));
-                Predicate[] arr = new Predicate[list.size()];
-                cq.where(list.toArray(arr));
-                return null;
-            }
-        }).orElse(new TaskType());
+        };
+        TaskType taskType = taskTypeService.findAll(s1).stream().findFirst().get();
+
         Integer limitCount = taskType.getLimitCount();
         Long createByCount = recordDao.count(new Specification<Record>() {
             @Nullable
@@ -156,7 +153,7 @@ public class RecordServiceImpl implements RecordService {
                 List<Predicate> list = new ArrayList<Predicate>();
                 list.add(cb.equal(root.get("courtId"), courtId));
                 list.add(cb.equal(root.get("createBy"), securityUtil.getCurrUser().getId()));
-                list.add(cb.equal(root.get("typeId"), type.getId()));
+                list.add(cb.equal(root.get("typeId"),taskType.getTypeId()));
                 Predicate[] arr = new Predicate[list.size()];
                 cq.where(list.toArray(arr));
                 return null;
