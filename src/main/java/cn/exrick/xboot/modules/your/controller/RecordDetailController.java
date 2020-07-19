@@ -65,6 +65,12 @@ public class RecordDetailController extends XbootBaseController<RecordDetail, St
     @RequestMapping(value = "/editOne", method = RequestMethod.POST)
     @ApiOperation(value = "单条编辑表单的分类")
     public Result<Object> editOne(@RequestBody RecordFormDTO recordFormDTO) {
+        if (recordFormDTO.getLatitude() == null || recordFormDTO.getLatitude().toString() == "undefined") {
+            recordFormDTO.setLatitude(0d);
+        }
+        if (recordFormDTO.getLongitude() == null || recordFormDTO.getLongitude().toString() == "undefined") {
+            recordFormDTO.setLongitude(0d);
+        }
         recordDetailService.addRecordDetails(recordFormDTO, false);
         return ResultUtil.success("添加成功");
     }

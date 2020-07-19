@@ -1,9 +1,10 @@
 package cn.exrick.xboot.modules.your.dto;
 
-import cn.hutool.core.date.DateTime;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.ToString;
+
+import java.util.Date;
 
 @Data
 @ToString
@@ -21,5 +22,5 @@ public class RecordDetailDTO {
     @ApiModelProperty(value = "照片内容")
     private String pictureUrl;
     @ApiModelProperty(value = "时间选项")
-    private DateTime dateValue;
+    private Date dateValue;
 }

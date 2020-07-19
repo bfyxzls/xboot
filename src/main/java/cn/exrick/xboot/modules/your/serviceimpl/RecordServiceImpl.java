@@ -90,6 +90,11 @@ public class RecordServiceImpl implements RecordService {
                     Date end = DateUtil.parse(searchVo.getEndDate());
                     list.add(cb.between(createTimeField, start, DateUtil.endOfDay(end)));
                 }
+
+                if (StringUtils.isNotBlank(record.getTypeId())) {
+                    list.add(cb.equal(root.get("typeId"), record.getTypeId()));
+                }
+
                 if (StringUtils.isNotBlank(record.getCourtId())) {
                     list.add(cb.equal(courtIdField, record.getCourtId()));
                 }
@@ -110,24 +115,6 @@ public class RecordServiceImpl implements RecordService {
     public CourtTotal getRecordCourtTotal(String courtId) {
 
         CourtTotal courtTotal = new CourtTotal();
-        Long courtCount = recordDao.count(new Specification<Record>() {
-            @Nullable
-            @Override
-            public Predicate toPredicate(Root<Record> root, CriteriaQuery<?> cq, CriteriaBuilder cb) {
-                List<Predicate> list = new ArrayList<Predicate>();
-                list.add(cb.equal(root.get("courtId"), courtId));
-                CriteriaBuilder.In<Integer> in = cb.in(root.get("typeId"));
-                Integer[] typeIds = new Integer[]{1, 2, 3};
-                for (Integer id : typeIds) {
-                    in.value(id);
-                }
-                list.add(in);
-                Predicate[] arr = new Predicate[list.size()];
-                cq.where(list.toArray(arr));
-                return null;
-            }
-        });
-
 
         List<String> roles = securityUtil.getCurrUser().getRoles().stream().map(o -> o.getId()).collect(Collectors.toList());
         Specification<TaskType> s1 = new Specification<TaskType>() {
@@ -144,8 +131,20 @@ public class RecordServiceImpl implements RecordService {
             }
         };
         TaskType taskType = taskTypeService.findAll(s1).stream().findFirst().get();
-
         Integer limitCount = taskType.getLimitCount();
+        Long courtCount = recordDao.count(new Specification<Record>() {
+            @Nullable
+            @Override
+            public Predicate toPredicate(Root<Record> root, CriteriaQuery<?> cq, CriteriaBuilder cb) {
+                List<Predicate> list = new ArrayList<Predicate>();
+                list.add(cb.equal(root.get("courtId"), courtId));
+                list.add(cb.equal(root.get("typeId"), taskType.getTypeId()));
+                Predicate[] arr = new Predicate[list.size()];
+                cq.where(list.toArray(arr));
+                return null;
+            }
+        });
+
         Long createByCount = recordDao.count(new Specification<Record>() {
             @Nullable
             @Override

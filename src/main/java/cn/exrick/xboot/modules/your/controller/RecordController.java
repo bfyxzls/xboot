@@ -1,15 +1,14 @@
 package cn.exrick.xboot.modules.your.controller;
 
 import cn.exrick.xboot.base.XbootBaseController;
-import cn.exrick.xboot.common.utils.ExcelUtil;
-import cn.exrick.xboot.common.utils.PageUtil;
-import cn.exrick.xboot.common.utils.ResultUtil;
+import cn.exrick.xboot.common.utils.*;
 import cn.exrick.xboot.common.vo.PageVo;
 import cn.exrick.xboot.common.vo.Result;
 import cn.exrick.xboot.common.vo.SearchVo;
 import cn.exrick.xboot.modules.base.entity.Department;
 import cn.exrick.xboot.modules.base.service.DepartmentService;
 import cn.exrick.xboot.modules.base.utils.EntityUtil;
+import cn.exrick.xboot.modules.your.dao.mapper.RecordMapper;
 import cn.exrick.xboot.modules.your.entity.Court;
 import cn.exrick.xboot.modules.your.entity.Record;
 import cn.exrick.xboot.modules.your.entity.Task;
@@ -19,6 +18,7 @@ import cn.exrick.xboot.modules.your.service.RecordService;
 import cn.exrick.xboot.modules.your.service.TaskService;
 import cn.exrick.xboot.modules.your.service.TypeService;
 import cn.exrick.xboot.modules.your.util.FileUtil;
+import cn.hutool.core.date.DateTime;
 import io.micrometer.core.instrument.util.StringUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -32,9 +32,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author lind
@@ -50,6 +48,8 @@ public class RecordController extends XbootBaseController<Record, String> {
     FileUtil fileUtil;
     @Autowired
     EntityUtil entityUtil;
+    @Autowired
+    RecordMapper recordMapper;
     @Autowired
     private RecordService recordService;
     @Autowired
@@ -86,14 +86,12 @@ public class RecordController extends XbootBaseController<Record, String> {
 
     }
 
-
     public Result<Page<Record>> getByCondition(Boolean isSelf,
                                                Record record,
                                                SearchVo searchVo,
                                                PageVo pageVo) {
         pageVo.setSort("createTime");
         pageVo.setOrder("desc");
-        record.setStatus(0);
 
         Page<Record> page = recordService.findByCondition(isSelf, record, searchVo, PageUtil.initPage(pageVo));
 
@@ -125,7 +123,6 @@ public class RecordController extends XbootBaseController<Record, String> {
         return new ResultUtil<Page<Record>>().setData(page);
     }
 
-
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     @ApiOperation(value = "添加记录")
     public Result<Object> add(Record entity) {
@@ -155,7 +152,7 @@ public class RecordController extends XbootBaseController<Record, String> {
         return ResultUtil.success("删除成功");
     }
 
-    @RequestMapping(value = "/export", method = RequestMethod.GET)
+    @RequestMapping(value = "/v1/export", method = RequestMethod.GET)
     @ApiOperation(value = "多条件分页获取-导出")
     public void export(Record record,
                        SearchVo searchVo,
@@ -179,5 +176,137 @@ public class RecordController extends XbootBaseController<Record, String> {
     public Result<Object> auditRecord(@RequestParam String[] ids) {
         recordService.updateAuditStatus(Arrays.asList(ids));
         return ResultUtil.success("批量审核任务成功");
+    }
+
+    @RequestMapping("export")
+    public void exportList(HttpServletResponse response, String departmentId, String courtId, String typeId, SearchVo searchVo) throws Exception {
+        String fileName = DateTime.now().year() + "" +
+                DateTime.now().month() + "" +
+                DateTime.now().dayOfMonth() + "" +
+                DateTime.now().hour(true) + "" +
+                DateTime.now().minute() + "" +
+                DateTime.now().second() + "" +
+                DateTime.now().millsecond() +
+                ".xls";
+
+        Map<String, Object> params = new HashMap<>();
+        if (StringUtils.isNotBlank(departmentId)) {
+            params.put("departmentId", departmentId);
+        }
+        if (StringUtils.isNotBlank(courtId)) {
+            params.put("courtId", courtId);
+        }
+        if (searchVo != null && StringUtils.isNotBlank(searchVo.getStartDate())) {
+            params.put("startDate", searchVo.getStartDate());
+        }
+        if (searchVo != null && StringUtils.isNotBlank(searchVo.getEndDate())) {
+            params.put("endDate", searchVo.getEndDate());
+        }
+        List<ExcelBean> ems = new ArrayList<>();
+        if (typeId == null) {
+            typeId = "1";
+        }
+        if (typeId.equals("1")) {
+            reportYezhu(ems);
+            ExcelMapUtil.export(response, fileName, ems, recordMapper.exportExcelYezhu(params));
+        } else if (typeId.equals("2")) {
+            reportZhuanjia(ems);
+            ExcelMapUtil.export(response, fileName, ems, recordMapper.exportExcelZhuanjia(params));
+
+        } else {
+            reportGuanli(ems);
+            ExcelMapUtil.export(response, fileName, ems, recordMapper.exportExcelGuanli(params));
+        }
+
+    }
+
+    void commonField(List<ExcelBean> ems) {
+        ems.add(new ExcelBean("评价编号", "record_id"));
+        ems.add(new ExcelBean("创建人", "username"));
+        ems.add(new ExcelBean("创建人昵称", "nick_name"));
+        ems.add(new ExcelBean("创建时间", "create_time"));
+        ems.add(new ExcelBean("行政区", "dept_title"));
+        ems.add(new ExcelBean("小区", "court_title"));
+        ems.add(new ExcelBean("项目类型", "project_type"));
+        ems.add(new ExcelBean("评价类型", "type_title"));
+        ems.add(new ExcelBean("任务名称", "task_title"));
+        ems.add(new ExcelBean("审核状态", "status"));
+        ems.add(new ExcelBean("纬度", "latitude"));
+        ems.add(new ExcelBean("经度", "longitude"));
+        ems.add(new ExcelBean("合计分数", "total"));
+    }
+
+    void reportYezhu(List<ExcelBean> ems) {
+        commonField(ems);
+        ems.add(new ExcelBean("时间", "时间"));
+        ems.add(new ExcelBean("访问员姓名", "访问员姓名"));
+        ems.add(new ExcelBean("居住小区名称", "居住小区名称"));
+        ems.add(new ExcelBean("物业公司名称", "物业公司名称"));
+        ems.add(new ExcelBean("居住楼栋编号", "居住楼栋编号"));
+        ems.add(new ExcelBean("入住小区时间", "入住小区时间"));
+
+        ems.add(new ExcelBean("身份", "身份"));
+        ems.add(new ExcelBean("联系方式", "联系方式"));
+        ems.add(new ExcelBean("1、物业工作人员（客服、保安、保洁等）服务态度及服务人员仪容仪表情况", "1、物业工作人员（客服、保安、保洁等）服务态度及服务人员仪容仪表情况"));
+        ems.add(new ExcelBean("2、物业值班电话畅通情况", "2、物业值班电话畅通情况"));
+        ems.add(new ExcelBean("3、公示物业服务标准、物业收费标准、物业企业和项目负责人信息情况", "3、公示物业服务标准、物业收费标准、物业企业和项目负责人信息情况"));
+        ems.add(new ExcelBean("4、公示上一年物业费收支情况", "4、公示上一年物业费收支情况"));
+        ems.add(new ExcelBean("5、装修管理情况", "5、装修管理情况"));
+        ems.add(new ExcelBean("6、小区主要出入口保安值守情况", "6、小区主要出入口保安值守情况"));
+
+        ems.add(new ExcelBean("7、小区内公共区域保安巡视情况", "7、小区内公共区域保安巡视情况"));
+        ems.add(new ExcelBean("8、小区内车辆停放秩序管理情况", "8、小区内车辆停放秩序管理情况"));
+        ems.add(new ExcelBean("9、小区房屋本体日常维修养护情况", "9、小区房屋本体日常维修养护情况"));
+        ems.add(new ExcelBean("10、供水、供电设备运行、维修养护", "10、供水、供电设备运行、维修养护"));
+        ems.add(new ExcelBean("11、电梯运行、维修养护", "11、电梯运行、维修养护"));
+        ems.add(new ExcelBean("12、公共水、电报修服务", "12、公共水、电报修服务"));
+        ems.add(new ExcelBean("13、公共照明完好程度", "13、公共照明完好程度"));
+        ems.add(new ExcelBean("14、门禁及对讲设施维护情况", "14、门禁及对讲设施维护情况"));
+        ems.add(new ExcelBean("15、楼道、楼梯间、电梯轿厢内卫生情况", "15、楼道、楼梯间、电梯轿厢内卫生情况"));
+        ems.add(new ExcelBean("16、小区室外公共区域环境卫生情况", "16、小区室外公共区域环境卫生情况"));
+        ems.add(new ExcelBean("17、生活垃圾及时清运情况", "17、生活垃圾及时清运情况"));
+        ems.add(new ExcelBean("18、生活垃圾分类收集情况", "18、生活垃圾分类收集情况"));
+        ems.add(new ExcelBean("19、公共区域绿化日常养护情况", "19、公共区域绿化日常养护情况"));
+        ems.add(new ExcelBean("20、装修垃圾管理情况", "20、装修垃圾管理情况"));
+
+
+    }
+
+    void reportZhuanjia(List<ExcelBean> ems) {
+        commonField(ems);
+        ems.add(new ExcelBean("1、物业服务项目数量", "1、物业服务项目数量"));
+        ems.add(new ExcelBean("2、物业服务项目面积", "2、物业服务项目面积"));
+        ems.add(new ExcelBean("3、老旧小区物业服务", "3、老旧小区物业服务"));
+        ems.add(new ExcelBean("4、公众责任保险或安全生产责任险参保情况", "4、公众责任保险或安全生产责任险参保情况"));
+        ems.add(new ExcelBean("5、房屋及共用设施设备及共用设施设备运行、值 守和维护记录", "5、房屋及共用设施设备及共用设施设备运行、值 守和维护记录"));
+        ems.add(new ExcelBean("6、业主装修档案管理情况", "6、业主装修档案管理情况"));
+        ems.add(new ExcelBean("7、有限空间管理情况（台账、标识、协议签订、防 护设施）", "7、有限空间管理情况（台账、标识、协议签订、防 护设施）"));
+        ems.add(new ExcelBean("8、生活垃圾收集运输服务合同签订情况", "8、生活垃圾收集运输服务合同签订情况"));
+        ems.add(new ExcelBean("9、新生违建的上报记录", "9、新生违建的上报记录"));
+        ems.add(new ExcelBean("10、生活垃圾分类管理情 况，垃圾桶配备及公示垃圾分类常识情况", "10、生活垃圾分类管理情 况，垃圾桶配备及公示垃圾分类常识情况"));
+        ems.add(new ExcelBean("11、装修垃圾管理情况", "11、装修垃圾管理情况"));
+        ems.add(new ExcelBean("12、公共区域保洁情况", "12、公共区域保洁情况"));
+        ems.add(new ExcelBean("13、停车秩序管理情况", "13、停车秩序管理情况"));
+        ems.add(new ExcelBean("14、绿化维护养护情况", "14、绿化维护养护情况"));
+        ems.add(new ExcelBean("16、大件垃圾管理情况", "16、大件垃圾管理情况"));
+        ems.add(new ExcelBean("17、电梯管理情况", "17、电梯管理情况"));
+        ems.add(new ExcelBean("18、二次供水管理情况", "18、二次供水管理情况"));
+        ems.add(new ExcelBean("19、消防设备设施管理情况", "19、消防设备设施管理情况"));
+        ems.add(new ExcelBean("20、配电室管理情况", "20、配电室管理情况"));
+
+    }
+
+    void reportGuanli(List<ExcelBean> ems) {
+        commonField(ems);
+        ems.add(new ExcelBean("接诉即办工作办理情况", "接诉即办工作办理情况"));
+        ems.add(new ExcelBean("业主违法违规行为上报情况", "业主违法违规行为上报情况"));
+        ems.add(new ExcelBean("履行安全生产责任情况", "履行安全生产责任情况"));
+        ems.add(new ExcelBean("项目负责人社区报到情况", "项目负责人社区报到情况"));
+        ems.add(new ExcelBean("重大活动保障情况", "重大活动保障情况"));
+        ems.add(new ExcelBean("垃圾分类开展情况", "垃圾分类开展情况"));
+        ems.add(new ExcelBean("其它专项治理情况", "其它专项治理情况"));
+        ems.add(new ExcelBean("配合各管理部门开展各项工作情况", "配合各管理部门开展各项工作情况"));
+        ems.add(new ExcelBean("配合党建引领改进物业管理工作情况", "配合党建引领改进物业管理工作情况"));
+        ems.add(new ExcelBean("其他", "其他"));
     }
 }

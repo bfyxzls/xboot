@@ -130,6 +130,7 @@ public class RecordDetailServiceImpl implements RecordDetailService {
             recordDetail.setTemplateId(detail.getTemplateId());
             recordDetail.setTaskId(taskId);
             recordDetail.setTypeId(template.getTypeId());
+            recordDetail.setScoreType(template.getScoreType());
             if (detail.getScore() != null) {
                 recordDetail.setScore(detail.getScore());
             } else {

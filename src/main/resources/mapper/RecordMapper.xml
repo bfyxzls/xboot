@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.exrick.xboot.modules.your.dao.mapper.RecordMapper">
+
+    <select id="exportExcelYezhu" resultType="Map">
+
+        SELECT
+        b.record_id,
+        c.username,
+        c.nick_name,
+        a.create_time,
+        court.title as court_title,
+        court.project_type as project_type,
+        concat(dept_root.title,'-',dept_father.title,'-',dept.title) as dept_title,
+        type.title as type_title,
+        task.title as task_title,
+        CASE a.status when 0 then '未审核' else '已审核' end as status ,
+        a.latitude,
+        a.longitude,
+        a.score as total,
+        max( CASE template_title WHEN '时间' THEN case b.score_type when 1 then b.score else text_value END end ) AS '时间',
+        max( CASE template_title WHEN '访问员姓名' THEN case b.score_type when 1 then b.score else text_value END END ) AS '访问员姓名',
+        max( CASE template_title WHEN '居住小区名称' THEN case b.score_type when 1 then b.score else text_value END END ) AS '居住小区名称',
+        max( CASE template_title WHEN '物业公司名称' THEN case b.score_type when 1 then b.score else text_value END END ) AS '物业公司名称',
+        max( CASE template_title WHEN '居住楼栋编号' THEN case b.score_type when 1 then b.score else text_value END END ) AS '居住楼栋编号',
+        max( CASE template_title WHEN '入住小区时间' THEN case b.score_type when 1 then b.score else text_value END END ) AS '入住小区时间',
+        max( CASE template_title WHEN '身份' THEN case b.score_type when 1 then b.score else text_value END END ) AS '身份',
+        max( CASE template_title WHEN '联系方式' THEN case b.score_type when 1 then b.score else text_value END END ) AS '联系方式',
+        max( CASE template_title WHEN '1、物业工作人员（客服、保安、保洁等）服务态度及服务人员仪容仪表情况' THEN case b.score_type when 1 then b.score else text_value END END ) AS '1、物业工作人员（客服、保安、保洁等）服务态度及服务人员仪容仪表情况',
+        max( CASE template_title WHEN '2、物业值班电话畅通情况' THEN case b.score_type when 1 then b.score else text_value END END ) AS '2、物业值班电话畅通情况',
+        max( CASE template_title WHEN '3、公示物业服务标准、物业收费标准、物业企业和项目负责人信息情况' THEN case b.score_type when 1 then b.score else text_value END END ) AS '3、公示物业服务标准、物业收费标准、物业企业和项目负责人信息情况',
+        max( CASE template_title WHEN '4、公示上一年物业费收支情况' THEN case b.score_type when 1 then b.score else text_value END END ) AS '4、公示上一年物业费收支情况',
+        max( CASE template_title WHEN '5、装修管理情况' THEN case b.score_type when 1 then b.score else text_value END END ) AS '5、装修管理情况',
+        max( CASE template_title WHEN '6、小区主要出入口保安值守情况' THEN case b.score_type when 1 then b.score else text_value END END ) AS '6、小区主要出入口保安值守情况',
+        max( CASE template_title WHEN '7、小区内公共区域保安巡视情况' THEN case b.score_type when 1 then b.score else text_value END END ) AS '7、小区内公共区域保安巡视情况',
+        max( CASE template_title WHEN '8、小区内车辆停放秩序管理情况' THEN case b.score_type when 1 then b.score else text_value END END ) AS '8、小区内车辆停放秩序管理情况',
+        max( CASE template_title WHEN '9、小区房屋本体日常维修养护情况' THEN case b.score_type when 1 then b.score else text_value END END ) AS '9、小区房屋本体日常维修养护情况',
+        max( CASE template_title WHEN '10、供水、供电设备运行、维修养护' THEN case b.score_type when 1 then b.score else text_value END END ) AS '10、供水、供电设备运行、维修养护',
+        max( CASE template_title WHEN '11、电梯运行、维修养护' THEN case b.score_type when 1 then b.score else text_value END END ) AS '11、电梯运行、维修养护',
+        max( CASE template_title WHEN '12、公共水、电报修服务' THEN case b.score_type when 1 then b.score else text_value END END ) AS '12、公共水、电报修服务',
+        max( CASE template_title WHEN '13、公共照明完好程度' THEN case b.score_type when 1 then b.score else text_value END END ) AS '13、公共照明完好程度',
+        max( CASE template_title WHEN '14、门禁及对讲设施维护情况' THEN case b.score_type when 1 then b.score else text_value END END ) AS '14、门禁及对讲设施维护情况',
+        max( CASE template_title WHEN '15、楼道、楼梯间、电梯轿厢内卫生情况' THEN case b.score_type when 1 then b.score else text_value END END ) AS '15、楼道、楼梯间、电梯轿厢内卫生情况',
+        max( CASE template_title WHEN '16、小区室外公共区域环境卫生情况' THEN case b.score_type when 1 then b.score else text_value END END ) AS '16、小区室外公共区域环境卫生情况',
+        max( CASE template_title WHEN '17、生活垃圾及时清运情况' THEN case b.score_type when 1 then b.score else text_value END END ) AS '17、生活垃圾及时清运情况',
+        max( CASE template_title WHEN '18、生活垃圾分类收集情况' THEN case b.score_type when 1 then b.score else text_value END END ) AS '18、生活垃圾分类收集情况',
+        max( CASE template_title WHEN '19、公共区域绿化日常养护情况' THEN case b.score_type when 1 then b.score else text_value END END ) AS '19、公共区域绿化日常养护情况',
+        max( CASE template_title WHEN '20、装修垃圾管理情况' THEN case b.score_type when 1 then b.score else text_value END  END ) AS '20、装修垃圾管理情况'
+        FROM
+        evaluation_record_detail b
+        inner join evaluation_record a on b.record_id=a.id
+        inner join t_user c on a.create_by=c.id
+        inner join evaluation_court court on a.court_id=court.id
+        inner join t_department dept on a.department_id = dept.id
+        inner join t_department dept_father on dept.parent_id=dept_father.id
+        inner join t_department dept_root on dept_father.parent_id=dept_root.id
+        inner join evaluation_type type on a.type_id=type.id
+        inner join evaluation_task task on a.task_id =task.id
+        where a.type_id=1
+        <if test="departmentId != null">
+            AND a.department_id = #{departmentId}
+        </if>
+        <if test="courtId != null">
+            AND a.court_id = #{courtId}
+        </if>
+        <if test="startDate != null">
+            AND b.create_time &gt;= #{startDate}
+        </if>
+        <if test="endDate != null">
+            AND b.create_time &lt; date_add(#{endDate},interval 1 day)
+
+        </if>
+        GROUP BY record_id
+
+    </select>
+
+    <select id="exportExcelZhuanjia" resultType="Map">
+SELECT
+	b.record_id,
+	c.username,
+        c.nick_name,
+        a.create_time,
+	court.title as court_title,
+	court.project_type as project_type,
+	dept_root.title as dept_root_title,
+	dept_father.title as dept_father_title,
+	dept.title as dept_title,
+	type.title as type_title,
+	task.title as task_title,
+	CASE a.status when 0 then '未审核' else '已审核' end as status ,
+	a.latitude,
+	a.longitude,
+	a.score as total,
+	max( CASE template_title WHEN '1、物业服务项目数量' THEN b.score ELSE 0 END ) AS '1、物业服务项目数量',
+	max( CASE template_title WHEN '2、物业服务项目面积' THEN b.score ELSE 0 END ) AS '2、物业服务项目面积',
+	max( CASE template_title WHEN '3、老旧小区物业服务' THEN b.score ELSE 0 END ) AS '3、老旧小区物业服务',
+	max( CASE template_title WHEN '4、公众责任保险或安全生产责任险参保情况' THEN b.score ELSE 0 END ) AS '4、公众责任保险或安全生产责任险参保情况',
+	max( CASE template_title WHEN '5、房屋及共用设施设备及共用设施设备运行、值 守和维护记录' THEN b.score ELSE 0 END ) AS '5、房屋及共用设施设备及共用设施设备运行、值 守和维护记录',
+	max( CASE template_title WHEN '6、业主装修档案管理情况' THEN b.score ELSE 0 END ) AS '6、业主装修档案管理情况',
+	max( CASE template_title WHEN '7、有限空间管理情况（台账、标识、协议签订、防 护设施）' THEN b.score ELSE 0 END ) AS '7、有限空间管理情况（台账、标识、协议签订、防 护设施）',
+	max( CASE template_title WHEN '8、生活垃圾收集运输服务合同签订情况' THEN b.score ELSE 0 END ) AS '8、生活垃圾收集运输服务合同签订情况',
+	max( CASE template_title WHEN '9、新生违建的上报记录' THEN b.score ELSE 0 END ) AS '9、新生违建的上报记录',
+	max( CASE template_title WHEN '10、生活垃圾分类管理情 况，垃圾桶配备及公示垃圾分类常识情况' THEN b.score ELSE 0 END ) AS '10、生活垃圾分类管理情 况，垃圾桶配备及公示垃圾分类常识情况',
+	max( CASE template_title WHEN '11、装修垃圾管理情况' THEN b.score ELSE 0 END ) AS '11、装修垃圾管理情况',
+	max( CASE template_title WHEN '12、公共区域保洁情况' THEN b.score ELSE 0 END ) AS '12、公共区域保洁情况',
+	max( CASE template_title WHEN '13、停车秩序管理情况' THEN b.score ELSE 0 END ) AS '13、停车秩序管理情况',
+	max( CASE template_title WHEN '14、绿化维护养护情况' THEN b.score ELSE 0 END ) AS '14、绿化维护养护情况',
+	max( CASE template_title WHEN '16、大件垃圾管理情况' THEN b.score ELSE 0 END ) AS '16、大件垃圾管理情况',
+	max( CASE template_title WHEN '17、电梯管理情况' THEN b.score ELSE 0 END ) AS '17、电梯管理情况',
+	max( CASE template_title WHEN '18、二次供水管理情况' THEN b.score ELSE 0 END ) AS '18、二次供水管理情况',
+	max( CASE template_title WHEN '19、消防设备设施管理情况' THEN b.score ELSE 0 END ) AS '19、消防设备设施管理情况',
+	max( CASE template_title WHEN '20、配电室管理情况' THEN b.score ELSE 0 END ) AS '20、配电室管理情况'
+FROM
+	evaluation_record_detail b
+	inner join evaluation_record a on b.record_id=a.id
+	inner join t_user c on a.create_by=c.id
+	inner join evaluation_court court on a.court_id=court.id
+	inner join t_department dept on a.department_id = dept.id
+	inner join t_department dept_father on dept.parent_id=dept_father.id
+	inner join t_department dept_root on dept_father.parent_id=dept_root.id
+	inner join evaluation_type type on a.type_id=type.id
+	inner join evaluation_task task on a.task_id =task.id
+        where a.type_id=2
+        <if test="departmentId != null">
+            AND a.department_id = #{departmentId}
+        </if>
+        <if test="courtId != null">
+            AND a.court_id = #{courtId}
+        </if>
+        <if test="startDate != null">
+            AND b.create_time &gt;= #{startDate}
+        </if>
+        <if test="endDate != null">
+            AND b.create_time &lt; date_add(#{endDate},interval 1 day)
+
+        </if>
+        GROUP BY record_id
+
+    </select>
+
+    <select id="exportExcelGuanli" resultType="Map">
+SELECT
+  b.record_id,
+	c.username,
+        c.nick_name,
+        a.create_time,
+	court.title as court_title,
+	court.project_type as project_type,
+	dept_root.title as dept_root_title,
+	dept_father.title as dept_father_title,
+	dept.title as dept_title,
+	type.title as type_title,
+	task.title as task_title,
+	CASE a.status when 0 then '未审核' else '已审核' end as status ,
+	a.latitude,
+	a.longitude,
+	a.score as total,
+	max( CASE template_title WHEN '接诉即办工作办理情况' THEN b.score ELSE 0 END ) AS '接诉即办工作办理情况',
+	max( CASE template_title WHEN '业主违法违规行为上报情况' THEN b.score ELSE 0 END ) AS '业主违法违规行为上报情况',
+	max( CASE template_title WHEN '履行安全生产责任情况' THEN b.score ELSE 0 END ) AS '履行安全生产责任情况',
+	max( CASE template_title WHEN '项目负责人社区报到情况' THEN b.score ELSE 0 END ) AS '项目负责人社区报到情况',
+	max( CASE template_title WHEN '重大活动保障情况' THEN b.score ELSE 0 END ) AS '重大活动保障情况',
+	max( CASE template_title WHEN '垃圾分类开展情况' THEN b.score ELSE 0 END ) AS '垃圾分类开展情况',
+	max( CASE template_title WHEN '其它专项治理情况' THEN b.score ELSE 0 END ) AS '其它专项治理情况',
+	max( CASE template_title WHEN '配合各管理部门开展各项工作情况' THEN b.score ELSE 0 END ) AS '配合各管理部门开展各项工作情况',
+	max( CASE template_title WHEN '配合党建引领改进物业管理工作情况' THEN b.score ELSE 0 END ) AS '配合党建引领改进物业管理工作情况',
+	max( CASE template_title WHEN '其他' THEN b.score ELSE 0 END ) AS '其他'
+FROM
+	evaluation_record_detail b
+	inner join evaluation_record a on b.record_id=a.id
+	inner join t_user c on a.create_by=c.id
+	inner join evaluation_court court on a.court_id=court.id
+	inner join t_department dept on a.department_id = dept.id
+	inner join t_department dept_father on dept.parent_id=dept_father.id
+	inner join t_department dept_root on dept_father.parent_id=dept_root.id
+	inner join evaluation_type type on a.type_id=type.id
+	inner join evaluation_task task on a.task_id =task.id
+        where a.type_id=3
+        <if test="departmentId != null">
+            AND a.department_id = #{departmentId}
+        </if>
+        <if test="courtId != null">
+            AND a.court_id = #{courtId}
+        </if>
+        <if test="startDate != null">
+            AND b.create_time &gt;= #{startDate}
+        </if>
+        <if test="endDate != null">
+            AND b.create_time &lt; date_add(#{endDate},interval 1 day)
+
+        </if>
+        GROUP BY record_id
+
+    </select>
+</mapper>

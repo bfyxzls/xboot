@@ -1,8 +1,6 @@
 package cn.exrick.xboot.modules.your.entity;
 
 import cn.exrick.xboot.base.XbootBaseEntity;
-import cn.hutool.core.date.DateTime;
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -12,7 +10,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import javax.persistence.Transient;
+import java.util.Date;
 
 /**
  * @author lind
@@ -50,8 +48,8 @@ public class RecordDetail extends XbootBaseEntity {
     @ApiModelProperty(value = "照片内容")
     private String pictureUrl;
     @ApiModelProperty(value = "时间选项")
-    private DateTime dateValue;
+    private Date dateValue;
     private Integer questionType;
-
-
+    @ApiModelProperty(value = "计分类型0不计分，1计分")
+    private Integer scoreType;
 }
