@@ -232,6 +232,9 @@ public class RecordController extends XbootBaseController<Record, String> {
         ems.add(new ExcelBean("审核状态", "status"));
         ems.add(new ExcelBean("纬度", "latitude"));
         ems.add(new ExcelBean("经度", "longitude"));
+        ems.add(new ExcelBean("照片", "picture_url"));
+        ems.add(new ExcelBean("备注", "content"));
+
         ems.add(new ExcelBean("合计分数", "total"));
     }
 
@@ -292,8 +295,7 @@ public class RecordController extends XbootBaseController<Record, String> {
         ems.add(new ExcelBean("18、二次供水管理情况", "18、二次供水管理情况"));
         ems.add(new ExcelBean("19、消防设备设施管理情况", "19、消防设备设施管理情况"));
         ems.add(new ExcelBean("20、配电室管理情况", "20、配电室管理情况"));
-        ems.add(new ExcelBean("照片","picture_url"));
-        ems.add(new ExcelBean("备注","content"));
+
 
     }
 

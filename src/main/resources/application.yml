@@ -127,6 +127,7 @@ ignored:
     - /xboot/dictData/getByType/**
     - /xboot/user/regist
     - /xboot/common/**
+    - /xboot/department/**
     - /druid/**
     - /swagger-ui.html
     - /swagger-resources/**

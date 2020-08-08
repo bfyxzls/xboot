@@ -213,4 +213,11 @@ public class DepartmentController {
         });
         return list;
     }
+
+
+    @RequestMapping(value = "/dept-tree/{id}",method = RequestMethod.GET)
+    @ApiOperation(value = "tree")
+    public Result<String> searchByTitle(@PathVariable String id){
+       return  ResultUtil.success(departmentService.generateParentIdsString(id));
+    }
 }

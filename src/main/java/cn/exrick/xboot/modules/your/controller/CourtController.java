@@ -129,6 +129,7 @@ public class CourtController extends XbootBaseController<Court, String> {
         old.setLatitude(entity.getLatitude());
         old.setLongitude(entity.getLongitude());
         old.setAddress(entity.getAddress());
+        old.setProjectType(entity.getProjectType());
         old.setDepartmentId(entity.getDepartmentId());
         old.setDepartmentIds(departmentService.generateParentIdsString(entity.getDepartmentId()));
         courtService.save(old);

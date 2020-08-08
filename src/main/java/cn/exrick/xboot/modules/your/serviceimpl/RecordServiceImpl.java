@@ -73,6 +73,7 @@ public class RecordServiceImpl implements RecordService {
                 Path<String> courtIdField = root.get("courtId");
                 Path<Integer> statusField = root.get("status");
                 Path<String> departmentIdsField = root.get("departmentIds");
+                Path<String> departmentIdField = root.get("departmentId");
 
                 List<Predicate> list = new ArrayList<Predicate>();
 
@@ -106,6 +107,8 @@ public class RecordServiceImpl implements RecordService {
                     list.add(cb.equal(statusField, record.getStatus()));
                 }
                 if (StringUtils.isNotBlank(record.getDepartmentId())) {
+                    list.add(cb.like(departmentIdField, "%" + record.getDepartmentId() + "%"));
+                }else{
                     list.add(cb.like(departmentIdsField, "%" + record.getDepartmentId() + "%"));
                 }
                 Predicate[] arr = new Predicate[list.size()];

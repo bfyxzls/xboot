@@ -243,8 +243,8 @@ public class UserController {
      */
     @RequestMapping(value = "/modifyPass", method = RequestMethod.POST)
     @ApiOperation(value = "修改密码")
-    public Result<Object> modifyPass(@ApiParam("旧密码") @RequestParam String password,
-                                     @ApiParam("新密码") @RequestParam String newPass) {
+    public Result<Object> modifyPass(@ApiParam("旧密码")  String password,
+                                     @ApiParam("新密码")  String newPass) {
 
         User user = securityUtil.getCurrUser();
 

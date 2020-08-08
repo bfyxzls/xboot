@@ -9,6 +9,7 @@ import cn.exrick.xboot.modules.your.entity.Template;
 import cn.exrick.xboot.modules.your.service.RecordDetailService;
 import cn.exrick.xboot.modules.your.service.RecordService;
 import cn.exrick.xboot.modules.your.service.TemplateService;
+import cn.hutool.core.collection.CollectionUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -49,6 +50,10 @@ public class RecordDetailController extends XbootBaseController<RecordDetail, St
             Template template = templateService.get(detail.getTemplateId());
             if (template != null) {
                 detail.setQuestionType(template.getQuestionType());
+            }
+          List<Template> valueList=  templateService.findByParentIdOrderBySortOrder(detail.getTemplateId());
+            if(CollectionUtil.isNotEmpty(valueList)){
+                detail.setValueTemplateList(valueList);
             }
         }
         return new ResultUtil<List<RecordDetail>>().setData(page);

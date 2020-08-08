@@ -1,6 +1,7 @@
 package cn.exrick.xboot.modules.your.entity;
 
 import cn.exrick.xboot.base.XbootBaseEntity;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -10,7 +11,9 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author lind
@@ -52,4 +55,8 @@ public class RecordDetail extends XbootBaseEntity {
     private Integer questionType;
     @ApiModelProperty(value = "计分类型0不计分，1计分")
     private Integer scoreType;
+    @ApiModelProperty(value = "子选项的值")
+    @Transient
+    @TableField(exist = false)
+    private List<Template> valueTemplateList;
 }
