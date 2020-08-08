@@ -109,7 +109,9 @@ SELECT
 	max( CASE template_title WHEN '17、电梯管理情况' THEN b.score ELSE 0 END ) AS '17、电梯管理情况',
 	max( CASE template_title WHEN '18、二次供水管理情况' THEN b.score ELSE 0 END ) AS '18、二次供水管理情况',
 	max( CASE template_title WHEN '19、消防设备设施管理情况' THEN b.score ELSE 0 END ) AS '19、消防设备设施管理情况',
-	max( CASE template_title WHEN '20、配电室管理情况' THEN b.score ELSE 0 END ) AS '20、配电室管理情况'
+	max( CASE template_title WHEN '20、配电室管理情况' THEN b.score ELSE 0 END ) AS '20、配电室管理情况',
+    picture_url,
+    content
 FROM
 	evaluation_record_detail b
 	inner join evaluation_record a on b.record_id=a.id
