@@ -79,7 +79,10 @@ public class RecordServiceImpl implements RecordService {
 
                 // 数据权限
                 String currentDeptId = securityUtil.getCurrUser().getDepartmentId();
-                list.add(cb.like(departmentIdsField, "%" + currentDeptId + "%"));
+                list.add(cb.or(
+                        cb.like(departmentIdsField, "%" + currentDeptId + "%"),
+                        cb.like(departmentIdField, "%" + currentDeptId + "%")
+                ));
                 list.add(cb.notEqual(courtIdField, ""));
 
                 if (isSelf) {
@@ -107,9 +110,10 @@ public class RecordServiceImpl implements RecordService {
                     list.add(cb.equal(statusField, record.getStatus()));
                 }
                 if (StringUtils.isNotBlank(record.getDepartmentId())) {
-                    list.add(cb.like(departmentIdField, "%" + record.getDepartmentId() + "%"));
-                }else{
-                    list.add(cb.like(departmentIdsField, "%" + record.getDepartmentId() + "%"));
+                    list.add(
+                            cb.or(cb.like(departmentIdField, "%" + record.getDepartmentId() + "%"), cb.like(departmentIdsField, "%" + record.getDepartmentId() + "%"))
+                    );
+
                 }
                 Predicate[] arr = new Predicate[list.size()];
                 cq.where(list.toArray(arr));
@@ -159,7 +163,7 @@ public class RecordServiceImpl implements RecordService {
                 List<Predicate> list = new ArrayList<Predicate>();
                 list.add(cb.equal(root.get("courtId"), courtId));
                 list.add(cb.equal(root.get("createBy"), securityUtil.getCurrUser().getId()));
-                list.add(cb.equal(root.get("typeId"),taskType.getTypeId()));
+                list.add(cb.equal(root.get("typeId"), taskType.getTypeId()));
                 Predicate[] arr = new Predicate[list.size()];
                 cq.where(list.toArray(arr));
                 return null;

@@ -8,7 +8,9 @@ import cn.exrick.xboot.common.vo.PageVo;
 import cn.exrick.xboot.common.vo.Result;
 import cn.exrick.xboot.common.vo.SearchVo;
 import cn.exrick.xboot.modules.base.entity.Department;
+import cn.exrick.xboot.modules.base.entity.User;
 import cn.exrick.xboot.modules.base.service.DepartmentService;
+import cn.exrick.xboot.modules.base.service.UserService;
 import cn.exrick.xboot.modules.your.entity.Court;
 import cn.exrick.xboot.modules.your.entity.Record;
 import cn.exrick.xboot.modules.your.entity.Task;
@@ -58,18 +60,21 @@ public class ReportController extends XbootBaseController<Record, String> {
         return recordService;
     }
 
+    @Autowired
+    UserService userService;
+
     @RequestMapping(value = "/getByCondition", method = RequestMethod.GET)
     @ApiOperation(value = "多条件分页获取")
     public Result<Page<Record>> getByCondition(Record record,
                                                SearchVo searchVo,
                                                PageVo pageVo) {
 
-        return getByConditionData(record,searchVo,pageVo);
+        return getByConditionData(record, searchVo, pageVo);
     }
 
     Result<Page<Record>> getByConditionData(Record record,
-                                        SearchVo searchVo,
-                                        PageVo pageVo) {
+                                            SearchVo searchVo,
+                                            PageVo pageVo) {
         record.setStatus(1);//已审核
         pageVo.setSort("createTime");
         pageVo.setOrder("desc");
@@ -88,6 +93,11 @@ public class ReportController extends XbootBaseController<Record, String> {
             if (court != null) {
                 record1.setCourt(court);
                 record1.setCourtTitle(court.getTitle());
+            }
+            User user = userService.get(record1.getCreateBy());
+            if (user != null) {
+                record1.setCreateByName(user.getUsername());
+                record1.setCreateByNickName(user.getNickName());
             }
             if (StringUtils.isNotBlank(record1.getDepartmentId())) {
                 Department department = departmentService.get(record1.getDepartmentId());
@@ -114,7 +124,7 @@ public class ReportController extends XbootBaseController<Record, String> {
         long t1 = System.currentTimeMillis();
         ExcelUtil.writeExcel(
                 response,
-                getByConditionData( record, searchVo, pageVo).getResult().toList(),
+                getByConditionData(record, searchVo, pageVo).getResult().toList(),
                 Record.class);
         long t2 = System.currentTimeMillis();
         System.out.println(String.format("write over! cost:%sms", (t2 - t1)));

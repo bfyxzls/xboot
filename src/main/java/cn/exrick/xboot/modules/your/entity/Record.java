@@ -78,4 +78,14 @@ public class Record extends XbootBaseEntity {
     @ApiModelProperty(value = "小区名称")
     @ExcelColumn(value = "小区名称", col = 2)
     private String courtTitle;
+
+    @Transient
+    @TableField(exist = false)
+    @ApiModelProperty(value = "用户")
+    private String createByName;
+
+    @Transient
+    @TableField(exist = false)
+    @ApiModelProperty(value = "用户")
+    private String createByNickName;
 }

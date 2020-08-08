@@ -6,7 +6,9 @@ import cn.exrick.xboot.common.vo.PageVo;
 import cn.exrick.xboot.common.vo.Result;
 import cn.exrick.xboot.common.vo.SearchVo;
 import cn.exrick.xboot.modules.base.entity.Department;
+import cn.exrick.xboot.modules.base.entity.User;
 import cn.exrick.xboot.modules.base.service.DepartmentService;
+import cn.exrick.xboot.modules.base.service.UserService;
 import cn.exrick.xboot.modules.base.utils.EntityUtil;
 import cn.exrick.xboot.modules.your.dao.mapper.RecordMapper;
 import cn.exrick.xboot.modules.your.entity.Court;
@@ -86,6 +88,9 @@ public class RecordController extends XbootBaseController<Record, String> {
 
     }
 
+    @Autowired
+    UserService userService;
+
     public Result<Page<Record>> getByCondition(Boolean isSelf,
                                                Record record,
                                                SearchVo searchVo,
@@ -107,6 +112,12 @@ public class RecordController extends XbootBaseController<Record, String> {
             Court court = courtService.get(record1.getCourtId());
             if (court != null) {
                 record1.setCourtTitle(court.getTitle());
+            }
+            User user = userService.get(record1.getCreateBy());
+            if (user != null) {
+                record1.setCreateByName(user.getUsername());
+                record1.setCreateByNickName(user.getNickName());
+
             }
             if (StringUtils.isNotBlank(record1.getDepartmentId())) {
                 Department department = departmentService.get(record1.getDepartmentId());
