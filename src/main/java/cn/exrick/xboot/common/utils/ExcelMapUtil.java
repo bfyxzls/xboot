@@ -296,7 +296,7 @@ public class ExcelMapUtil {
                     } else if (rtn instanceof Double) {
                         cell.setCellValue((Double) rtn);
                     } else if (rtn instanceof BigDecimal) {
-                        cell.setCellValue(rtn.toString());
+                        cell.setCellValue(Double.parseDouble( rtn.toString()));
                     } else {
                         cell.setCellValue(value);
                     }
