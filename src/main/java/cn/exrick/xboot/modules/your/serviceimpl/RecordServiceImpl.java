@@ -78,16 +78,18 @@ public class RecordServiceImpl implements RecordService {
                 List<Predicate> list = new ArrayList<Predicate>();
 
                 // 数据权限
-                String currentDeptId = securityUtil.getCurrUser().getDepartmentId();
-                list.add(cb.or(
-                        cb.like(departmentIdsField, "%" + currentDeptId + "%"),
-                        cb.like(departmentIdField, "%" + currentDeptId + "%")
-                ));
-                list.add(cb.notEqual(courtIdField, ""));
-
-                if (isSelf) {
+                if (!isSelf) {
+                    String currentDeptId = securityUtil.getCurrUser().getDepartmentId();
+                    list.add(cb.or(
+                            cb.like(departmentIdsField, "%" + currentDeptId + "%"),
+                            cb.like(departmentIdField, "%" + currentDeptId + "%")
+                    ));
+                } else {
                     list.add(cb.equal(root.get("createBy"), securityUtil.getCurrUser().getId()));
                 }
+
+                list.add(cb.notEqual(courtIdField, ""));
+
                 //创建时间F
                 if (StrUtil.isNotBlank(searchVo.getStartDate()) && StrUtil.isNotBlank(searchVo.getEndDate())) {
                     Date start = DateUtil.parse(searchVo.getStartDate());
@@ -99,9 +101,9 @@ public class RecordServiceImpl implements RecordService {
                     list.add(cb.equal(root.get("typeId"), record.getTypeId()));
                 }
 
-                if (StringUtils.isNotBlank(record.getId())) {
-                    list.add(cb.equal(root.get("id"), record.getId()));
-                }
+//                if (StringUtils.isNotBlank(record.getId())) {
+//                    list.add(cb.equal(root.get("id"), record.getId()));
+//                }
 
                 if (StringUtils.isNotBlank(record.getCourtId())) {
                     list.add(cb.equal(courtIdField, record.getCourtId()));
