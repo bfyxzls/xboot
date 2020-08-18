@@ -281,6 +281,27 @@ public class RecordController extends XbootBaseController<Record, String> {
         ems.add(new ExcelBean("19、公共区域绿化日常养护情况", "19、公共区域绿化日常养护情况"));
         ems.add(new ExcelBean("20、装修垃圾管理情况", "20、装修垃圾管理情况"));
 
+        ems.add(new ExcelBean("1、物业工作人员（客服、保安、保洁等）服务态度及服务人员仪容仪表情况", "1、物业工作人员（客服、保安、保洁等）服务态度及服务人员仪容仪表情况【问题说明】"));
+        ems.add(new ExcelBean("2、物业值班电话畅通情况", "2、物业值班电话畅通情况【问题说明】"));
+        ems.add(new ExcelBean("3、公示物业服务标准、物业收费标准、物业企业和项目负责人信息情况", "3、公示物业服务标准、物业收费标准、物业企业和项目负责人信息情况【问题说明】"));
+        ems.add(new ExcelBean("4、公示上一年物业费收支情况", "4、公示上一年物业费收支情况【问题说明】"));
+        ems.add(new ExcelBean("5、装修管理情况", "5、装修管理情况【问题说明】"));
+        ems.add(new ExcelBean("6、小区主要出入口保安值守情况", "6、小区主要出入口保安值守情况【问题说明】"));
+        ems.add(new ExcelBean("7、小区内公共区域保安巡视情况", "7、小区内公共区域保安巡视情况【问题说明】"));
+        ems.add(new ExcelBean("8、小区内车辆停放秩序管理情况", "8、小区内车辆停放秩序管理情况【问题说明】"));
+        ems.add(new ExcelBean("9、小区房屋本体日常维修养护情况", "9、小区房屋本体日常维修养护情况【问题说明】"));
+        ems.add(new ExcelBean("10、供水、供电设备运行、维修养护", "10、供水、供电设备运行、维修养护【问题说明】"));
+        ems.add(new ExcelBean("11、电梯运行、维修养护", "11、电梯运行、维修养护【问题说明】"));
+        ems.add(new ExcelBean("12、公共水、电报修服务", "12、公共水、电报修服务【问题说明】"));
+        ems.add(new ExcelBean("13、公共照明完好程度", "13、公共照明完好程度【问题说明】"));
+        ems.add(new ExcelBean("14、门禁及对讲设施维护情况", "14、门禁及对讲设施维护情况【问题说明】"));
+        ems.add(new ExcelBean("15、楼道、楼梯间、电梯轿厢内卫生情况", "15、楼道、楼梯间、电梯轿厢内卫生情况【问题说明】"));
+        ems.add(new ExcelBean("16、小区室外公共区域环境卫生情况", "16、小区室外公共区域环境卫生情况【问题说明】"));
+        ems.add(new ExcelBean("17、生活垃圾及时清运情况", "17、生活垃圾及时清运情况【问题说明】"));
+        ems.add(new ExcelBean("18、生活垃圾分类收集情况", "18、生活垃圾分类收集情况【问题说明】"));
+        ems.add(new ExcelBean("19、公共区域绿化日常养护情况", "19、公共区域绿化日常养护情况【问题说明】"));
+        ems.add(new ExcelBean("20、装修垃圾管理情况", "20、装修垃圾管理情况【问题说明】"));
+
         ems.add(new ExcelBean("1、物业工作人员（客服、保安、保洁等）服务态度及服务人员仪容仪表情况", "1、物业工作人员（客服、保安、保洁等）服务态度及服务人员仪容仪表情况【问题照片】"));
         ems.add(new ExcelBean("2、物业值班电话畅通情况", "2、物业值班电话畅通情况【问题照片】"));
         ems.add(new ExcelBean("3、公示物业服务标准、物业收费标准、物业企业和项目负责人信息情况", "3、公示物业服务标准、物业收费标准、物业企业和项目负责人信息情况【问题照片】"));
@@ -326,6 +347,26 @@ public class RecordController extends XbootBaseController<Record, String> {
         ems.add(new ExcelBean("19、消防设备设施管理情况", "19、消防设备设施管理情况"));
         ems.add(new ExcelBean("20、配电室管理情况", "20、配电室管理情况"));
 
+        ems.add(new ExcelBean("1、物业服务项目数量", "1、物业服务项目数量【问题说明】"));
+        ems.add(new ExcelBean("2、物业服务项目面积", "2、物业服务项目面积【问题说明】"));
+        ems.add(new ExcelBean("3、老旧小区物业服务", "3、老旧小区物业服务【问题说明】"));
+        ems.add(new ExcelBean("4、公众责任保险或安全生产责任险参保情况", "4、公众责任保险或安全生产责任险参保情况【问题说明】"));
+        ems.add(new ExcelBean("5、房屋及共用设施设备及共用设施设备运行、值 守和维护记录", "5、房屋及共用设施设备及共用设施设备运行、值 守和维护记录【问题说明】"));
+        ems.add(new ExcelBean("6、业主装修档案管理情况", "6、业主装修档案管理情况【问题说明】"));
+        ems.add(new ExcelBean("7、有限空间管理情况（台账、标识、协议签订、防 护设施）", "7、有限空间管理情况（台账、标识、协议签订、防 护设施）【问题说明】"));
+        ems.add(new ExcelBean("8、生活垃圾收集运输服务合同签订情况", "8、生活垃圾收集运输服务合同签订情况【问题说明】"));
+        ems.add(new ExcelBean("9、新生违建的上报记录", "9、新生违建的上报记录【问题说明】"));
+        ems.add(new ExcelBean("10、生活垃圾分类管理情 况，垃圾桶配备及公示垃圾分类常识情况", "10、生活垃圾分类管理情 况，垃圾桶配备及公示垃圾分类常识情况【问题说明】"));
+        ems.add(new ExcelBean("11、装修垃圾管理情况", "11、装修垃圾管理情况【问题说明】"));
+        ems.add(new ExcelBean("12、公共区域保洁情况", "12、公共区域保洁情况【问题说明】"));
+        ems.add(new ExcelBean("13、停车秩序管理情况", "13、停车秩序管理情况【问题说明】"));
+        ems.add(new ExcelBean("14、绿化维护养护情况", "14、绿化维护养护情况【问题说明】"));
+        ems.add(new ExcelBean("16、大件垃圾管理情况", "16、大件垃圾管理情况【问题说明】"));
+        ems.add(new ExcelBean("17、电梯管理情况", "17、电梯管理情况【问题说明】"));
+        ems.add(new ExcelBean("18、二次供水管理情况", "18、二次供水管理情况【问题说明】"));
+        ems.add(new ExcelBean("19、消防设备设施管理情况", "19、消防设备设施管理情况【问题说明】"));
+        ems.add(new ExcelBean("20、配电室管理情况", "20、配电室管理情况【问题说明】"));
+
         ems.add(new ExcelBean("1、物业服务项目数量", "1、物业服务项目数量【问题照片】"));
         ems.add(new ExcelBean("2、物业服务项目面积", "2、物业服务项目面积【问题照片】"));
         ems.add(new ExcelBean("3、老旧小区物业服务", "3、老旧小区物业服务【问题照片】"));
@@ -333,8 +374,8 @@ public class RecordController extends XbootBaseController<Record, String> {
         ems.add(new ExcelBean("5、房屋及共用设施设备及共用设施设备运行、值 守和维护记录", "5、房屋及共用设施设备及共用设施设备运行、值 守和维护记录【问题照片】"));
         ems.add(new ExcelBean("6、业主装修档案管理情况", "6、业主装修档案管理情况【问题照片】"));
         ems.add(new ExcelBean("7、有限空间管理情况（台账、标识、协议签订、防 护设施）", "7、有限空间管理情况（台账、标识、协议签订、防 护设施）【问题照片】"));
-        ems.add(new ExcelBean("8、生活垃圾收集运输服务合同签订情况", "8、生活垃圾收集运输服务合同签订情况"));
-        ems.add(new ExcelBean("9、新生违建的上报记录", "9、新生违建的上报记录"));
+        ems.add(new ExcelBean("8、生活垃圾收集运输服务合同签订情况", "8、生活垃圾收集运输服务合同签订情况【问题照片】"));
+        ems.add(new ExcelBean("9、新生违建的上报记录", "9、新生违建的上报记录【问题照片】"));
         ems.add(new ExcelBean("10、生活垃圾分类管理情 况，垃圾桶配备及公示垃圾分类常识情况", "10、生活垃圾分类管理情 况，垃圾桶配备及公示垃圾分类常识情况【问题照片】"));
         ems.add(new ExcelBean("11、装修垃圾管理情况", "11、装修垃圾管理情况【问题照片】"));
         ems.add(new ExcelBean("12、公共区域保洁情况", "12、公共区域保洁情况【问题照片】"));
@@ -359,6 +400,17 @@ public class RecordController extends XbootBaseController<Record, String> {
         ems.add(new ExcelBean("配合各管理部门开展各项工作情况", "配合各管理部门开展各项工作情况"));
         ems.add(new ExcelBean("配合党建引领改进物业管理工作情况", "配合党建引领改进物业管理工作情况"));
         ems.add(new ExcelBean("其他", "其他"));
+
+        ems.add(new ExcelBean("接诉即办工作办理情况", "接诉即办工作办理情况【问题说明】"));
+        ems.add(new ExcelBean("业主违法违规行为上报情况", "业主违法违规行为上报情况【问题说明】"));
+        ems.add(new ExcelBean("履行安全生产责任情况", "履行安全生产责任情况【问题说明】"));
+        ems.add(new ExcelBean("项目负责人社区报到情况", "项目负责人社区报到情况【问题说明】"));
+        ems.add(new ExcelBean("重大活动保障情况", "重大活动保障情况【问题说明】"));
+        ems.add(new ExcelBean("垃圾分类开展情况", "垃圾分类开展情况【问题说明】"));
+        ems.add(new ExcelBean("其它专项治理情况", "其它专项治理情况【问题说明】"));
+        ems.add(new ExcelBean("配合各管理部门开展各项工作情况", "配合各管理部门开展各项工作情况【问题说明】"));
+        ems.add(new ExcelBean("配合党建引领改进物业管理工作情况", "配合党建引领改进物业管理工作情况【问题说明】"));
+        ems.add(new ExcelBean("其他", "其他【问题说明】"));
 
         ems.add(new ExcelBean("接诉即办工作办理情况", "接诉即办工作办理情况【问题照片】"));
         ems.add(new ExcelBean("业主违法违规行为上报情况", "业主违法违规行为上报情况【问题照片】"));
