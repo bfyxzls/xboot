@@ -243,9 +243,6 @@ public class RecordController extends XbootBaseController<Record, String> {
         ems.add(new ExcelBean("审核状态", "status"));
         ems.add(new ExcelBean("纬度", "latitude"));
         ems.add(new ExcelBean("经度", "longitude"));
-        ems.add(new ExcelBean("照片", "picture_url"));
-        ems.add(new ExcelBean("备注", "content"));
-
         ems.add(new ExcelBean("合计分数", "total"));
     }
 
