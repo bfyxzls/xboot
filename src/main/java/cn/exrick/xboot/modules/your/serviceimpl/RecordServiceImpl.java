@@ -101,9 +101,9 @@ public class RecordServiceImpl implements RecordService {
                     list.add(cb.equal(root.get("typeId"), record.getTypeId()));
                 }
 
-//                if (StringUtils.isNotBlank(record.getId())) {
-//                    list.add(cb.equal(root.get("id"), record.getId()));
-//                }
+                if (StringUtils.isNotBlank(record.getId())) {
+                    list.add(cb.equal(root.get("id"), record.getId()));
+                }
 
                 if (StringUtils.isNotBlank(record.getCourtId())) {
                     list.add(cb.equal(courtIdField, record.getCourtId()));

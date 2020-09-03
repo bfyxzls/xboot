@@ -99,6 +99,9 @@
         inner join evaluation_type type on a.type_id=type.id
         inner join evaluation_task task on a.task_id =task.id
         where a.type_id=1
+        <if test="id != null">
+            AND a.id = #{id}
+        </if>
         <if test="departmentId != null">
             AND a.department_id = #{departmentId}
         </if>
@@ -204,6 +207,9 @@ FROM
 	inner join evaluation_type type on a.type_id=type.id
 	inner join evaluation_task task on a.task_id =task.id
         where a.type_id=2
+        <if test="id != null">
+            AND a.id = #{id}
+        </if>
         <if test="departmentId != null">
             AND a.department_id = #{departmentId}
         </if>
@@ -281,6 +287,9 @@ FROM
 	inner join evaluation_type type on a.type_id=type.id
 	inner join evaluation_task task on a.task_id =task.id
         where a.type_id=3
+        <if test="id != null">
+            AND a.id = #{id}
+        </if>
         <if test="departmentId != null">
             AND a.department_id = #{departmentId}
         </if>

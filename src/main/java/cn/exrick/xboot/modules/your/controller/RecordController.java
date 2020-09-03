@@ -189,7 +189,7 @@ public class RecordController extends XbootBaseController<Record, String> {
     }
 
     @RequestMapping("export")
-    public void exportList(HttpServletResponse response, String departmentId, String courtId, String typeId, SearchVo searchVo) throws Exception {
+    public void exportList(HttpServletResponse response, String departmentId, String courtId, String typeId,String id, SearchVo searchVo) throws Exception {
         String fileName = DateTime.now().year() + "" +
                 DateTime.now().month() + "" +
                 DateTime.now().dayOfMonth() + "" +
@@ -200,6 +200,9 @@ public class RecordController extends XbootBaseController<Record, String> {
                 ".xls";
 
         Map<String, Object> params = new HashMap<>();
+        if (StringUtils.isNotBlank(id)) {
+            params.put("id", id);
+        }
         if (StringUtils.isNotBlank(departmentId)) {
             params.put("departmentId", departmentId);
         }
