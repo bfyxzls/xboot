@@ -162,9 +162,9 @@ public class RoleController {
         return new ResultUtil<Role>().setData(r);
     }
 
-    @RequestMapping(value = "/delAllByIds/{ids}",method = RequestMethod.DELETE)
+    @RequestMapping(value = "/delByIds",method = RequestMethod.POST)
     @ApiOperation(value = "批量通过ids删除")
-    public Result<Object> delByIds(@PathVariable String[] ids){
+    public Result<Object> delByIds(@RequestParam String[] ids){
 
         for(String id:ids){
             List<UserRole> list = userRoleService.findByRoleId(id);
