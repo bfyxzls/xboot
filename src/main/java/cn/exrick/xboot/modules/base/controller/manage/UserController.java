@@ -10,6 +10,7 @@ import cn.exrick.xboot.common.vo.SearchVo;
 import cn.exrick.xboot.modules.base.entity.*;
 import cn.exrick.xboot.modules.base.service.*;
 import cn.exrick.xboot.modules.base.service.mybatis.IUserRoleService;
+import cn.exrick.xboot.modules.base.vo.ModifyPasswordDto;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 import io.micrometer.core.instrument.util.StringUtils;
@@ -243,9 +244,9 @@ public class UserController {
      */
     @RequestMapping(value = "/modifyPass", method = RequestMethod.POST)
     @ApiOperation(value = "修改密码")
-    public Result<Object> modifyPass(@ApiParam("旧密码")  String password,
-                                     @ApiParam("新密码")  String newPass) {
-
+    public Result<Object> modifyPass(ModifyPasswordDto modifyPasswordDto) {
+        String password = modifyPasswordDto.getPassword();
+        String newPass = modifyPasswordDto.getNewPass();
         User user = securityUtil.getCurrUser();
 
         if (!new BCryptPasswordEncoder().matches(password, user.getPassword())) {

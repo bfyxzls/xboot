@@ -20,6 +20,7 @@
         a.latitude,
         a.longitude,
         a.score as total,
+        et.title as wuye_title,
         max( CASE template_title WHEN '时间' THEN case b.score_type when 1 then b.score else text_value END end ) AS '时间',
         max( CASE template_title WHEN '访问员姓名' THEN case b.score_type when 1 then b.score else text_value END END ) AS '访问员姓名',
         max( CASE template_title WHEN '居住小区名称' THEN case b.score_type when 1 then b.score else text_value END END ) AS '居住小区名称',
@@ -98,6 +99,7 @@
         inner join t_department dept_root on dept_father.parent_id=dept_root.id
         inner join evaluation_type type on a.type_id=type.id
         inner join evaluation_task task on a.task_id =task.id
+        inner join evaluation_tenement et on court.tenement_id=et.id
         where a.type_id=1
         <if test="id != null">
             AND a.id = #{id}
@@ -138,6 +140,7 @@ SELECT
 	a.latitude,
 	a.longitude,
 	a.score as total,
+	et.title as wuye_title,
 	max( CASE template_title WHEN '1、物业服务项目数量' THEN b.score ELSE 0 END ) AS '1、物业服务项目数量',
 	max( CASE template_title WHEN '2、物业服务项目面积' THEN b.score ELSE 0 END ) AS '2、物业服务项目面积',
 	max( CASE template_title WHEN '3、老旧小区物业服务' THEN b.score ELSE 0 END ) AS '3、老旧小区物业服务',
@@ -206,6 +209,8 @@ FROM
 	inner join t_department dept_root on dept_father.parent_id=dept_root.id
 	inner join evaluation_type type on a.type_id=type.id
 	inner join evaluation_task task on a.task_id =task.id
+    inner join evaluation_tenement et on court.tenement_id=et.id
+
         where a.type_id=2
         <if test="id != null">
             AND a.id = #{id}
@@ -246,6 +251,7 @@ SELECT
 	a.latitude,
 	a.longitude,
 	a.score as total,
+	et.title as wuye_title,
 	max( CASE template_title WHEN '接诉即办工作办理情况' THEN b.score ELSE 0 END ) AS '接诉即办工作办理情况',
 	max( CASE template_title WHEN '业主违法违规行为上报情况' THEN b.score ELSE 0 END ) AS '业主违法违规行为上报情况',
 	max( CASE template_title WHEN '履行安全生产责任情况' THEN b.score ELSE 0 END ) AS '履行安全生产责任情况',
@@ -286,6 +292,8 @@ FROM
 	inner join t_department dept_root on dept_father.parent_id=dept_root.id
 	inner join evaluation_type type on a.type_id=type.id
 	inner join evaluation_task task on a.task_id =task.id
+    inner join evaluation_tenement et on court.tenement_id=et.id
+
         where a.type_id=3
         <if test="id != null">
             AND a.id = #{id}
