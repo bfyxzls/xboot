@@ -11,14 +11,8 @@ import cn.exrick.xboot.modules.base.service.DepartmentService;
 import cn.exrick.xboot.modules.base.service.UserService;
 import cn.exrick.xboot.modules.base.utils.EntityUtil;
 import cn.exrick.xboot.modules.your.dao.mapper.RecordMapper;
-import cn.exrick.xboot.modules.your.entity.Court;
-import cn.exrick.xboot.modules.your.entity.Record;
-import cn.exrick.xboot.modules.your.entity.Task;
-import cn.exrick.xboot.modules.your.entity.Type;
-import cn.exrick.xboot.modules.your.service.CourtService;
-import cn.exrick.xboot.modules.your.service.RecordService;
-import cn.exrick.xboot.modules.your.service.TaskService;
-import cn.exrick.xboot.modules.your.service.TypeService;
+import cn.exrick.xboot.modules.your.entity.*;
+import cn.exrick.xboot.modules.your.service.*;
 import cn.exrick.xboot.modules.your.util.FileUtil;
 import cn.hutool.core.date.DateTime;
 import io.micrometer.core.instrument.util.StringUtils;
@@ -52,6 +46,10 @@ public class RecordController extends XbootBaseController<Record, String> {
     EntityUtil entityUtil;
     @Autowired
     RecordMapper recordMapper;
+    @Autowired
+    UserService userService;
+    @Autowired
+    TenementService tenementService;
     @Autowired
     private RecordService recordService;
     @Autowired
@@ -88,9 +86,6 @@ public class RecordController extends XbootBaseController<Record, String> {
 
     }
 
-    @Autowired
-    UserService userService;
-
     public Result<Page<Record>> getByCondition(Boolean isSelf,
                                                Record record,
                                                SearchVo searchVo,
@@ -112,6 +107,10 @@ public class RecordController extends XbootBaseController<Record, String> {
             Court court = courtService.get(record1.getCourtId());
             if (court != null) {
                 record1.setCourtTitle(court.getTitle());
+                Tenement tenement = tenementService.get(court.getTenementId());
+                if (tenement != null) {
+                    record1.setTenementTitle(tenement.getTitle());
+                }
             }
             User user = userService.get(record1.getCreateBy());
             if (user != null) {
@@ -119,6 +118,7 @@ public class RecordController extends XbootBaseController<Record, String> {
                 record1.setCreateByNickName(user.getNickName());
 
             }
+
             if (StringUtils.isNotBlank(record1.getDepartmentId())) {
                 Department department = departmentService.get(record1.getDepartmentId());
                 departmentService.generateParents(department);
@@ -189,7 +189,7 @@ public class RecordController extends XbootBaseController<Record, String> {
     }
 
     @RequestMapping("export")
-    public void exportList(HttpServletResponse response, String departmentId, String courtId, String typeId,String id, SearchVo searchVo) throws Exception {
+    public void exportList(HttpServletResponse response, String departmentId, String courtId, String typeId, String id, SearchVo searchVo) throws Exception {
         String fileName = DateTime.now().year() + "" +
                 DateTime.now().month() + "" +
                 DateTime.now().dayOfMonth() + "" +

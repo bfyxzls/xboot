@@ -244,7 +244,7 @@ public class UserController {
      */
     @RequestMapping(value = "/modifyPass", method = RequestMethod.POST)
     @ApiOperation(value = "修改密码")
-    public Result<Object> modifyPass(ModifyPasswordDto modifyPasswordDto) {
+    public Result<Object> modifyPass(@RequestBody ModifyPasswordDto modifyPasswordDto) {
         String password = modifyPasswordDto.getPassword();
         String newPass = modifyPasswordDto.getNewPass();
         User user = securityUtil.getCurrUser();
