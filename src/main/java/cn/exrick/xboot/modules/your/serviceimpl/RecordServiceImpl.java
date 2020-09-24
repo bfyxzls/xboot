@@ -2,16 +2,19 @@ package cn.exrick.xboot.modules.your.serviceimpl;
 
 import cn.exrick.xboot.common.utils.SecurityUtil;
 import cn.exrick.xboot.common.vo.SearchVo;
+import cn.exrick.xboot.modules.your.dao.CourtDao;
 import cn.exrick.xboot.modules.your.dao.RecordDao;
 import cn.exrick.xboot.modules.your.dao.TaskTypeDao;
 import cn.exrick.xboot.modules.your.dao.TypeDao;
 import cn.exrick.xboot.modules.your.dto.CourtTotal;
+import cn.exrick.xboot.modules.your.entity.Court;
 import cn.exrick.xboot.modules.your.entity.Record;
 import cn.exrick.xboot.modules.your.entity.TaskType;
 import cn.exrick.xboot.modules.your.service.RecordService;
 import cn.exrick.xboot.modules.your.service.TaskTypeService;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import io.micrometer.core.instrument.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,6 +56,8 @@ public class RecordServiceImpl implements RecordService {
     @Autowired
     TaskTypeService taskTypeService;
     @Autowired
+    CourtDao courtDao;
+    @Autowired
     private RecordDao recordDao;
 
     @Override
@@ -78,16 +83,18 @@ public class RecordServiceImpl implements RecordService {
                 List<Predicate> list = new ArrayList<Predicate>();
 
                 // 数据权限
-                if (!isSelf) {
-                    String currentDeptId = securityUtil.getCurrUser().getDepartmentId();
-                    list.add(cb.or(
-                            cb.like(departmentIdsField, "%" + currentDeptId + "%"),
-                            cb.like(departmentIdField, "%" + currentDeptId + "%")
-                    ));
-                } else {
+//                if (!isSelf) {
+//                    String currentDeptId = securityUtil.getCurrUser().getDepartmentId();
+//                    list.add(cb.or(
+//                            cb.like(departmentIdsField, "%" + currentDeptId + "%"),
+//                            cb.like(departmentIdField, "%" + currentDeptId + "%")
+//                    ));
+//                } else {
+//                    list.add(cb.equal(root.get("createBy"), securityUtil.getCurrUser().getId()));
+//                }
+                if (isSelf) {
                     list.add(cb.equal(root.get("createBy"), securityUtil.getCurrUser().getId()));
                 }
-
                 list.add(cb.notEqual(courtIdField, ""));
 
                 //创建时间F
@@ -112,10 +119,31 @@ public class RecordServiceImpl implements RecordService {
                     list.add(cb.equal(statusField, record.getStatus()));
                 }
                 if (StringUtils.isNotBlank(record.getDepartmentId())) {
-                    list.add(
-                            cb.or(cb.like(departmentIdField, "%" + record.getDepartmentId() + "%"), cb.like(departmentIdsField, "%" + record.getDepartmentId() + "%"))
-                    );
+//                    list.add(
+//                            cb.or(cb.like(departmentIdField, "%" + record.getDepartmentId() + "%"), cb.like(departmentIdsField, "%" + record.getDepartmentId() + "%"))
+//                    );
+                    List<String> idArr = courtDao.findAll(new Specification<Court>() {
+                        @Nullable
+                        @Override
+                        public Predicate toPredicate(Root<Court> root, CriteriaQuery<?> cq, CriteriaBuilder cb) {
 
+                            List<Predicate> list = new ArrayList<Predicate>();
+                            // 数据权限
+                            String currentDeptId = securityUtil.getCurrUser().getDepartmentId();
+                            list.add(cb.like(root.get("departmentIds"), "%"+record.getDepartmentId()+"%"));
+                            Predicate[] arr = new Predicate[list.size()];
+                            cq.where(list.toArray(arr));
+                            return null;
+                        }
+                    }).stream().map(o -> o.getId()).collect(Collectors.toList());
+                    if (CollectionUtils.isNotEmpty(idArr)) {
+                        CriteriaBuilder.In<String> in = cb.in(courtIdField);
+                        for (String id : idArr) {
+                            in.value(id);
+                        }
+                        list.add(in);
+
+                    }
                 }
                 Predicate[] arr = new Predicate[list.size()];
                 cq.where(list.toArray(arr));

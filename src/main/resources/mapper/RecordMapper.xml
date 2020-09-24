@@ -105,7 +105,7 @@
             AND a.id = #{id}
         </if>
         <if test="departmentId != null">
-            AND a.department_id = #{departmentId}
+            AND court.department_id = #{departmentId}
         </if>
         <if test="courtId != null">
             AND a.court_id = #{courtId}
@@ -216,7 +216,7 @@ FROM
             AND a.id = #{id}
         </if>
         <if test="departmentId != null">
-            AND a.department_id = #{departmentId}
+            AND court.department_id = #{departmentId}
         </if>
         <if test="courtId != null">
             AND a.court_id = #{courtId}
@@ -299,7 +299,7 @@ FROM
             AND a.id = #{id}
         </if>
         <if test="departmentId != null">
-            AND a.department_id = #{departmentId}
+            AND court.department_id = #{departmentId}
         </if>
         <if test="courtId != null">
             AND a.court_id = #{courtId}
