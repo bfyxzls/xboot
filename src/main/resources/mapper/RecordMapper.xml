@@ -94,7 +94,7 @@
         inner join evaluation_record a on b.record_id=a.id
         inner join t_user c on a.create_by=c.id
         inner join evaluation_court court on a.court_id=court.id
-        inner join t_department dept on a.department_id = dept.id
+        inner join t_department dept on court.department_id = dept.id
 --         inner join t_department dept_father on dept.parent_id=dept_father.id
 --         inner join t_department dept_root on dept_father.parent_id=dept_root.id
         inner join evaluation_type type on a.type_id=type.id
@@ -203,7 +203,7 @@ FROM
 	inner join evaluation_record a on b.record_id=a.id
 	inner join t_user c on a.create_by=c.id
 	inner join evaluation_court court on a.court_id=court.id
-	inner join t_department dept on a.department_id = dept.id
+	inner join t_department dept on court.department_id = dept.id
 -- 	inner join t_department dept_father on dept.parent_id=dept_father.id
 -- 	inner join t_department dept_root on dept_father.parent_id=dept_root.id
 	inner join evaluation_type type on a.type_id=type.id
@@ -285,7 +285,7 @@ FROM
 	inner join evaluation_record a on b.record_id=a.id
 	inner join t_user c on a.create_by=c.id
 	inner join evaluation_court court on a.court_id=court.id
-	inner join t_department dept on a.department_id = dept.id
+	inner join t_department dept on court.department_id = dept.id
 -- 	inner join t_department dept_father on dept.parent_id=dept_father.id
 -- 	inner join t_department dept_root on dept_father.parent_id=dept_root.id
 	inner join evaluation_type type on a.type_id=type.id

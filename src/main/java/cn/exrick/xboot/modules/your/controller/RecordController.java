@@ -111,6 +111,15 @@ public class RecordController extends XbootBaseController<Record, String> {
                 if (tenement != null) {
                     record1.setTenementTitle(tenement.getTitle());
                 }
+
+                if (StringUtils.isNotBlank(court.getDepartmentId())) {
+                    Department department = departmentService.get(record1.getDepartmentId());
+                    departmentService.generateParents(department);
+                    record1.setDepartment(department);
+                    List<String> result = new ArrayList<>();
+                    departmentService.generateParentTitle(department, result);
+                    record1.setDepartmentTreeTitle(String.join("-", result));
+                }
             }
             User user = userService.get(record1.getCreateBy());
             if (user != null) {
@@ -119,14 +128,7 @@ public class RecordController extends XbootBaseController<Record, String> {
 
             }
 
-            if (StringUtils.isNotBlank(record1.getDepartmentId())) {
-                Department department = departmentService.get(record1.getDepartmentId());
-                departmentService.generateParents(department);
-                record1.setDepartment(department);
-                List<String> result = new ArrayList<>();
-                departmentService.generateParentTitle(department, result);
-                record1.setDepartmentTreeTitle(String.join("-", result));
-            }
+
 
         }
 
