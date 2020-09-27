@@ -108,7 +108,7 @@ public class RecordServiceImpl implements RecordService {
                     list.add(cb.equal(root.get("typeId"), record.getTypeId()));
                 }
 
-                if (StringUtils.isNotBlank(record.getId())) {
+                if (!isSelf && StringUtils.isNotBlank(record.getId())) {
                     list.add(cb.equal(root.get("id"), record.getId()));
                 }
 
@@ -119,17 +119,12 @@ public class RecordServiceImpl implements RecordService {
                     list.add(cb.equal(statusField, record.getStatus()));
                 }
                 if (StringUtils.isNotBlank(record.getDepartmentId())) {
-//                    list.add(
-//                            cb.or(cb.like(departmentIdField, "%" + record.getDepartmentId() + "%"), cb.like(departmentIdsField, "%" + record.getDepartmentId() + "%"))
-//                    );
                     List<String> idArr = courtDao.findAll(new Specification<Court>() {
                         @Nullable
                         @Override
                         public Predicate toPredicate(Root<Court> root, CriteriaQuery<?> cq, CriteriaBuilder cb) {
 
                             List<Predicate> list = new ArrayList<Predicate>();
-                            // 数据权限
-                            String currentDeptId = securityUtil.getCurrUser().getDepartmentId();
                             list.add(cb.like(root.get("departmentIds"), "%"+record.getDepartmentId()+"%"));
                             Predicate[] arr = new Predicate[list.size()];
                             cq.where(list.toArray(arr));

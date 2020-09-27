@@ -113,7 +113,7 @@ public class RecordController extends XbootBaseController<Record, String> {
                 }
 
                 if (StringUtils.isNotBlank(court.getDepartmentId())) {
-                    Department department = departmentService.get(record1.getDepartmentId());
+                    Department department = departmentService.get(court.getDepartmentId());
                     departmentService.generateParents(department);
                     record1.setDepartment(department);
                     List<String> result = new ArrayList<>();
