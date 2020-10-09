@@ -206,7 +206,7 @@ public class RecordController extends XbootBaseController<Record, String> {
             params.put("id", id);
         }
         if (StringUtils.isNotBlank(departmentId)) {
-            params.put("departmentId", departmentId);
+            params.put("departmentId", "%"+departmentId+"%");
         }
         if (StringUtils.isNotBlank(courtId)) {
             params.put("courtId", courtId);
